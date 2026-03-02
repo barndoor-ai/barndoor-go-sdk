@@ -77,6 +77,14 @@ func GetOidcConfig(ctx context.Context, issuer string) (*OidcConfig, error) {
 		return oidcFallback(normalizedIssuer, logger), nil
 	}
 
+	// Validate that the discovery response contains the required endpoints.
+	// An incomplete response (e.g. missing authorization_endpoint) would produce
+	// broken auth URLs, so fall back to well-known endpoint patterns instead.
+	if config.AuthorizationEndpoint == "" || config.TokenEndpoint == "" {
+		logger.Warn(fmt.Sprintf("OIDC discovery for %s returned incomplete config, using fallback", issuer))
+		return oidcFallback(normalizedIssuer, logger), nil
+	}
+
 	oidcConfigCacheMu.Lock()
 	oidcConfigCache[issuer] = &config
 	oidcConfigCacheMu.Unlock()
@@ -87,6 +95,7 @@ func GetOidcConfig(ctx context.Context, issuer string) (*OidcConfig, error) {
 
 // oidcFallback returns a fallback OIDC config based on issuer URL patterns.
 func oidcFallback(normalizedIssuer string, logger Logger) *OidcConfig {
+	normalizedIssuer = strings.TrimRight(normalizedIssuer, "/")
 	logger.Debug(fmt.Sprintf("Using OIDC fallback for %s", normalizedIssuer))
 	if strings.Contains(normalizedIssuer, "/realms/") {
 		// Keycloak-style issuer

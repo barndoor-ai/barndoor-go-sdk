@@ -18,33 +18,33 @@ type defaultLogger struct{}
 
 func (l *defaultLogger) Debug(message string, args ...any) {
 	if len(args) > 0 {
-		log.Printf("[DEBUG] "+message+" %v", args...)
+		log.Printf("[DEBUG] %s %v", message, fmt.Sprint(args...))
 	} else {
-		log.Printf("[DEBUG] " + message)
+		log.Printf("[DEBUG] %s", message)
 	}
 }
 
 func (l *defaultLogger) Info(message string, args ...any) {
 	if len(args) > 0 {
-		log.Printf("[INFO] "+message+" %v", args...)
+		log.Printf("[INFO] %s %v", message, fmt.Sprint(args...))
 	} else {
-		log.Printf("[INFO] " + message)
+		log.Printf("[INFO] %s", message)
 	}
 }
 
 func (l *defaultLogger) Warn(message string, args ...any) {
 	if len(args) > 0 {
-		log.Printf("[WARN] "+message+" %v", args...)
+		log.Printf("[WARN] %s %v", message, fmt.Sprint(args...))
 	} else {
-		log.Printf("[WARN] " + message)
+		log.Printf("[WARN] %s", message)
 	}
 }
 
 func (l *defaultLogger) Error(message string, args ...any) {
 	if len(args) > 0 {
-		log.Printf("[ERROR] "+message+" %v", args...)
+		log.Printf("[ERROR] %s %v", message, fmt.Sprint(args...))
 	} else {
-		log.Printf("[ERROR] " + message)
+		log.Printf("[ERROR] %s", message)
 	}
 }
 
