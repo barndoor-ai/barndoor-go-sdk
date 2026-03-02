@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os/exec"
-	"runtime"
 	"strings"
 	"time"
+
+	"github.com/pkg/browser"
 )
 
 // SDKOptions configures the BarndoorSDK.
@@ -450,16 +450,5 @@ func openBrowser(rawURL string) error {
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
 		return fmt.Errorf("refusing to open non-HTTP URL scheme %q", parsed.Scheme)
 	}
-	sanitized := parsed.String()
-
-	var cmd *exec.Cmd
-	switch runtime.GOOS {
-	case "darwin":
-		cmd = exec.Command("open", sanitized) // #nosec G204 -- URL scheme validated above
-	case "windows":
-		cmd = exec.Command("powershell", "-NoProfile", "Start-Process", sanitized) // #nosec G204 -- URL scheme validated above
-	default:
-		cmd = exec.Command("xdg-open", sanitized) // #nosec G204 -- URL scheme validated above
-	}
-	return cmd.Start()
+	return browser.OpenURL(parsed.String())
 }

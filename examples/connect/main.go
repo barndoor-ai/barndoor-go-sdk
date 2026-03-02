@@ -70,7 +70,7 @@ func connectAndPrint(ctx context.Context, sdk *barndoor.BarndoorSDK, slug string
 	//   - If the server is already connected, returns immediately
 	//   - If not, initiates OAuth, opens the browser, and polls until connected
 	if err := barndoor.EnsureServerConnectedQuickstart(ctx, sdk, slug, 0); err != nil {
-		log.Fatalf("Failed to connect to %s: %v", slug, err)
+		log.Fatalf("Failed to connect to %q: %v", slug, err) // #nosec G706 -- slug is quoted with %q and validated by SDK
 	}
 
 	// Build framework-agnostic MCP connection parameters.
