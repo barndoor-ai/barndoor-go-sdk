@@ -146,7 +146,7 @@ func LoginInteractive(ctx context.Context, opts *LoginInteractiveOptions) (*Barn
 	logger.Info(fmt.Sprintf("Auth URL: %s", authURL))
 
 	// Open browser
-	if err := openBrowser(authURL); err != nil {
+	if err := openBrowserFunc(authURL); err != nil {
 		logger.Warn(fmt.Sprintf("Failed to open browser automatically. Please visit: %s", authURL))
 	} else {
 		logger.Info("Please complete login in your browser...")

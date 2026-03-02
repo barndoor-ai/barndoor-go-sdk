@@ -409,7 +409,7 @@ func (s *BarndoorSDK) EnsureServerConnected(ctx context.Context, serverIdentifie
 	}
 
 	// 3. Open browser
-	if err := openBrowser(authURL); err != nil {
+	if err := openBrowserFunc(authURL); err != nil {
 		s.logger.Warn(fmt.Sprintf("Failed to open browser: %v", err))
 	}
 
@@ -435,6 +435,10 @@ func (s *BarndoorSDK) Close() {
 		s.closed = true
 	}
 }
+
+// openBrowserFunc is the function used to open a URL in the user's browser.
+// It can be overridden in tests to prevent actually launching a browser.
+var openBrowserFunc = openBrowser
 
 // openBrowser opens a URL in the user's default browser.
 // Only http and https URLs are allowed to prevent command injection.
