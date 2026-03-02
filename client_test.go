@@ -251,6 +251,15 @@ func newTestSDK(t *testing.T, server *httptest.Server) *BarndoorSDK {
 	return sdk
 }
 
+// newTestSDKNoRetry is like newTestSDK but disables HTTP retries so tests
+// that assert on 5xx errors don't burn 7s in exponential backoff.
+func newTestSDKNoRetry(t *testing.T, server *httptest.Server) *BarndoorSDK {
+	t.Helper()
+	sdk := newTestSDK(t, server)
+	sdk.httpClient.maxRetries = 0
+	return sdk
+}
+
 // ---------------------------------------------------------------------------
 // ListServers
 // ---------------------------------------------------------------------------
@@ -579,7 +588,7 @@ func TestGetConnectionStatus_HTTPError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	_, err := sdk.GetConnectionStatus(context.Background(), "github")
@@ -1076,7 +1085,7 @@ func TestEnsureServerConnected_GetServerNon404Error(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	err := sdk.EnsureServerConnected(context.Background(), "github", 1)
@@ -1154,7 +1163,7 @@ func TestEnsureServerConnected_PollError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	err := sdk.EnsureServerConnected(context.Background(), "github", 5)
@@ -1244,7 +1253,7 @@ func TestDisconnectServer_OtherError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	err := sdk.DisconnectServer(context.Background(), "github")
@@ -1293,7 +1302,7 @@ func TestListServers_Error(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	_, err := sdk.ListServers(context.Background())
@@ -1328,7 +1337,7 @@ func TestGetServer_HTTPError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	_, err := sdk.GetServer(context.Background(), "github")

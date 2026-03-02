@@ -87,7 +87,7 @@ func TestEnsureServerConnectedQuickstart_OtherError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	err := EnsureServerConnectedQuickstart(context.Background(), sdk, "github", 1)
@@ -170,7 +170,7 @@ func TestMakeMCPConnectionParams_OtherHTTPError(t *testing.T) {
 	}))
 	defer server.Close()
 
-	sdk := newTestSDK(t, server)
+	sdk := newTestSDKNoRetry(t, server)
 	defer sdk.Close()
 
 	_, _, err := MakeMCPConnectionParams(context.Background(), sdk, "github")
