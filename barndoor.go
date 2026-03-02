@@ -43,3 +43,6 @@
 // Auth configuration (issuer, audience, base URL) is baked in per environment.
 // See [AuthConfig] for the full list.
 package barndoor
+
+// Version is the semantic version of the barndoor-go-sdk.
+const Version = "0.1.0"
