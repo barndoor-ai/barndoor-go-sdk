@@ -27,6 +27,9 @@ go.work.sum
 # env file
 .env
 
+# Example binaries
+examples/connect/connect
+
 # Editor/IDE
 .idea/
 .vscode/
