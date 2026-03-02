@@ -62,7 +62,7 @@ var AuthConfig = map[string]AuthEnvironmentConfig{
 type BarndoorConfig struct {
 	AuthIssuer     string
 	ClientID       string
-	ClientSecret   string
+	ClientSecret   string // #nosec G117 -- OAuth client secret config field
 	APIAudience    string
 	BaseURL        string
 	Environment    string
@@ -75,7 +75,7 @@ type BarndoorConfigOptions struct {
 	AuthIssuer     string
 	AuthDomain     string // deprecated: use AuthIssuer
 	ClientID       string
-	ClientSecret   string
+	ClientSecret   string // #nosec G117 -- OAuth client secret config field
 	APIAudience    string
 	BaseURL        string
 	Environment    string

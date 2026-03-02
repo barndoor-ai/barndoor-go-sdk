@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"net"
 	"net/http"
@@ -54,7 +55,7 @@ func GetOidcConfig(ctx context.Context, issuer string) (*OidcConfig, error) {
 		return oidcFallback(normalizedIssuer, logger), nil
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL derived from SDK config issuer
 	if err != nil {
 		logger.Warn(fmt.Sprintf("OIDC discovery failed for %s: %v", issuer, err))
 		return oidcFallback(normalizedIssuer, logger), nil
@@ -194,7 +195,7 @@ func getJWKSKeyFunc(ctx context.Context, jwksURI string) (jwt.Keyfunc, error) {
 		return nil, fmt.Errorf("failed to create JWKS request: %w", err)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery jwks_uri
 	if err != nil {
 		// Return cached if available on fetch failure
 		if ok {
@@ -334,16 +335,20 @@ func asn1Sequence(content []byte) []byte {
 }
 
 func asn1Length(length int) []byte {
+	if length < 0 || length > 0xFFFFFF {
+		// Unreachable for valid RSA keys; guard against misuse.
+		panic("asn1Length: length out of range")
+	}
 	if length < 128 {
-		return []byte{byte(length)}
+		return []byte{byte(length)} // #nosec G115 -- guarded above: 0 <= length < 128
 	}
 	var lenBytes []byte
 	l := length
 	for l > 0 {
-		lenBytes = append([]byte{byte(l & 0xff)}, lenBytes...)
+		lenBytes = append([]byte{byte(l & 0xff)}, lenBytes...) // #nosec G115 -- masked to 0xff
 		l >>= 8
 	}
-	return append([]byte{byte(0x80 | len(lenBytes))}, lenBytes...)
+	return append([]byte{byte(0x80 | len(lenBytes))}, lenBytes...) // #nosec G115 -- len(lenBytes) <= 3
 }
 
 // PKCEManager handles PKCE OAuth flow state.
@@ -376,7 +381,7 @@ type TokenExchangeParams struct {
 	ClientID     string
 	Code         string
 	RedirectURI  string
-	ClientSecret string
+	ClientSecret string // #nosec G117 -- OAuth client secret param
 	Issuer       string
 }
 
@@ -461,7 +466,7 @@ func (p *PKCEManager) ExchangeCodeForToken(ctx context.Context, params TokenExch
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery token_endpoint
 	if err != nil {
 		return nil, NewOAuthError(fmt.Sprintf("Token exchange failed: %v", err))
 	}
@@ -534,7 +539,7 @@ func StartLocalCallbackServer(port int) (string, <-chan callbackResult, error) {
 	}
 
 	mux := http.NewServeMux()
-	server := &http.Server{Handler: mux}
+	server := &http.Server{Handler: mux, ReadHeaderTimeout: 10 * time.Second}
 
 	mux.HandleFunc("/cb", func(w http.ResponseWriter, r *http.Request) {
 		code := r.URL.Query().Get("code")
@@ -546,7 +551,7 @@ func StartLocalCallbackServer(port int) (string, <-chan callbackResult, error) {
 
 		if oauthErr != "" {
 			w.WriteHeader(http.StatusOK)
-			fmt.Fprintf(w, `<html><body><h1>Authentication Failed</h1><p>Error: %s</p><p>You can close this window.</p></body></html>`, oauthErr)
+			fmt.Fprintf(w, `<html><body><h1>Authentication Failed</h1><p>Error: %s</p><p>You can close this window.</p></body></html>`, html.EscapeString(oauthErr)) // #nosec G705 -- output is HTML-escaped
 			go server.Close()
 			resultCh <- callbackResult{err: NewOAuthError(fmt.Sprintf("OAuth error: %s - %s", oauthErr, errDesc))}
 			return

@@ -21,7 +21,7 @@ type LoginInteractiveOptions struct {
 	// ClientID is the OAuth client ID.
 	ClientID string
 	// ClientSecret is the OAuth client secret.
-	ClientSecret string
+	ClientSecret string // #nosec G117 -- OAuth client secret config field
 	// Audience is the API audience identifier.
 	Audience string
 	// BaseURL is the base URL of the Barndoor API.

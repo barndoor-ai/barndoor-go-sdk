@@ -215,7 +215,7 @@ func (m *TokenManager) isTokenValidRemote(ctx context.Context, token string) boo
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery userinfo_endpoint
 	if err != nil {
 		return false
 	}
@@ -251,7 +251,7 @@ func (m *TokenManager) refreshToken(ctx context.Context, tokenData *TokenData) (
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery token_endpoint
 	if err != nil {
 		return nil, NewTokenError("Network error during token refresh. Please check your connection.", "")
 	}
@@ -361,7 +361,7 @@ func IsTokenActive(ctx context.Context) bool {
 	}
 	req.Header.Set("Authorization", "Bearer "+tokenData.AccessToken)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery userinfo_endpoint
 	if err != nil {
 		return false
 	}
@@ -402,7 +402,7 @@ func ValidateToken(ctx context.Context, token string) bool {
 		}
 		req.Header.Set("Authorization", "Bearer "+token)
 
-		resp, err := http.DefaultClient.Do(req)
+		resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery userinfo_endpoint
 		if err != nil {
 			return false
 		}

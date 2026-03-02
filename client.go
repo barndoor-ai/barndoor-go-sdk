@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -159,7 +160,7 @@ func (s *BarndoorSDK) ValidateCachedToken(ctx context.Context) (bool, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+s.token)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := http.DefaultClient.Do(req) // #nosec G704 -- URL from OIDC discovery userinfo_endpoint
 	if err != nil {
 		return false, nil
 	}
@@ -436,15 +437,25 @@ func (s *BarndoorSDK) Close() {
 }
 
 // openBrowser opens a URL in the user's default browser.
+// Only http and https URLs are allowed to prevent command injection.
 func openBrowser(rawURL string) error {
+	parsed, err := url.Parse(rawURL)
+	if err != nil {
+		return fmt.Errorf("invalid URL: %w", err)
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return fmt.Errorf("refusing to open non-HTTP URL scheme %q", parsed.Scheme)
+	}
+	sanitized := parsed.String()
+
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "darwin":
-		cmd = exec.Command("open", rawURL)
+		cmd = exec.Command("open", sanitized) // #nosec G204 -- URL scheme validated above
 	case "windows":
-		cmd = exec.Command("powershell", "-NoProfile", "Start-Process", rawURL)
+		cmd = exec.Command("powershell", "-NoProfile", "Start-Process", sanitized) // #nosec G204 -- URL scheme validated above
 	default:
-		cmd = exec.Command("xdg-open", rawURL)
+		cmd = exec.Command("xdg-open", sanitized) // #nosec G204 -- URL scheme validated above
 	}
 	return cmd.Start()
 }

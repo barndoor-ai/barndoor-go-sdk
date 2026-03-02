@@ -58,8 +58,8 @@ func (t *AgentToken) Validate() error {
 
 // TokenData represents token data for storage.
 type TokenData struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token,omitempty"`
+	AccessToken  string `json:"access_token"`          // #nosec G117 -- OAuth token field
+	RefreshToken string `json:"refresh_token,omitempty"` // #nosec G117 -- OAuth token field
 	TokenType    string `json:"token_type,omitempty"`
 	ExpiresIn    int    `json:"expires_in,omitempty"`
 	Scope        string `json:"scope,omitempty"`

@@ -95,7 +95,7 @@ func (c *httpClient) request(ctx context.Context, method, rawURL string, opts *h
 			req.Header.Set(k, v)
 		}
 
-		resp, err := c.client.Do(req)
+		resp, err := c.client.Do(req) // #nosec G704 -- URL built from validated SDK base URL
 		if err != nil {
 			if ctx.Err() != nil {
 				lastErr = NewTimeoutError(fmt.Sprintf("Request to %s timed out", requestURL))
@@ -111,7 +111,7 @@ func (c *httpClient) request(ctx context.Context, method, rawURL string, opts *h
 		}
 
 		respBody, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		if err != nil {
 			lastErr = fmt.Errorf("failed to read response body: %w", err)
 			if attempt == c.maxRetries {
