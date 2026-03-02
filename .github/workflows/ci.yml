@@ -21,10 +21,10 @@ jobs:
       - name: Run go vet
         run: go vet ./...
 
-      - name: Run staticcheck
-        uses: dominikh/staticcheck-action@v1
+      - name: Run gosec
+        uses: securego/gosec@v2
         with:
-          version: "latest"
+          args: ./...
 
   test:
     runs-on: ubuntu-latest
