@@ -21,8 +21,8 @@ jobs:
       - name: Run go vet
         run: go vet ./...
 
-      - name: Run gosec
-        uses: securego/gosec@v2
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@v2.24.7
         with:
           args: ./...
 
