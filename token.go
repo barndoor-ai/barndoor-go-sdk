@@ -69,7 +69,7 @@ func (s *FileTokenStorage) SaveToken(tokenData *TokenData) error {
 		return NewTokenError(fmt.Sprintf("Failed to save token: %v", err), "")
 	}
 
-	data, err := json.MarshalIndent(tokenData, "", "  ")
+	data, err := json.MarshalIndent(tokenData, "", "  ") // #nosec G117 -- intentionally persisting OAuth tokens to local file (0600 perms)
 	if err != nil {
 		return NewTokenError(fmt.Sprintf("Failed to save token: %v", err), "")
 	}
