@@ -26,7 +26,7 @@ type FileTokenStorage struct {
 	mu        sync.Mutex
 }
 
-// NewFileTokenStorage creates a new file-based token storage.
+// NewFileTokenStorage creates a new file-based token storage using the default path (~/.barndoor/token.json).
 func NewFileTokenStorage() *FileTokenStorage {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -34,6 +34,13 @@ func NewFileTokenStorage() *FileTokenStorage {
 	}
 	return &FileTokenStorage{
 		tokenFile: filepath.Join(homeDir, ".barndoor", "token.json"),
+	}
+}
+
+// NewFileTokenStorageWithPath creates a new file-based token storage at the specified path.
+func NewFileTokenStorageWithPath(path string) *FileTokenStorage {
+	return &FileTokenStorage{
+		tokenFile: path,
 	}
 }
 
