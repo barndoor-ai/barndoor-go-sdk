@@ -558,26 +558,28 @@ func StartLocalCallbackServer(port int) (string, <-chan callbackResult, error) {
 
 		w.Header().Set("Content-Type", "text/html")
 
+		var result callbackResult
 		if oauthErr != "" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, `<html><body><h1>Authentication Failed</h1><p>Error: %s</p><p>You can close this window.</p></body></html>`, html.EscapeString(oauthErr)) // #nosec G705 -- output is HTML-escaped
-			go server.Close()
-			resultCh <- callbackResult{err: NewOAuthError(fmt.Sprintf("OAuth error: %s - %s", oauthErr, errDesc))}
-			return
-		}
-
-		if code != "" {
+			result = callbackResult{err: NewOAuthError(fmt.Sprintf("OAuth error: %s - %s", oauthErr, errDesc))}
+		} else if code != "" {
 			w.WriteHeader(http.StatusOK)
 			fmt.Fprint(w, `<html><body><h1>Authentication Successful</h1><p>You can close this window and return to your application.</p><script>setTimeout(() => window.close(), 1000);</script></body></html>`)
-			go server.Close()
-			resultCh <- callbackResult{code: code, state: state}
-			return
+			result = callbackResult{code: code, state: state}
+		} else {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `<html><body><h1>Authentication Failed</h1><p>No authorization code received.</p><p>You can close this window.</p></body></html>`)
+			result = callbackResult{err: NewOAuthError("No authorization code received")}
 		}
 
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `<html><body><h1>Authentication Failed</h1><p>No authorization code received.</p><p>You can close this window.</p></body></html>`)
-		go server.Close()
-		resultCh <- callbackResult{err: NewOAuthError("No authorization code received")}
+		// Shutdown gracefully after the response is sent. Shutdown waits for
+		// in-flight requests (including this one) to finish, so it must run
+		// in a goroutine to avoid deadlocking the handler.
+		go func() {
+			server.Shutdown(context.Background()) //nolint:errcheck
+			resultCh <- result
+		}()
 	})
 
 	go func() {
