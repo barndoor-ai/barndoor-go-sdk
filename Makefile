@@ -1,4 +1,6 @@
-.PHONY: all build test test-race coverage lint vet security tidy verify download clean check install-hooks
+GOSEC_VERSION := $(shell cat .gosec-version)
+
+.PHONY: all build test test-race coverage lint vet security tidy verify download clean check install-hooks install-tools
 
 all: check
 
@@ -38,6 +40,10 @@ security:
 
 ## Pre-commit / CI check
 check: vet security test-race
+
+## Tools
+install-tools:
+	go install github.com/securego/gosec/v2/cmd/gosec@$(GOSEC_VERSION)
 
 ## Git hooks
 install-hooks:
