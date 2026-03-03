@@ -28,6 +28,10 @@ type LoginInteractiveOptions struct {
 	BaseURL string
 	// Port is the local port for OAuth callback (default: 52765).
 	Port int
+	// TokenPath is an optional file path for storing the auth token.
+	// Useful when authenticating multiple agents concurrently.
+	// If empty, defaults to ~/.barndoor/token.json.
+	TokenPath string
 }
 
 // LoginInteractive performs an interactive OAuth login and returns an initialized SDK.
@@ -84,8 +88,20 @@ func LoginInteractive(ctx context.Context, opts *LoginInteractiveOptions) (*Barn
 		return nil, fmt.Errorf("AGENT_CLIENT_ID / AGENT_CLIENT_SECRET not set – create a .env file or export in the shell")
 	}
 
+	// Set up token storage (custom path or default)
+	var tokenStorage TokenStorage
+	if opts.TokenPath != "" {
+		tokenStorage = NewFileTokenStorageWithPath(opts.TokenPath)
+	} else {
+		tokenStorage = GetTokenStorage()
+	}
+
 	// 1. Try cached token first
-	cachedToken, _ := LoadUserToken()
+	cachedTokenData, _ := tokenStorage.LoadToken()
+	cachedToken := ""
+	if cachedTokenData != nil {
+		cachedToken = cachedTokenData.AccessToken
+	}
 	if cachedToken != "" {
 		var baseURL string
 		if HasOrganizationInfo(cachedToken) {
@@ -213,7 +229,7 @@ func LoginInteractive(ctx context.Context, opts *LoginInteractiveOptions) (*Barn
 	if tt, ok := tokenData["token_type"].(string); ok {
 		td.TokenType = tt
 	}
-	if err := SaveUserTokenData(td); err != nil {
+	if err := tokenStorage.SaveToken(td); err != nil {
 		logger.Warn(fmt.Sprintf("Failed to save token: %v", err))
 	}
 

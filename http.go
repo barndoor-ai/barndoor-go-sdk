@@ -33,6 +33,7 @@ type httpClient struct {
 	maxRetries int
 	closed     bool
 	logger     Logger
+	sleepFunc  func(time.Duration) // overridable for testing
 }
 
 // httpRequestOptions holds options for an HTTP request.
@@ -50,6 +51,7 @@ func newHTTPClient(timeout timeoutConfig, maxRetries int) *httpClient {
 		timeout:    timeout,
 		maxRetries: maxRetries,
 		logger:     createScopedLogger("http"),
+		sleepFunc:  time.Sleep,
 	}
 }
 
@@ -178,7 +180,7 @@ func (c *httpClient) buildURL(baseURL string, params map[string]string) (string,
 
 func (c *httpClient) sleep(attempt int) {
 	delay := time.Duration(math.Min(float64(time.Second)*math.Pow(2, float64(attempt)), float64(10*time.Second)))
-	time.Sleep(delay)
+	c.sleepFunc(delay)
 }
 
 func (c *httpClient) close() {

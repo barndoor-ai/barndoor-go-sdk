@@ -21,11 +21,5 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Verify build
-        run: go build ./...
-
-      - name: Run tests
-        run: go test -race ./...
-
-      - name: Verify module
-        run: go mod verify
+      - name: Build, test, and verify module
+        run: make build test-race verify

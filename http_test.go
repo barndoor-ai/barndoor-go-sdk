@@ -11,6 +11,14 @@ import (
 	"time"
 )
 
+func noopSleep(time.Duration) {}
+
+func newHTTPClientNoSleep(timeout timeoutConfig, maxRetries int) *httpClient {
+	c := newHTTPClient(timeout, maxRetries)
+	c.sleepFunc = noopSleep
+	return c
+}
+
 // ---------------------------------------------------------------------------
 // defaultTimeoutConfig
 // ---------------------------------------------------------------------------
@@ -182,7 +190,7 @@ func TestHTTPClient_Request_5xxRetryIdempotent(t *testing.T) {
 	}))
 	defer server.Close()
 
-	c := newHTTPClient(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 3)
+	c := newHTTPClientNoSleep(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 3)
 	ctx := context.Background()
 
 	resp, err := c.request(ctx, "GET", server.URL, nil)
@@ -238,13 +246,13 @@ func TestHTTPClient_Request_ClosedClient(t *testing.T) {
 
 func TestHTTPClient_Request_ContextCanceled(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(5 * time.Second)
+		time.Sleep(500 * time.Millisecond)
 		fmt.Fprint(w, `{}`)
 	}))
 	defer server.Close()
 
-	c := newHTTPClient(timeoutConfig{read: 30 * time.Second, connect: 10 * time.Second}, 0)
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	c := newHTTPClientNoSleep(timeoutConfig{read: 30 * time.Second, connect: 10 * time.Second}, 0)
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
 	defer cancel()
 
 	_, err := c.request(ctx, "GET", server.URL, nil)
@@ -325,7 +333,7 @@ func TestHTTPClient_Close(t *testing.T) {
 
 func TestHTTPClient_Request_ConnectionRetry(t *testing.T) {
 	// Use an unreachable address to trigger connection error
-	c := newHTTPClient(timeoutConfig{read: 1 * time.Second, connect: 1 * time.Second}, 1)
+	c := newHTTPClientNoSleep(timeoutConfig{read: 200 * time.Millisecond, connect: 200 * time.Millisecond}, 1)
 
 	_, err := c.request(context.Background(), "GET", "http://127.0.0.1:1/test", nil)
 	if err == nil {
@@ -342,7 +350,7 @@ func TestHTTPClient_Request_5xxExhaustsRetries(t *testing.T) {
 	}))
 	defer server.Close()
 
-	c := newHTTPClient(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 2)
+	c := newHTTPClientNoSleep(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 2)
 	_, err := c.request(context.Background(), "GET", server.URL, nil)
 	if err == nil {
 		t.Fatal("expected error after retries exhausted")
@@ -398,7 +406,7 @@ func TestHTTPClient_Request_HeadIdempotent(t *testing.T) {
 	}))
 	defer server.Close()
 
-	c := newHTTPClient(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 2)
+	c := newHTTPClientNoSleep(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 2)
 	_, err := c.request(context.Background(), "HEAD", server.URL, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -437,7 +445,7 @@ func TestHTTPClient_Request_OptionsIdempotent(t *testing.T) {
 	}))
 	defer server.Close()
 
-	c := newHTTPClient(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 2)
+	c := newHTTPClientNoSleep(timeoutConfig{read: 5 * time.Second, connect: 2 * time.Second}, 2)
 	_, err := c.request(context.Background(), "OPTIONS", server.URL, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

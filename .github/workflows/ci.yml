@@ -18,23 +18,29 @@ jobs:
         with:
           go-version: "1.22"
 
-      - name: Run go vet
-        run: go vet ./...
+      - name: Lint
+        run: make lint
 
-      - name: Run Gosec Security Scanner
-        uses: securego/gosec@v2.24.7
-        with:
-          args: ./...
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install gosec
+        run: |
+          VERSION=$(cat .gosec-version)
+          curl -sfL "https://github.com/securego/gosec/releases/download/${VERSION}/gosec_${VERSION#v}_linux_amd64.tar.gz" | tar -xz -C /usr/local/bin gosec
+
+      - name: Security scan
+        run: make security
 
   test:
     runs-on: ubuntu-latest
-    needs: lint
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         go-version: ["1.22", "1.23"]
-
     steps:
       - uses: actions/checkout@v4
 
@@ -44,10 +50,10 @@ jobs:
           go-version: ${{ matrix.go-version }}
 
       - name: Download dependencies
-        run: go mod download
+        run: make download
 
-      - name: Run tests
-        run: go test -race -coverprofile=coverage.out ./...
+      - name: Run tests with coverage
+        run: make coverage
 
       - name: Upload coverage
         if: matrix.go-version == '1.23'
