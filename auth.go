@@ -577,7 +577,10 @@ func StartLocalCallbackServer(port int) (string, <-chan callbackResult, error) {
 		// in-flight requests (including this one) to finish, so it must run
 		// in a goroutine to avoid deadlocking the handler.
 		go func() {
-			server.Shutdown(context.Background()) //nolint:errcheck
+			if err := server.Shutdown(context.Background()); err != nil {
+				resultCh <- callbackResult{err: NewOAuthError(fmt.Sprintf("Callback server shutdown error: %v", err))}
+				return
+			}
 			resultCh <- result
 		}()
 	})
