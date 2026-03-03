@@ -12,6 +12,10 @@ import (
 	"github.com/pkg/browser"
 )
 
+// pollSleep is the function used to sleep between polling iterations.
+// It is a variable so tests can override it to avoid real delays.
+var pollSleep = time.Sleep
+
 // SDKOptions configures the BarndoorSDK.
 type SDKOptions struct {
 	// Token is the user JWT token (optional - can be set later via Authenticate).
@@ -422,7 +426,7 @@ func (s *BarndoorSDK) EnsureServerConnected(ctx context.Context, serverIdentifie
 		if status == string(ConnectionStatusConnected) {
 			return nil
 		}
-		time.Sleep(1 * time.Second)
+		pollSleep(1 * time.Second)
 	}
 
 	return fmt.Errorf("OAuth connection was not completed in time")

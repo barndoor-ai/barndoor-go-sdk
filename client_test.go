@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 // ---------------------------------------------------------------------------
@@ -958,6 +959,10 @@ func TestEnsureServerConnected_OAuthFlowConnects(t *testing.T) {
 	openBrowserFunc = func(u string) error { return nil }
 	defer func() { openBrowserFunc = old }()
 
+	oldSleep := pollSleep
+	pollSleep = func(time.Duration) {}
+	defer func() { pollSleep = oldSleep }()
+
 	pollCount := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// GetServer
@@ -1040,6 +1045,10 @@ func TestEnsureServerConnected_Timeout(t *testing.T) {
 	old := openBrowserFunc
 	openBrowserFunc = func(u string) error { return nil }
 	defer func() { openBrowserFunc = old }()
+
+	oldSleep := pollSleep
+	pollSleep = func(time.Duration) {}
+	defer func() { pollSleep = oldSleep }()
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" && strings.HasSuffix(r.URL.Path, "/by-slug/github") {
