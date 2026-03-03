@@ -161,6 +161,102 @@ func TestNewFileTokenStorage(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
+// NewFileTokenStorageWithPath
+// ---------------------------------------------------------------------------
+
+func TestNewFileTokenStorageWithPath(t *testing.T) {
+	path := "/tmp/custom/token.json"
+	storage := NewFileTokenStorageWithPath(path)
+	if storage.tokenFile != path {
+		t.Errorf("tokenFile = %q, want %q", storage.tokenFile, path)
+	}
+}
+
+func TestNewFileTokenStorageWithPath_SaveAndLoad(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "custom", "token.json")
+	storage := NewFileTokenStorageWithPath(path)
+
+	td := &TokenData{
+		AccessToken:  "custom-access",
+		RefreshToken: "custom-refresh",
+		TokenType:    "Bearer",
+	}
+
+	if err := storage.SaveToken(td); err != nil {
+		t.Fatalf("SaveToken failed: %v", err)
+	}
+
+	loaded, err := storage.LoadToken()
+	if err != nil {
+		t.Fatalf("LoadToken failed: %v", err)
+	}
+	if loaded.AccessToken != "custom-access" {
+		t.Errorf("AccessToken = %q, want custom-access", loaded.AccessToken)
+	}
+	if loaded.RefreshToken != "custom-refresh" {
+		t.Errorf("RefreshToken = %q, want custom-refresh", loaded.RefreshToken)
+	}
+}
+
+func TestNewFileTokenStorageWithPath_IsolatedFromDefault(t *testing.T) {
+	// Simulate multiple agents each with their own token path.
+	// Tokens saved to one path must not be visible from another.
+	dir := t.TempDir()
+	storageA := NewFileTokenStorageWithPath(filepath.Join(dir, "agent-a.json"))
+	storageB := NewFileTokenStorageWithPath(filepath.Join(dir, "agent-b.json"))
+
+	storageA.SaveToken(&TokenData{AccessToken: "token-a"})
+	storageB.SaveToken(&TokenData{AccessToken: "token-b"})
+
+	loadedA, _ := storageA.LoadToken()
+	loadedB, _ := storageB.LoadToken()
+
+	if loadedA.AccessToken != "token-a" {
+		t.Errorf("storageA returned %q, want token-a", loadedA.AccessToken)
+	}
+	if loadedB.AccessToken != "token-b" {
+		t.Errorf("storageB returned %q, want token-b", loadedB.AccessToken)
+	}
+}
+
+func TestNewFileTokenStorageWithPath_ConcurrentAgents(t *testing.T) {
+	dir := t.TempDir()
+	const numAgents = 10
+
+	// Spin up multiple goroutines each writing to their own token file
+	errs := make(chan error, numAgents)
+	for i := range numAgents {
+		go func(id int) {
+			path := filepath.Join(dir, fmt.Sprintf("agent-%d.json", id))
+			storage := NewFileTokenStorageWithPath(path)
+			expected := fmt.Sprintf("token-%d", id)
+
+			if err := storage.SaveToken(&TokenData{AccessToken: expected}); err != nil {
+				errs <- fmt.Errorf("agent %d save: %w", id, err)
+				return
+			}
+			loaded, err := storage.LoadToken()
+			if err != nil {
+				errs <- fmt.Errorf("agent %d load: %w", id, err)
+				return
+			}
+			if loaded.AccessToken != expected {
+				errs <- fmt.Errorf("agent %d: got %q, want %q", id, loaded.AccessToken, expected)
+				return
+			}
+			errs <- nil
+		}(i)
+	}
+
+	for range numAgents {
+		if err := <-errs; err != nil {
+			t.Error(err)
+		}
+	}
+}
+
+// ---------------------------------------------------------------------------
 // GetTokenStorage
 // ---------------------------------------------------------------------------
 
