@@ -24,7 +24,7 @@ import (
 // ---------------------------------------------------------------------------
 
 func TestOidcFallback_KeycloakIssuer(t *testing.T) {
-	issuer := "https://auth.trial.barndoor.ai/realms/barndoor-local"
+	issuer := "https://auth.trial.barndoor.ai/realms/barndoor"
 	logger := createScopedLogger("test")
 
 	cfg := oidcFallback(issuer, logger)
