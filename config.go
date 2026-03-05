@@ -20,17 +20,17 @@ type AuthEnvironmentConfig struct {
 var AuthConfig = map[string]AuthEnvironmentConfig{
 	// Trial environments (Keycloak) - DEFAULT
 	"production": {
-		Issuer:   "https://auth.trial.barndoor.ai/realms/barndoor-local",
+		Issuer:   "https://auth.trial.barndoor.ai/realms/barndoor",
 		Audience: "https://barndoor.ai/",
 		BaseURL:  "https://{org_slug}.platform.barndoor.ai",
 	},
 	"uat": {
-		Issuer:   "https://auth.barndooruat.com/realms/barndoor-local",
+		Issuer:   "https://auth.barndooruat.com/realms/barndoor",
 		Audience: "https://barndoor.ai/",
 		BaseURL:  "https://{org_slug}.trial.barndooruat.com",
 	},
 	"dev": {
-		Issuer:   "https://auth.barndoordev.com/realms/barndoor-local",
+		Issuer:   "https://auth.barndoordev.com/realms/barndoor",
 		Audience: "https://barndoor.ai/",
 		BaseURL:  "https://{org_slug}.platform.barndoordev.com",
 	},
@@ -52,7 +52,7 @@ var AuthConfig = map[string]AuthEnvironmentConfig{
 	},
 	// Local development (Keycloak)
 	"localdev": {
-		Issuer:   "http://localhost:8080/realms/barndoor-local",
+		Issuer:   "http://localhost:8080/realms/barndoor",
 		Audience: "https://barndoor.ai/",
 		BaseURL:  "http://localhost:8000",
 	},
