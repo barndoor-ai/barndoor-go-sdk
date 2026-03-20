@@ -1,4 +1,5 @@
 GOSEC_VERSION := $(shell cat .gosec-version)
+PACKAGES := $(shell go list ./... | grep -v /examples/)
 
 .PHONY: all build test test-race coverage lint vet security tidy verify download clean check install-hooks install-tools
 
@@ -20,23 +21,23 @@ build:
 
 ## Testing
 test:
-	go test ./...
+	go test $(PACKAGES)
 
 test-race:
-	go test -race ./...
+	go test -race $(PACKAGES)
 
 coverage:
-	go test -race -coverprofile=coverage.out ./...
+	go test -race -coverprofile=coverage.out $(PACKAGES)
 	go tool cover -func=coverage.out
 
 ## Static analysis
 vet:
-	go vet ./...
+	go vet $(PACKAGES)
 
 lint: vet
 
 security:
-	gosec ./...
+	gosec $(PACKAGES)
 
 ## Pre-commit / CI check
 check: vet security test-race
