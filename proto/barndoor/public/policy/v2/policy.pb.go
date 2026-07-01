@@ -10,6 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -128,13 +129,15 @@ func (Effect) EnumDescriptor() ([]byte, []int) {
 }
 
 type PolicyRule struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          *string                `protobuf:"bytes,1,opt,name=name,proto3,oneof" json:"name,omitempty"`
-	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	Effect        Effect                 `protobuf:"varint,3,opt,name=effect,proto3,enum=barndoor.policy.v2.Effect" json:"effect,omitempty"`
-	Actions       []string               `protobuf:"bytes,4,rep,name=actions,proto3" json:"actions,omitempty"`
-	Roles         []string               `protobuf:"bytes,5,rep,name=roles,proto3" json:"roles,omitempty"`
-	Condition     *PolicyRuleCondition   `protobuf:"bytes,6,opt,name=condition,proto3,oneof" json:"condition,omitempty"`
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	Name        *string                `protobuf:"bytes,1,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Description *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Effect      Effect                 `protobuf:"varint,3,opt,name=effect,proto3,enum=barndoor.policy.v2.Effect" json:"effect,omitempty"`
+	Actions     []string               `protobuf:"bytes,4,rep,name=actions,proto3" json:"actions,omitempty"`
+	Roles       []string               `protobuf:"bytes,5,rep,name=roles,proto3" json:"roles,omitempty"`
+	Condition   *PolicyRuleCondition   `protobuf:"bytes,6,opt,name=condition,proto3,oneof" json:"condition,omitempty"`
+	// Whether the rule is enforced. Absent means the server default (enabled).
+	Active        *bool `protobuf:"varint,7,opt,name=active,proto3,oneof" json:"active,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -209,6 +212,13 @@ func (x *PolicyRule) GetCondition() *PolicyRuleCondition {
 		return x.Condition
 	}
 	return nil
+}
+
+func (x *PolicyRule) GetActive() bool {
+	if x != nil && x.Active != nil {
+		return *x.Active
+	}
+	return false
 }
 
 type PolicyRuleCondition struct {
@@ -576,6 +586,7 @@ type PolicyDetail struct {
 	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	CreatedByUserId string                 `protobuf:"bytes,12,opt,name=created_by_user_id,json=createdByUserId,proto3" json:"created_by_user_id,omitempty"`
 	UpdatedByUserId string                 `protobuf:"bytes,13,opt,name=updated_by_user_id,json=updatedByUserId,proto3" json:"updated_by_user_id,omitempty"`
+	SupportContact  *string                `protobuf:"bytes,14,opt,name=support_contact,json=supportContact,proto3,oneof" json:"support_contact,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -697,6 +708,13 @@ func (x *PolicyDetail) GetCreatedByUserId() string {
 func (x *PolicyDetail) GetUpdatedByUserId() string {
 	if x != nil {
 		return x.UpdatedByUserId
+	}
+	return ""
+}
+
+func (x *PolicyDetail) GetSupportContact() string {
+	if x != nil && x.SupportContact != nil {
+		return *x.SupportContact
 	}
 	return ""
 }
@@ -1167,8 +1185,16 @@ type UpdatePolicyRequest struct {
 	Status         *PolicyStatus          `protobuf:"varint,6,opt,name=status,proto3,enum=barndoor.policy.v2.PolicyStatus,oneof" json:"status,omitempty"`
 	Tags           []string               `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
 	SupportContact *string                `protobuf:"bytes,8,opt,name=support_contact,json=supportContact,proto3,oneof" json:"support_contact,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Explicit field selection. When set, exactly the named paths are applied —
+	// including empty values, so a masked `rules`/`tags`/`application_ids` with
+	// no elements CLEARS the collection. When absent, legacy semantics apply:
+	// only non-empty fields are applied and an empty value is indistinguishable
+	// from "no change". Clients that need to clear a collection must send a
+	// mask. Maskable paths: name, description, application_ids, rules, status,
+	// tags, support_contact.
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,9,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdatePolicyRequest) Reset() {
@@ -1255,6 +1281,13 @@ func (x *UpdatePolicyRequest) GetSupportContact() string {
 		return *x.SupportContact
 	}
 	return ""
+}
+
+func (x *UpdatePolicyRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
 }
 
 type UpdatePolicyResponse struct {
@@ -2009,7 +2042,7 @@ var File_barndoor_public_policy_v2_policy_proto protoreflect.FileDescriptor
 
 const file_barndoor_public_policy_v2_policy_proto_rawDesc = "" +
 	"\n" +
-	"&barndoor/public/policy/v2/policy.proto\x12\x12barndoor.policy.v2\x1a\x1bbuf/validate/validate.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc1\x02\n" +
+	"&barndoor/public/policy/v2/policy.proto\x12\x12barndoor.policy.v2\x1a\x1bbuf/validate/validate.proto\x1a google/protobuf/field_mask.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe9\x02\n" +
 	"\n" +
 	"PolicyRule\x12!\n" +
 	"\x04name\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01H\x00R\x04name\x88\x01\x01\x12/\n" +
@@ -2017,11 +2050,13 @@ const file_barndoor_public_policy_v2_policy_proto_rawDesc = "" +
 	"\x06effect\x18\x03 \x01(\x0e2\x1a.barndoor.policy.v2.EffectB\b\xbaH\x05\x82\x01\x02 \x00R\x06effect\x12\x18\n" +
 	"\aactions\x18\x04 \x03(\tR\aactions\x12\x14\n" +
 	"\x05roles\x18\x05 \x03(\tR\x05roles\x12J\n" +
-	"\tcondition\x18\x06 \x01(\v2'.barndoor.policy.v2.PolicyRuleConditionH\x02R\tcondition\x88\x01\x01B\a\n" +
+	"\tcondition\x18\x06 \x01(\v2'.barndoor.policy.v2.PolicyRuleConditionH\x02R\tcondition\x88\x01\x01\x12\x1b\n" +
+	"\x06active\x18\a \x01(\bH\x03R\x06active\x88\x01\x01B\a\n" +
 	"\x05_nameB\x0e\n" +
 	"\f_descriptionB\f\n" +
 	"\n" +
-	"_condition\"\xfd\x01\n" +
+	"_conditionB\t\n" +
+	"\a_active\"\xfd\x01\n" +
 	"\x13PolicyRuleCondition\x124\n" +
 	"\x04expr\x18\x01 \x01(\v2\x1e.barndoor.policy.v2.ExpressionH\x00R\x04expr\x123\n" +
 	"\x03all\x18\x02 \x01(\v2\x1f.barndoor.policy.v2.OperatorAllH\x00R\x03all\x123\n" +
@@ -2040,7 +2075,7 @@ const file_barndoor_public_policy_v2_policy_proto_rawDesc = "" +
 	"\x12PaginationMetadata\x12\x1b\n" +
 	"\x04page\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x04page\x12\x1f\n" +
 	"\x05limit\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x01R\x05limit\x12\x1d\n" +
-	"\x05total\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x05total\"\xeb\x04\n" +
+	"\x05total\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x05total\"\xb7\x05\n" +
 	"\fPolicyDetail\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x120\n" +
 	"\x0forganization_id\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0eorganizationId\x12\x1b\n" +
@@ -2057,8 +2092,10 @@ const file_barndoor_public_policy_v2_policy_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x124\n" +
 	"\x12created_by_user_id\x18\f \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fcreatedByUserId\x124\n" +
-	"\x12updated_by_user_id\x18\r \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fupdatedByUserIdB\x0e\n" +
-	"\f_description\"\xfe\x04\n" +
+	"\x12updated_by_user_id\x18\r \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fupdatedByUserId\x126\n" +
+	"\x0fsupport_contact\x18\x0e \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01H\x01R\x0esupportContact\x88\x01\x01B\x0e\n" +
+	"\f_descriptionB\x12\n" +
+	"\x10_support_contact\"\xfe\x04\n" +
 	"\x11PolicySummaryItem\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x12\x1b\n" +
 	"\x04name\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x04name\x128\n" +
@@ -2105,7 +2142,7 @@ const file_barndoor_public_policy_v2_policy_proto_rawDesc = "" +
 	"\x10GetPolicyRequest\x12%\n" +
 	"\tpolicy_id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\bpolicyId\"M\n" +
 	"\x11GetPolicyResponse\x128\n" +
-	"\x06policy\x18\x01 \x01(\v2 .barndoor.policy.v2.PolicyDetailR\x06policy\"\xb4\x03\n" +
+	"\x06policy\x18\x01 \x01(\v2 .barndoor.policy.v2.PolicyDetailR\x06policy\"\xf1\x03\n" +
 	"\x13UpdatePolicyRequest\x12%\n" +
 	"\tpolicy_id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\bpolicyId\x12#\n" +
 	"\x04name\x18\x02 \x01(\tB\n" +
@@ -2115,7 +2152,9 @@ const file_barndoor_public_policy_v2_policy_proto_rawDesc = "" +
 	"\x05rules\x18\x05 \x03(\v2\x1e.barndoor.policy.v2.PolicyRuleR\x05rules\x12=\n" +
 	"\x06status\x18\x06 \x01(\x0e2 .barndoor.policy.v2.PolicyStatusH\x02R\x06status\x88\x01\x01\x12\x12\n" +
 	"\x04tags\x18\a \x03(\tR\x04tags\x126\n" +
-	"\x0fsupport_contact\x18\b \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01H\x03R\x0esupportContact\x88\x01\x01B\a\n" +
+	"\x0fsupport_contact\x18\b \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01H\x03R\x0esupportContact\x88\x01\x01\x12;\n" +
+	"\vupdate_mask\x18\t \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"updateMaskB\a\n" +
 	"\x05_nameB\x0e\n" +
 	"\f_descriptionB\t\n" +
 	"\a_statusB\x12\n" +
@@ -2243,6 +2282,7 @@ var file_barndoor_public_policy_v2_policy_proto_goTypes = []any{
 	(*HealthCheckResponse)(nil),          // 31: barndoor.policy.v2.HealthCheckResponse
 	nil,                                  // 32: barndoor.policy.v2.GetPoliciesSummaryResponse.CountsByStatusEntry
 	(*timestamppb.Timestamp)(nil),        // 33: google.protobuf.Timestamp
+	(*fieldmaskpb.FieldMask)(nil),        // 34: google.protobuf.FieldMask
 }
 var file_barndoor_public_policy_v2_policy_proto_depIdxs = []int32{
 	1,  // 0: barndoor.policy.v2.PolicyRule.effect:type_name -> barndoor.policy.v2.Effect
@@ -2267,39 +2307,40 @@ var file_barndoor_public_policy_v2_policy_proto_depIdxs = []int32{
 	9,  // 19: barndoor.policy.v2.GetPolicyResponse.policy:type_name -> barndoor.policy.v2.PolicyDetail
 	2,  // 20: barndoor.policy.v2.UpdatePolicyRequest.rules:type_name -> barndoor.policy.v2.PolicyRule
 	0,  // 21: barndoor.policy.v2.UpdatePolicyRequest.status:type_name -> barndoor.policy.v2.PolicyStatus
-	9,  // 22: barndoor.policy.v2.UpdatePolicyResponse.policy:type_name -> barndoor.policy.v2.PolicyDetail
-	0,  // 23: barndoor.policy.v2.ListPoliciesRequest.status:type_name -> barndoor.policy.v2.PolicyStatus
-	10, // 24: barndoor.policy.v2.ListPoliciesResponse.policies:type_name -> barndoor.policy.v2.PolicySummaryItem
-	8,  // 25: barndoor.policy.v2.ListPoliciesResponse.pagination:type_name -> barndoor.policy.v2.PaginationMetadata
-	9,  // 26: barndoor.policy.v2.ClonePolicyResponse.policy:type_name -> barndoor.policy.v2.PolicyDetail
-	32, // 27: barndoor.policy.v2.GetPoliciesSummaryResponse.counts_by_status:type_name -> barndoor.policy.v2.GetPoliciesSummaryResponse.CountsByStatusEntry
-	11, // 28: barndoor.policy.v2.ListPolicyRevisionsResponse.revisions:type_name -> barndoor.policy.v2.PolicyRevision
-	8,  // 29: barndoor.policy.v2.ListPolicyRevisionsResponse.pagination:type_name -> barndoor.policy.v2.PaginationMetadata
-	12, // 30: barndoor.policy.v2.PolicyService.CreatePolicy:input_type -> barndoor.policy.v2.CreatePolicyRequest
-	14, // 31: barndoor.policy.v2.PolicyService.GetPolicy:input_type -> barndoor.policy.v2.GetPolicyRequest
-	16, // 32: barndoor.policy.v2.PolicyService.UpdatePolicy:input_type -> barndoor.policy.v2.UpdatePolicyRequest
-	18, // 33: barndoor.policy.v2.PolicyService.ListPolicies:input_type -> barndoor.policy.v2.ListPoliciesRequest
-	20, // 34: barndoor.policy.v2.PolicyService.ClonePolicy:input_type -> barndoor.policy.v2.ClonePolicyRequest
-	22, // 35: barndoor.policy.v2.PolicyService.GetPoliciesSummary:input_type -> barndoor.policy.v2.GetPoliciesSummaryRequest
-	24, // 36: barndoor.policy.v2.PolicyService.GetFilterDefinitions:input_type -> barndoor.policy.v2.GetFilterDefinitionsRequest
-	26, // 37: barndoor.policy.v2.PolicyService.ListPolicyRevisions:input_type -> barndoor.policy.v2.ListPolicyRevisionsRequest
-	28, // 38: barndoor.policy.v2.PolicyService.ValidatePolicy:input_type -> barndoor.policy.v2.ValidatePolicyRequest
-	30, // 39: barndoor.policy.v2.PolicyService.HealthCheck:input_type -> barndoor.policy.v2.HealthCheckRequest
-	13, // 40: barndoor.policy.v2.PolicyService.CreatePolicy:output_type -> barndoor.policy.v2.CreatePolicyResponse
-	15, // 41: barndoor.policy.v2.PolicyService.GetPolicy:output_type -> barndoor.policy.v2.GetPolicyResponse
-	17, // 42: barndoor.policy.v2.PolicyService.UpdatePolicy:output_type -> barndoor.policy.v2.UpdatePolicyResponse
-	19, // 43: barndoor.policy.v2.PolicyService.ListPolicies:output_type -> barndoor.policy.v2.ListPoliciesResponse
-	21, // 44: barndoor.policy.v2.PolicyService.ClonePolicy:output_type -> barndoor.policy.v2.ClonePolicyResponse
-	23, // 45: barndoor.policy.v2.PolicyService.GetPoliciesSummary:output_type -> barndoor.policy.v2.GetPoliciesSummaryResponse
-	25, // 46: barndoor.policy.v2.PolicyService.GetFilterDefinitions:output_type -> barndoor.policy.v2.GetFilterDefinitionsResponse
-	27, // 47: barndoor.policy.v2.PolicyService.ListPolicyRevisions:output_type -> barndoor.policy.v2.ListPolicyRevisionsResponse
-	29, // 48: barndoor.policy.v2.PolicyService.ValidatePolicy:output_type -> barndoor.policy.v2.ValidatePolicyResponse
-	31, // 49: barndoor.policy.v2.PolicyService.HealthCheck:output_type -> barndoor.policy.v2.HealthCheckResponse
-	40, // [40:50] is the sub-list for method output_type
-	30, // [30:40] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	34, // 22: barndoor.policy.v2.UpdatePolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
+	9,  // 23: barndoor.policy.v2.UpdatePolicyResponse.policy:type_name -> barndoor.policy.v2.PolicyDetail
+	0,  // 24: barndoor.policy.v2.ListPoliciesRequest.status:type_name -> barndoor.policy.v2.PolicyStatus
+	10, // 25: barndoor.policy.v2.ListPoliciesResponse.policies:type_name -> barndoor.policy.v2.PolicySummaryItem
+	8,  // 26: barndoor.policy.v2.ListPoliciesResponse.pagination:type_name -> barndoor.policy.v2.PaginationMetadata
+	9,  // 27: barndoor.policy.v2.ClonePolicyResponse.policy:type_name -> barndoor.policy.v2.PolicyDetail
+	32, // 28: barndoor.policy.v2.GetPoliciesSummaryResponse.counts_by_status:type_name -> barndoor.policy.v2.GetPoliciesSummaryResponse.CountsByStatusEntry
+	11, // 29: barndoor.policy.v2.ListPolicyRevisionsResponse.revisions:type_name -> barndoor.policy.v2.PolicyRevision
+	8,  // 30: barndoor.policy.v2.ListPolicyRevisionsResponse.pagination:type_name -> barndoor.policy.v2.PaginationMetadata
+	12, // 31: barndoor.policy.v2.PolicyService.CreatePolicy:input_type -> barndoor.policy.v2.CreatePolicyRequest
+	14, // 32: barndoor.policy.v2.PolicyService.GetPolicy:input_type -> barndoor.policy.v2.GetPolicyRequest
+	16, // 33: barndoor.policy.v2.PolicyService.UpdatePolicy:input_type -> barndoor.policy.v2.UpdatePolicyRequest
+	18, // 34: barndoor.policy.v2.PolicyService.ListPolicies:input_type -> barndoor.policy.v2.ListPoliciesRequest
+	20, // 35: barndoor.policy.v2.PolicyService.ClonePolicy:input_type -> barndoor.policy.v2.ClonePolicyRequest
+	22, // 36: barndoor.policy.v2.PolicyService.GetPoliciesSummary:input_type -> barndoor.policy.v2.GetPoliciesSummaryRequest
+	24, // 37: barndoor.policy.v2.PolicyService.GetFilterDefinitions:input_type -> barndoor.policy.v2.GetFilterDefinitionsRequest
+	26, // 38: barndoor.policy.v2.PolicyService.ListPolicyRevisions:input_type -> barndoor.policy.v2.ListPolicyRevisionsRequest
+	28, // 39: barndoor.policy.v2.PolicyService.ValidatePolicy:input_type -> barndoor.policy.v2.ValidatePolicyRequest
+	30, // 40: barndoor.policy.v2.PolicyService.HealthCheck:input_type -> barndoor.policy.v2.HealthCheckRequest
+	13, // 41: barndoor.policy.v2.PolicyService.CreatePolicy:output_type -> barndoor.policy.v2.CreatePolicyResponse
+	15, // 42: barndoor.policy.v2.PolicyService.GetPolicy:output_type -> barndoor.policy.v2.GetPolicyResponse
+	17, // 43: barndoor.policy.v2.PolicyService.UpdatePolicy:output_type -> barndoor.policy.v2.UpdatePolicyResponse
+	19, // 44: barndoor.policy.v2.PolicyService.ListPolicies:output_type -> barndoor.policy.v2.ListPoliciesResponse
+	21, // 45: barndoor.policy.v2.PolicyService.ClonePolicy:output_type -> barndoor.policy.v2.ClonePolicyResponse
+	23, // 46: barndoor.policy.v2.PolicyService.GetPoliciesSummary:output_type -> barndoor.policy.v2.GetPoliciesSummaryResponse
+	25, // 47: barndoor.policy.v2.PolicyService.GetFilterDefinitions:output_type -> barndoor.policy.v2.GetFilterDefinitionsResponse
+	27, // 48: barndoor.policy.v2.PolicyService.ListPolicyRevisions:output_type -> barndoor.policy.v2.ListPolicyRevisionsResponse
+	29, // 49: barndoor.policy.v2.PolicyService.ValidatePolicy:output_type -> barndoor.policy.v2.ValidatePolicyResponse
+	31, // 50: barndoor.policy.v2.PolicyService.HealthCheck:output_type -> barndoor.policy.v2.HealthCheckResponse
+	41, // [41:51] is the sub-list for method output_type
+	31, // [31:41] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_barndoor_public_policy_v2_policy_proto_init() }
