@@ -10,16 +10,36 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go-version: ["1.22", "1.23"]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      # Resolve the toolchain from go.mod, exactly as ci.yml does. This job used to
+      # pin `matrix: go-version: ["1.22", "1.23"]`, which is BELOW the module's own
+      # `go 1.25.0` directive — so it could not build, and every release since
+      # 2026-04-27 failed here. That is why the module proxy still served v1.0.1
+      # while the Python and TypeScript SDKs shipped 1.2.0. A hardcoded matrix
+      # silently rots the moment go.mod's directive moves; go-version-file cannot.
       - name: Set up Go
         uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version-file: 'go.mod'
+
+      # The User-Agent is built from the hand-maintained `Version` const, and the only
+      # test touching it compares against that same const — so it passes for ANY value
+      # and cannot detect staleness. That is exactly how the const sat at "0.1.1" while
+      # v1.0.x was released. Compare it to the tag being released instead.
+      - name: Version const matches the release tag
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          want="${RELEASE_TAG#v}"
+          got=$(grep -oE 'const Version = "[^"]+"' barndoor.go | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "release tag: ${RELEASE_TAG} (want Version=${want}); barndoor.go has Version=${got}"
+          if [ "$got" != "$want" ]; then
+            echo "::error::const Version in barndoor.go is \"${got}\" but the release tag is \"${RELEASE_TAG}\". Update the const to ${want} and re-cut the release, or every client's User-Agent will misreport its version."
+            exit 1
+          fi
 
       - name: Build, test, and verify module
         run: make build test-race verify
