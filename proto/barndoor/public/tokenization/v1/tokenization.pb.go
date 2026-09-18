@@ -53,6 +53,15 @@ const (
 	DetectionType_DETECTION_TYPE_ORGANIZATION    DetectionType = 10
 	DetectionType_DETECTION_TYPE_LOCATION        DetectionType = 11
 	DetectionType_DETECTION_TYPE_ADDRESS         DetectionType = 12
+	DetectionType_DETECTION_TYPE_ROUTING_NUMBER  DetectionType = 13
+	// Driver's license number (Rampart NER). PII.
+	DetectionType_DETECTION_TYPE_DRIVERS_LICENSE DetectionType = 14
+	// Tax identification number, e.g. EIN/ITIN (Rampart NER). PII.
+	DetectionType_DETECTION_TYPE_TAX_ID DetectionType = 15
+	// Bank account number (Rampart NER). PII.
+	DetectionType_DETECTION_TYPE_BANK_ACCOUNT DetectionType = 16
+	// Generic government-issued ID number (Rampart NER). PII.
+	DetectionType_DETECTION_TYPE_GOVERNMENT_ID DetectionType = 17
 	// Cloud Provider Keys (100-199)
 	DetectionType_DETECTION_TYPE_AWS_ACCESS_KEY_ID         DetectionType = 100
 	DetectionType_DETECTION_TYPE_AWS_SECRET_ACCESS_KEY     DetectionType = 101
@@ -122,6 +131,11 @@ const (
 	DetectionType_DETECTION_TYPE_COCKROACHDB_URI      DetectionType = 407
 	DetectionType_DETECTION_TYPE_CASSANDRA_PASSWORD   DetectionType = 408
 	DetectionType_DETECTION_TYPE_SUPABASE_SERVICE_KEY DetectionType = 409
+	// Labeled secret-class fields in document-style text (password, passcode,
+	// security question/answer) — the keyword+value structural pattern, a sibling
+	// of DATABASE_PASSWORD. Grouped under DatabaseCredential (400-499) with the
+	// rest of the keyword-near-opaque-value family.
+	DetectionType_DETECTION_TYPE_PASSWORD DetectionType = 410
 	// CI/CD & Infrastructure (500-599)
 	DetectionType_DETECTION_TYPE_CIRCLECI_TOKEN   DetectionType = 500
 	DetectionType_DETECTION_TYPE_TRAVIS_TOKEN     DetectionType = 501
@@ -360,6 +374,11 @@ var (
 		10:   "DETECTION_TYPE_ORGANIZATION",
 		11:   "DETECTION_TYPE_LOCATION",
 		12:   "DETECTION_TYPE_ADDRESS",
+		13:   "DETECTION_TYPE_ROUTING_NUMBER",
+		14:   "DETECTION_TYPE_DRIVERS_LICENSE",
+		15:   "DETECTION_TYPE_TAX_ID",
+		16:   "DETECTION_TYPE_BANK_ACCOUNT",
+		17:   "DETECTION_TYPE_GOVERNMENT_ID",
 		100:  "DETECTION_TYPE_AWS_ACCESS_KEY_ID",
 		101:  "DETECTION_TYPE_AWS_SECRET_ACCESS_KEY",
 		102:  "DETECTION_TYPE_AWS_SESSION_TOKEN",
@@ -425,6 +444,7 @@ var (
 		407:  "DETECTION_TYPE_COCKROACHDB_URI",
 		408:  "DETECTION_TYPE_CASSANDRA_PASSWORD",
 		409:  "DETECTION_TYPE_SUPABASE_SERVICE_KEY",
+		410:  "DETECTION_TYPE_PASSWORD",
 		500:  "DETECTION_TYPE_CIRCLECI_TOKEN",
 		501:  "DETECTION_TYPE_TRAVIS_TOKEN",
 		502:  "DETECTION_TYPE_JENKINS_TOKEN",
@@ -649,6 +669,11 @@ var (
 		"DETECTION_TYPE_ORGANIZATION":                                10,
 		"DETECTION_TYPE_LOCATION":                                    11,
 		"DETECTION_TYPE_ADDRESS":                                     12,
+		"DETECTION_TYPE_ROUTING_NUMBER":                              13,
+		"DETECTION_TYPE_DRIVERS_LICENSE":                             14,
+		"DETECTION_TYPE_TAX_ID":                                      15,
+		"DETECTION_TYPE_BANK_ACCOUNT":                                16,
+		"DETECTION_TYPE_GOVERNMENT_ID":                               17,
 		"DETECTION_TYPE_AWS_ACCESS_KEY_ID":                           100,
 		"DETECTION_TYPE_AWS_SECRET_ACCESS_KEY":                       101,
 		"DETECTION_TYPE_AWS_SESSION_TOKEN":                           102,
@@ -714,6 +739,7 @@ var (
 		"DETECTION_TYPE_COCKROACHDB_URI":                             407,
 		"DETECTION_TYPE_CASSANDRA_PASSWORD":                          408,
 		"DETECTION_TYPE_SUPABASE_SERVICE_KEY":                        409,
+		"DETECTION_TYPE_PASSWORD":                                    410,
 		"DETECTION_TYPE_CIRCLECI_TOKEN":                              500,
 		"DETECTION_TYPE_TRAVIS_TOKEN":                                501,
 		"DETECTION_TYPE_JENKINS_TOKEN":                               502,
@@ -1250,7 +1276,7 @@ var File_barndoor_public_tokenization_v1_tokenization_proto protoreflect.FileDes
 
 const file_barndoor_public_tokenization_v1_tokenization_proto_rawDesc = "" +
 	"\n" +
-	"2barndoor/public/tokenization/v1/tokenization.proto\x12\x18barndoor.tokenization.v1*\xeaZ\n" +
+	"2barndoor/public/tokenization/v1/tokenization.proto\x12\x18barndoor.tokenization.v1*\xad\\\n" +
 	"\rDetectionType\x12\x1e\n" +
 	"\x1aDETECTION_TYPE_UNSPECIFIED\x10\x00\x12\x1e\n" +
 	"\x1aDETECTION_TYPE_CREDIT_CARD\x10\x01\x12\x16\n" +
@@ -1265,7 +1291,12 @@ const file_barndoor_public_tokenization_v1_tokenization_proto_rawDesc = "" +
 	"\x1bDETECTION_TYPE_ORGANIZATION\x10\n" +
 	"\x12\x1b\n" +
 	"\x17DETECTION_TYPE_LOCATION\x10\v\x12\x1a\n" +
-	"\x16DETECTION_TYPE_ADDRESS\x10\f\x12$\n" +
+	"\x16DETECTION_TYPE_ADDRESS\x10\f\x12!\n" +
+	"\x1dDETECTION_TYPE_ROUTING_NUMBER\x10\r\x12\"\n" +
+	"\x1eDETECTION_TYPE_DRIVERS_LICENSE\x10\x0e\x12\x19\n" +
+	"\x15DETECTION_TYPE_TAX_ID\x10\x0f\x12\x1f\n" +
+	"\x1bDETECTION_TYPE_BANK_ACCOUNT\x10\x10\x12 \n" +
+	"\x1cDETECTION_TYPE_GOVERNMENT_ID\x10\x11\x12$\n" +
 	" DETECTION_TYPE_AWS_ACCESS_KEY_ID\x10d\x12(\n" +
 	"$DETECTION_TYPE_AWS_SECRET_ACCESS_KEY\x10e\x12$\n" +
 	" DETECTION_TYPE_AWS_SESSION_TOKEN\x10f\x12\x1e\n" +
@@ -1330,7 +1361,8 @@ const file_barndoor_public_tokenization_v1_tokenization_proto_rawDesc = "" +
 	" DETECTION_TYPE_ELASTICSEARCH_URL\x10\x96\x03\x12#\n" +
 	"\x1eDETECTION_TYPE_COCKROACHDB_URI\x10\x97\x03\x12&\n" +
 	"!DETECTION_TYPE_CASSANDRA_PASSWORD\x10\x98\x03\x12(\n" +
-	"#DETECTION_TYPE_SUPABASE_SERVICE_KEY\x10\x99\x03\x12\"\n" +
+	"#DETECTION_TYPE_SUPABASE_SERVICE_KEY\x10\x99\x03\x12\x1c\n" +
+	"\x17DETECTION_TYPE_PASSWORD\x10\x9a\x03\x12\"\n" +
 	"\x1dDETECTION_TYPE_CIRCLECI_TOKEN\x10\xf4\x03\x12 \n" +
 	"\x1bDETECTION_TYPE_TRAVIS_TOKEN\x10\xf5\x03\x12!\n" +
 	"\x1cDETECTION_TYPE_JENKINS_TOKEN\x10\xf6\x03\x12$\n" +
