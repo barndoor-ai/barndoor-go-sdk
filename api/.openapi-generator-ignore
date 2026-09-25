@@ -1,0 +1,25 @@
+# TRACKED, though the rest of this directory is generated and ignored —
+# sdk/go/.gitignore un-ignores it. It must live here: the generator reads it from
+# outputDir only, and the `ignoreFileOverride` key is a CLI flag that gen-config
+# accepts and silently ignores.
+#
+# Nothing hand-written lives in here, so this only suppresses unused output.
+
+# Restates the spec; product docs are published from docs.barndoor.ai.
+docs/**
+
+# Generated stubs with a TODO body. Real tests live at the module root.
+test/**
+
+# A second copy of the spec; push_sdk.sh already delivers the real one.
+api/openapi.yaml
+
+# Ours — the generator's is a method-by-method wall of text.
+README.md
+
+# Would clobber sdk/go/.gitignore, making every generated file tracked.
+.gitignore
+
+# Scaffolding for a standalone repo this is not.
+.travis.yml
+git_push.sh

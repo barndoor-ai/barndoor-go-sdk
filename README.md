@@ -1,41 +1,15 @@
 # Barndoor Go SDK
 
-A lightweight, **framework-agnostic** Go client for the Barndoor Platform REST APIs and Model Context Protocol (MCP) servers.
-
-The SDK removes boiler-plate around:
-
-* Secure, offline-friendly **authentication to Barndoor** (interactive PKCE flow + token caching).
-* **Server registry** – list, inspect and connect third-party providers (Salesforce, Notion, Slack …).
-* **Managed Connector Proxy** – build ready-to-use connection parameters for any LLM/agent framework without importing Barndoor-specific adapters.
-
----
-
-## How it works
-
-The SDK orchestrates a multi-step flow to connect your code to third-party services:
-
-```
-You → Barndoor Auth (get JWT) → Registry API (with JWT) → MCP Proxy (with JWT) → Third-party service
-```
-
-1. **Authentication**: You log in via Barndoor to get a JWT token
-2. **Registry API**: Using the JWT, query available MCP servers and manage OAuth connections
-3. **MCP Proxy**: Stream requests through Barndoor's proxy with the JWT for authorization
-4. **Third-party service**: The proxy forwards your requests to Salesforce, Notion, etc.
-
-This architecture provides secure, managed access to external services without handling OAuth flows or storing third-party credentials in your code.
-
----
-
-## Installation
+The Go client for the [Barndoor](https://barndoor.ai) public API.
 
 ```bash
-go get github.com/barndoor-ai/barndoor-go-sdk
+go get github.com/barndoor-ai/barndoor-go-sdk/v2
 ```
 
-Go 1.22+ is required.
-
----
+> **v2 changes the import path.** Go requires the major version in the module
+> path from v2 onward, so `github.com/barndoor-ai/barndoor-go-sdk` becomes
+> `github.com/barndoor-ai/barndoor-go-sdk/v2`. That is the only source change
+> most callers need.
 
 ## Quick start
 
@@ -46,236 +20,133 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
-	barndoor "github.com/barndoor-ai/barndoor-go-sdk"
+	barndoor "github.com/barndoor-ai/barndoor-go-sdk/v2"
 )
 
 func main() {
-	ctx := context.Background()
+	client := barndoor.New(barndoor.StaticToken(os.Getenv("BARNDOOR_API_KEY")))
 
-	// 1. Login (handles OAuth PKCE flow + token caching)
-	sdk, err := barndoor.LoginInteractive(ctx, nil)
+	page, resp, err := client.Registry.ListMcpServers(context.Background()).Limit(25).Execute()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer sdk.Close()
+	defer resp.Body.Close()
 
-	// 2. Ensure server is connected (launches OAuth if needed)
-	err = barndoor.EnsureServerConnectedQuickstart(ctx, sdk, "salesforce", 0)
-	if err != nil {
-		log.Fatal(err)
+	for _, server := range page.Data {
+		fmt.Println(server.Id, server.Name)
 	}
-
-	// 3. Get connection parameters for your MCP client
-	params, mcpURL, err := barndoor.MakeMCPConnectionParams(ctx, sdk, "salesforce")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("MCP URL:", mcpURL)
-	fmt.Println("Transport:", params.Transport)
-	fmt.Println("Headers:", params.Headers)
 }
 ```
 
----
+Every operation returns `(value, *http.Response, error)`. The response is the
+raw one, so its body has to be closed; the value is already deserialised.
 
-## Manual setup
+## Authentication
 
-For programmatic use (e.g., in agents), create an SDK directly with a known JWT:
+`New` takes an `oauth2.TokenSource`, so anything in `golang.org/x/oauth2` works
+alongside the three flows here.
 
-```go
-sdk, err := barndoor.NewBarndoorSDK("https://myorg.platform.barndoor.ai", &barndoor.SDKOptions{
-    Token: myJWT,
-})
-if err != nil {
-    log.Fatal(err)
-}
-defer sdk.Close()
-```
-
-Or authenticate later:
-
-```go
-sdk, err := barndoor.NewBarndoorSDK("https://myorg.platform.barndoor.ai", nil)
-if err != nil {
-    log.Fatal(err)
-}
-defer sdk.Close()
-
-err = sdk.Authenticate(ctx, myJWT)
-```
-
----
-
-## Environment configuration
-
-The SDK automatically configures endpoints based on `BARNDOOR_ENV`. Just set your credentials:
-
-```bash
-export AGENT_CLIENT_ID=your_client_id
-export AGENT_CLIENT_SECRET=your_client_secret
-```
-
-See [`env.example`](./env.example) for the full list of options.
-
-| Variable | Description | Default |
-|---|---|---|
-| `BARNDOOR_ENV` | Environment name (`production`, `uat`, `dev`, `enterprise-production`, etc.) | `production` |
-| `AGENT_CLIENT_ID` | OAuth client ID | — |
-| `AGENT_CLIENT_SECRET` | OAuth client secret | — |
-| `BARNDOOR_URL` / `BARNDOOR_API` | API base URL override | per-environment default |
-| `AUTH_URL` | Auth issuer override | per-environment default |
-| `BARNDOOR_REDIRECT_HOST` | OAuth callback host | `127.0.0.1` |
-
----
-
-## Authentication workflow
-
-Barndoor APIs expect a **user JWT** issued by your Barndoor tenant. The SDK offers two ways to obtain and store a token:
-
-| Option | Function | When to use |
-|---|---|---|
-| Interactive login | `barndoor.LoginInteractive(ctx, nil)` | Development, CLI tools, scripts |
-| Direct token | `barndoor.NewBarndoorSDK(url, &SDKOptions{Token: jwt})` | Agents, services with pre-obtained tokens |
-
-The interactive flow:
-
-1. Spins up a tiny localhost callback server (default port 52765).
-2. Opens the system browser to Barndoor.
-3. Exchanges the returned authorization code for a JWT via PKCE.
-4. Persists the token to `~/.barndoor/token.json` (0600 permissions).
-
-The cached token is checked on every run; if it is expired or revoked, a new browser flow is launched.
-
-**Note:** The OAuth default callback uses port 52765. Make sure to register this callback in your Barndoor Agent configuration. As some machines resolve `localhost` to `127.0.0.1`, we recommend having two callback entries:
-```
-http://localhost:52765/cb
-http://127.0.0.1:52765/cb
-```
-
-### Using a custom OAuth callback port
-
-If port `52765` is blocked (or you prefer another), register the new callback URL and pass the port in options:
-
-```go
-sdk, err := barndoor.LoginInteractive(ctx, &barndoor.LoginInteractiveOptions{
-    Port: 60000,
-})
-```
-
----
-
-## Using the Registry API
-
-```go
-// List all MCP servers available to the current user
-servers, err := sdk.ListServers(ctx)
-for _, s := range servers {
-    fmt.Printf("%s (%s)\n", s.Slug, s.ConnectionStatus)
-}
-
-// Get detailed metadata
-server, err := sdk.GetServer(ctx, "notion")
-
-// Initiate an OAuth connection (returns auth URL for browser)
-authURL, err := sdk.InitiateConnection(ctx, "notion", "")
-
-// Check connection status
-status, err := sdk.GetConnectionStatus(ctx, "notion")
-
-// Disconnect from a server
-err = sdk.DisconnectServer(ctx, "notion")
-```
-
----
-
-## MCP connection
-
-Once a server is **connected**, build connection parameters for any MCP client:
-
-```go
-params, mcpURL, err := barndoor.MakeMCPConnectionParams(ctx, sdk, "notion")
-
-fmt.Println(params.URL)       // https://myorg.mcp.barndoor.ai/mcp/notion
-fmt.Println(params.Transport) // streamable-http
-fmt.Println(params.Headers)   // Authorization, x-barndoor-session-id
-```
-
-The returned `MCPConnectionParams` struct contains `URL`, `Transport`, and `Headers` — ready to plug into any HTTP/SSE/WebSocket MCP client.
-
----
-
-## Error handling
-
-The SDK provides a typed error hierarchy. Use type assertions to handle specific cases:
-
-```go
-servers, err := sdk.ListServers(ctx)
-if err != nil {
-    switch e := err.(type) {
-    case *barndoor.HTTPError:
-        fmt.Printf("HTTP %d: %s\n", e.StatusCode, e.Message)
-    case *barndoor.TokenError:
-        fmt.Println("Token error — re-authenticate")
-    case *barndoor.ConnectionError:
-        fmt.Printf("Connection failed to %s: %s\n", e.URL, e.Message)
-    case *barndoor.ConfigurationError:
-        fmt.Println("Config error:", e.Message)
-    case *barndoor.ServerNotFoundError:
-        fmt.Println("Server not found:", e.ServerIdentifier)
-    default:
-        fmt.Println(err)
-    }
-}
-```
-
----
-
-## API reference
-
-Full godoc documentation is available via:
-
-```bash
-go doc github.com/barndoor-ai/barndoor-go-sdk
-```
-
-### Key types
-
-| Type | Description |
+| Flow | Use it for |
 |---|---|
-| `BarndoorSDK` | Main client — holds token, HTTP client, base URL |
-| `SDKOptions` | Constructor options (token, timeout, retries) |
-| `ServerSummary` | Server list entry (ID, name, slug, connection status) |
-| `ServerDetail` | Extended server info (embeds `ServerSummary` + URL) |
-| `MCPConnectionParams` | MCP connection config (URL, transport, headers) |
-| `LoginInteractiveOptions` | Options for the interactive PKCE login flow |
+| `StaticToken(key)` | an API key from the dashboard, or a token you already hold |
+| `ClientCredentials(ctx, opts)` | a service authenticating as itself |
+| `RefreshToken(ctx, …)` | keeping a user session alive |
+| `StartAuthorizationCode` / `CompleteAuthorizationCode` | an interactive login (PKCE) |
+| `LoginInteractive` | the same flow, browser and loopback redirect included |
 
-### Key functions
+Tokens are fetched lazily and refreshed automatically: constructing a client
+performs no I/O, so a briefly unreachable identity provider cannot stop your
+process from starting. `ctx` on the token flows governs the source for its whole
+life, not one exchange — pass `context.Background()` unless you have a reason
+otherwise.
 
-| Function | Description |
-|---|---|
-| `NewBarndoorSDK(url, opts)` | Create an SDK instance |
-| `LoginInteractive(ctx, opts)` | Interactive OAuth PKCE login |
-| `MakeMCPConnectionParams(ctx, sdk, slug)` | Build MCP connection params |
-| `EnsureServerConnectedQuickstart(ctx, sdk, slug, timeout)` | Connect + poll with logging |
-| `GetStaticConfig()` | Read environment config |
+The SDK stores nothing on disk. `CompleteAuthorizationCode` hands back the raw
+token so your application decides where a credential belongs.
 
-### SDK methods
+## Environments
 
-| Method | Description |
-|---|---|
-| `Authenticate(ctx, token)` | Set/validate a JWT |
-| `ListServers(ctx)` | List all available MCP servers |
-| `GetServer(ctx, id)` | Get server details (by UUID or slug) |
-| `InitiateConnection(ctx, id, returnURL)` | Start OAuth connection flow |
-| `GetConnectionStatus(ctx, id)` | Check connection status |
-| `DisconnectServer(ctx, id)` | Disconnect from a server |
-| `EnsureServerConnected(ctx, id, pollSeconds)` | Connect + poll until ready |
-| `Close()` | Release resources |
+Production needs no configuration. For anything else:
 
----
+```go
+client := barndoor.New(src, barndoor.WithEnvironment(barndoor.DEV))
+```
+
+`EnvironmentFromEnv` reads `BARNDOOR_ENV` (`dev` or `local`) and
+`BARNDOOR_API_URL`, and returns `ok == false` for production. It is opt-in: the
+SDK never reads the environment by itself, because a library that re-points
+itself at another cluster because of a stray variable is a bad surprise.
+
+## Retries
+
+On by default: three attempts after the first, exponential backoff with jitter,
+`Retry-After` honoured. Only idempotent methods are retried — a 502 does not say
+whether a `POST` reached the application, and a silent duplicate write is worse
+than a surfaced error.
+
+```go
+barndoor.New(src, barndoor.WithRetry(barndoor.RetryOptions{}))          // off
+barndoor.New(src, barndoor.WithRetry(barndoor.RetryOptions{Retries: 5, Timeout: time.Minute, Backoff: time.Second}))
+```
+
+Retrying lives in an `http.RoundTripper`, so `WithBaseTransport` puts your own
+transport underneath it and `WithHTTPClient` replaces the lot. Authentication is
+applied on top either way.
+
+## MCP
+
+The platform serves the Model Context Protocol on the same host with your
+organization in front of it. `NewMcpClient` opens a session, already through
+`initialize`:
+
+```go
+session, err := barndoor.NewMcpClient(ctx, client, "acme", "", barndoor.McpOptions{})
+defer session.Close()
+tools, err := session.ListTools(ctx, nil)
+```
+
+Omit the server for the universal endpoint (`/mcp`), which exposes every server
+you can reach; pass a slug or id for one server (`/mcp/<slug>`).
+
+`McpConnectionParams` returns the URL and headers without connecting, for
+handing to another framework. The headers carry a bearer token — treat them as a
+secret. Either way the session borrows the REST client's token source, so one
+login serves both protocols and a refresh is shared.
+
+## Interactive login
+
+`LoginInteractive` runs the browser flow against a loopback redirect and returns
+the token, refresh token included:
+
+```go
+token, err := barndoor.LoginInteractive(ctx, barndoor.LoginOptions{})
+```
+
+`go run github.com/barndoor-ai/barndoor-go-sdk/v2/cmd/barndoor-login` does the
+same from a terminal. It binds a port, so nothing starts unless you call it.
+
+## Timestamps
+
+Timestamp fields are `bdtime.Time`, not `time.Time`. It embeds `time.Time`, so
+`Year()`, `Before()`, `Format()` and the rest work unchanged and `.Time` gets you
+the standard value.
+
+It exists because some Barndoor endpoints serialise timestamps without a UTC
+offset (`2026-05-08T17:26:31.084181`), which `time.Time` rejects outright —
+failing the whole response rather than one field. `bdtime.Time` reads those as
+UTC, keeps an explicit offset when one is present, and always *sends* RFC 3339.
+
+## Layout
+
+`package barndoor` at the module root is hand-written — tokens, transport,
+environments — as is `bdtime`. Everything under `api/` is generated from the OpenAPI document
+shipped beside it as `openapi.yaml`, and `client.API` and `client.Configuration`
+reach the generated objects directly when you need an operation the namespaces
+do not expose.
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup instructions.
+**This repository is generated.** Both halves are built in
+`barndoor-ai/bdai-platform` under `sdk/go/` and pushed here; an edit made in
+this repository is overwritten by the next push. Send changes there.
