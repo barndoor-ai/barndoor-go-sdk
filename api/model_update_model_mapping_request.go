@@ -22,6 +22,18 @@ type UpdateModelMappingRequest struct {
 	BareAlias NullableBool `json:"bare_alias,omitempty"`
 	// Optional free-text note explaining why this edit was made (BCP-3998).  Deliberately *not* tri-state like the timeout overrides above: omitting it clears the previous note, because the note describes the latest change and an unrelated later edit must not inherit an explanation written for a different one.
 	ChangeNote NullableString `json:"change_note,omitempty"`
+	// Cooldown on an upstream 429 that carries no usable `Retry-After` (a `Retry-After` sets the window instead). Range 1-3600, and at most `cooldown_max_secs`; default 30.  Omitted (or `null`) keeps the stored value.
+	Cooldown429DefaultSecs NullableInt32 `json:"cooldown_429_default_secs,omitempty"`
+	// First cooldown window once the threshold trips, doubled on each failed recovery probe up to `cooldown_max_secs`. Range 1-3600, and at most `cooldown_max_secs`; default 30.  Omitted (or `null`) keeps the stored value.
+	CooldownBaseSecs NullableInt32 `json:"cooldown_base_secs,omitempty"`
+	// Gateway failures (5xx, timeouts, connection errors, managed-key 401/403) within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route (rolling failures, 429 and 529); per-user credential cooldowns on passthrough routes still apply. Range 0-100; default 10.  Omitted (or `null`) keeps the stored value.
+	CooldownFailureThreshold NullableInt32 `json:"cooldown_failure_threshold,omitempty"`
+	// Cap on every cooldown window: doubling, 429 and 529. Range 1-86400; default 300.  Omitted (or `null`) keeps the stored value.
+	CooldownMaxSecs NullableInt32 `json:"cooldown_max_secs,omitempty"`
+	// Flat cooldown on an upstream 529 \"overloaded\" with no usable `Retry-After`; it does not spend the failure budget. `0` counts a 529 as an ordinary gateway failure instead. Range 0-3600, and at most `cooldown_max_secs` unless 0; default 10.  Omitted (or `null`) keeps the stored value.
+	CooldownOverloadedSecs NullableInt32 `json:"cooldown_overloaded_secs,omitempty"`
+	// Width of the rolling failure window, seconds. Range 1-3600; default 60.  Omitted (or `null`) keeps the stored value.
+	CooldownWindowSecs NullableInt32 `json:"cooldown_window_secs,omitempty"`
 	Enabled NullableBool `json:"enabled,omitempty"`
 	ModelAlias NullableString `json:"model_alias,omitempty"`
 	Priority NullableInt32 `json:"priority,omitempty"`
@@ -133,6 +145,258 @@ func (o *UpdateModelMappingRequest) SetChangeNoteNil() {
 // UnsetChangeNote ensures that no value is present for ChangeNote, not even an explicit nil
 func (o *UpdateModelMappingRequest) UnsetChangeNote() {
 	o.ChangeNote.Unset()
+}
+
+// GetCooldown429DefaultSecs returns the Cooldown429DefaultSecs field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateModelMappingRequest) GetCooldown429DefaultSecs() int32 {
+	if o == nil || IsNil(o.Cooldown429DefaultSecs.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.Cooldown429DefaultSecs.Get()
+}
+
+// GetCooldown429DefaultSecsOk returns a tuple with the Cooldown429DefaultSecs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateModelMappingRequest) GetCooldown429DefaultSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Cooldown429DefaultSecs.Get(), o.Cooldown429DefaultSecs.IsSet()
+}
+
+// HasCooldown429DefaultSecs returns a boolean if a field has been set.
+func (o *UpdateModelMappingRequest) HasCooldown429DefaultSecs() bool {
+	if o != nil && o.Cooldown429DefaultSecs.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCooldown429DefaultSecs gets a reference to the given NullableInt32 and assigns it to the Cooldown429DefaultSecs field.
+func (o *UpdateModelMappingRequest) SetCooldown429DefaultSecs(v int32) {
+	o.Cooldown429DefaultSecs.Set(&v)
+}
+// SetCooldown429DefaultSecsNil sets the value for Cooldown429DefaultSecs to be an explicit nil
+func (o *UpdateModelMappingRequest) SetCooldown429DefaultSecsNil() {
+	o.Cooldown429DefaultSecs.Set(nil)
+}
+
+// UnsetCooldown429DefaultSecs ensures that no value is present for Cooldown429DefaultSecs, not even an explicit nil
+func (o *UpdateModelMappingRequest) UnsetCooldown429DefaultSecs() {
+	o.Cooldown429DefaultSecs.Unset()
+}
+
+// GetCooldownBaseSecs returns the CooldownBaseSecs field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateModelMappingRequest) GetCooldownBaseSecs() int32 {
+	if o == nil || IsNil(o.CooldownBaseSecs.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CooldownBaseSecs.Get()
+}
+
+// GetCooldownBaseSecsOk returns a tuple with the CooldownBaseSecs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateModelMappingRequest) GetCooldownBaseSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CooldownBaseSecs.Get(), o.CooldownBaseSecs.IsSet()
+}
+
+// HasCooldownBaseSecs returns a boolean if a field has been set.
+func (o *UpdateModelMappingRequest) HasCooldownBaseSecs() bool {
+	if o != nil && o.CooldownBaseSecs.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCooldownBaseSecs gets a reference to the given NullableInt32 and assigns it to the CooldownBaseSecs field.
+func (o *UpdateModelMappingRequest) SetCooldownBaseSecs(v int32) {
+	o.CooldownBaseSecs.Set(&v)
+}
+// SetCooldownBaseSecsNil sets the value for CooldownBaseSecs to be an explicit nil
+func (o *UpdateModelMappingRequest) SetCooldownBaseSecsNil() {
+	o.CooldownBaseSecs.Set(nil)
+}
+
+// UnsetCooldownBaseSecs ensures that no value is present for CooldownBaseSecs, not even an explicit nil
+func (o *UpdateModelMappingRequest) UnsetCooldownBaseSecs() {
+	o.CooldownBaseSecs.Unset()
+}
+
+// GetCooldownFailureThreshold returns the CooldownFailureThreshold field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateModelMappingRequest) GetCooldownFailureThreshold() int32 {
+	if o == nil || IsNil(o.CooldownFailureThreshold.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CooldownFailureThreshold.Get()
+}
+
+// GetCooldownFailureThresholdOk returns a tuple with the CooldownFailureThreshold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateModelMappingRequest) GetCooldownFailureThresholdOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CooldownFailureThreshold.Get(), o.CooldownFailureThreshold.IsSet()
+}
+
+// HasCooldownFailureThreshold returns a boolean if a field has been set.
+func (o *UpdateModelMappingRequest) HasCooldownFailureThreshold() bool {
+	if o != nil && o.CooldownFailureThreshold.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCooldownFailureThreshold gets a reference to the given NullableInt32 and assigns it to the CooldownFailureThreshold field.
+func (o *UpdateModelMappingRequest) SetCooldownFailureThreshold(v int32) {
+	o.CooldownFailureThreshold.Set(&v)
+}
+// SetCooldownFailureThresholdNil sets the value for CooldownFailureThreshold to be an explicit nil
+func (o *UpdateModelMappingRequest) SetCooldownFailureThresholdNil() {
+	o.CooldownFailureThreshold.Set(nil)
+}
+
+// UnsetCooldownFailureThreshold ensures that no value is present for CooldownFailureThreshold, not even an explicit nil
+func (o *UpdateModelMappingRequest) UnsetCooldownFailureThreshold() {
+	o.CooldownFailureThreshold.Unset()
+}
+
+// GetCooldownMaxSecs returns the CooldownMaxSecs field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateModelMappingRequest) GetCooldownMaxSecs() int32 {
+	if o == nil || IsNil(o.CooldownMaxSecs.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CooldownMaxSecs.Get()
+}
+
+// GetCooldownMaxSecsOk returns a tuple with the CooldownMaxSecs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateModelMappingRequest) GetCooldownMaxSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CooldownMaxSecs.Get(), o.CooldownMaxSecs.IsSet()
+}
+
+// HasCooldownMaxSecs returns a boolean if a field has been set.
+func (o *UpdateModelMappingRequest) HasCooldownMaxSecs() bool {
+	if o != nil && o.CooldownMaxSecs.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCooldownMaxSecs gets a reference to the given NullableInt32 and assigns it to the CooldownMaxSecs field.
+func (o *UpdateModelMappingRequest) SetCooldownMaxSecs(v int32) {
+	o.CooldownMaxSecs.Set(&v)
+}
+// SetCooldownMaxSecsNil sets the value for CooldownMaxSecs to be an explicit nil
+func (o *UpdateModelMappingRequest) SetCooldownMaxSecsNil() {
+	o.CooldownMaxSecs.Set(nil)
+}
+
+// UnsetCooldownMaxSecs ensures that no value is present for CooldownMaxSecs, not even an explicit nil
+func (o *UpdateModelMappingRequest) UnsetCooldownMaxSecs() {
+	o.CooldownMaxSecs.Unset()
+}
+
+// GetCooldownOverloadedSecs returns the CooldownOverloadedSecs field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateModelMappingRequest) GetCooldownOverloadedSecs() int32 {
+	if o == nil || IsNil(o.CooldownOverloadedSecs.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CooldownOverloadedSecs.Get()
+}
+
+// GetCooldownOverloadedSecsOk returns a tuple with the CooldownOverloadedSecs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateModelMappingRequest) GetCooldownOverloadedSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CooldownOverloadedSecs.Get(), o.CooldownOverloadedSecs.IsSet()
+}
+
+// HasCooldownOverloadedSecs returns a boolean if a field has been set.
+func (o *UpdateModelMappingRequest) HasCooldownOverloadedSecs() bool {
+	if o != nil && o.CooldownOverloadedSecs.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCooldownOverloadedSecs gets a reference to the given NullableInt32 and assigns it to the CooldownOverloadedSecs field.
+func (o *UpdateModelMappingRequest) SetCooldownOverloadedSecs(v int32) {
+	o.CooldownOverloadedSecs.Set(&v)
+}
+// SetCooldownOverloadedSecsNil sets the value for CooldownOverloadedSecs to be an explicit nil
+func (o *UpdateModelMappingRequest) SetCooldownOverloadedSecsNil() {
+	o.CooldownOverloadedSecs.Set(nil)
+}
+
+// UnsetCooldownOverloadedSecs ensures that no value is present for CooldownOverloadedSecs, not even an explicit nil
+func (o *UpdateModelMappingRequest) UnsetCooldownOverloadedSecs() {
+	o.CooldownOverloadedSecs.Unset()
+}
+
+// GetCooldownWindowSecs returns the CooldownWindowSecs field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *UpdateModelMappingRequest) GetCooldownWindowSecs() int32 {
+	if o == nil || IsNil(o.CooldownWindowSecs.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.CooldownWindowSecs.Get()
+}
+
+// GetCooldownWindowSecsOk returns a tuple with the CooldownWindowSecs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *UpdateModelMappingRequest) GetCooldownWindowSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.CooldownWindowSecs.Get(), o.CooldownWindowSecs.IsSet()
+}
+
+// HasCooldownWindowSecs returns a boolean if a field has been set.
+func (o *UpdateModelMappingRequest) HasCooldownWindowSecs() bool {
+	if o != nil && o.CooldownWindowSecs.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetCooldownWindowSecs gets a reference to the given NullableInt32 and assigns it to the CooldownWindowSecs field.
+func (o *UpdateModelMappingRequest) SetCooldownWindowSecs(v int32) {
+	o.CooldownWindowSecs.Set(&v)
+}
+// SetCooldownWindowSecsNil sets the value for CooldownWindowSecs to be an explicit nil
+func (o *UpdateModelMappingRequest) SetCooldownWindowSecsNil() {
+	o.CooldownWindowSecs.Set(nil)
+}
+
+// UnsetCooldownWindowSecs ensures that no value is present for CooldownWindowSecs, not even an explicit nil
+func (o *UpdateModelMappingRequest) UnsetCooldownWindowSecs() {
+	o.CooldownWindowSecs.Unset()
 }
 
 // GetEnabled returns the Enabled field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -486,6 +750,24 @@ func (o UpdateModelMappingRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if o.ChangeNote.IsSet() {
 		toSerialize["change_note"] = o.ChangeNote.Get()
+	}
+	if o.Cooldown429DefaultSecs.IsSet() {
+		toSerialize["cooldown_429_default_secs"] = o.Cooldown429DefaultSecs.Get()
+	}
+	if o.CooldownBaseSecs.IsSet() {
+		toSerialize["cooldown_base_secs"] = o.CooldownBaseSecs.Get()
+	}
+	if o.CooldownFailureThreshold.IsSet() {
+		toSerialize["cooldown_failure_threshold"] = o.CooldownFailureThreshold.Get()
+	}
+	if o.CooldownMaxSecs.IsSet() {
+		toSerialize["cooldown_max_secs"] = o.CooldownMaxSecs.Get()
+	}
+	if o.CooldownOverloadedSecs.IsSet() {
+		toSerialize["cooldown_overloaded_secs"] = o.CooldownOverloadedSecs.Get()
+	}
+	if o.CooldownWindowSecs.IsSet() {
+		toSerialize["cooldown_window_secs"] = o.CooldownWindowSecs.Get()
 	}
 	if o.Enabled.IsSet() {
 		toSerialize["enabled"] = o.Enabled.Get()

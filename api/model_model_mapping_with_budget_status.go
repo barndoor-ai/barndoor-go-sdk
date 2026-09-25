@@ -22,6 +22,18 @@ var _ MappedNullable = &ModelMappingWithBudgetStatus{}
 
 // ModelMappingWithBudgetStatus Wraps a [`ModelMapping`] with the BCP-2813 `budget_status` annotation so the admin Model Mappings page can render a \"disabled by budget\" pill. The inner `ModelMapping` fields are flattened so the response is a drop-in superset of the legacy `Vec<ModelMapping>` shape — older clients that ignore `budget_status` keep working unchanged.
 type ModelMappingWithBudgetStatus struct {
+	// Cooldown on a 429 with no usable `Retry-After`, seconds.
+	Cooldown429DefaultSecs int32 `json:"cooldown_429_default_secs"`
+	// First cooldown window, doubled on each failed recovery probe up to `cooldown_max_secs`.
+	CooldownBaseSecs int32 `json:"cooldown_base_secs"`
+	// Gateway failures within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route.
+	CooldownFailureThreshold int32 `json:"cooldown_failure_threshold"`
+	// Cap on every cooldown window.
+	CooldownMaxSecs int32 `json:"cooldown_max_secs"`
+	// Flat cooldown on a 529 \"overloaded\" with no usable `Retry-After`, seconds. `0` counts a 529 as an ordinary gateway failure instead.
+	CooldownOverloadedSecs int32 `json:"cooldown_overloaded_secs"`
+	// Width of the rolling failure window, seconds.
+	CooldownWindowSecs int32 `json:"cooldown_window_secs"`
 	CreatedByEmail *string `json:"created_by_email,omitempty"`
 	CreatedByName *string `json:"created_by_name,omitempty"`
 	CreatedByUserId *string `json:"created_by_user_id,omitempty"`
@@ -68,8 +80,14 @@ type _ModelMappingWithBudgetStatus ModelMappingWithBudgetStatus
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewModelMappingWithBudgetStatus(bareAlias bool, enabled bool, id string, modelAlias string, priority int32, providerId string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string, effectivePricing EffectivePricing) *ModelMappingWithBudgetStatus {
+func NewModelMappingWithBudgetStatus(cooldown429DefaultSecs int32, cooldownBaseSecs int32, cooldownFailureThreshold int32, cooldownMaxSecs int32, cooldownOverloadedSecs int32, cooldownWindowSecs int32, bareAlias bool, enabled bool, id string, modelAlias string, priority int32, providerId string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string, effectivePricing EffectivePricing) *ModelMappingWithBudgetStatus {
 	this := ModelMappingWithBudgetStatus{}
+	this.Cooldown429DefaultSecs = cooldown429DefaultSecs
+	this.CooldownBaseSecs = cooldownBaseSecs
+	this.CooldownFailureThreshold = cooldownFailureThreshold
+	this.CooldownMaxSecs = cooldownMaxSecs
+	this.CooldownOverloadedSecs = cooldownOverloadedSecs
+	this.CooldownWindowSecs = cooldownWindowSecs
 	this.BareAlias = bareAlias
 	this.Enabled = enabled
 	this.Id = id
@@ -90,6 +108,150 @@ func NewModelMappingWithBudgetStatus(bareAlias bool, enabled bool, id string, mo
 func NewModelMappingWithBudgetStatusWithDefaults() *ModelMappingWithBudgetStatus {
 	this := ModelMappingWithBudgetStatus{}
 	return &this
+}
+
+// GetCooldown429DefaultSecs returns the Cooldown429DefaultSecs field value
+func (o *ModelMappingWithBudgetStatus) GetCooldown429DefaultSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.Cooldown429DefaultSecs
+}
+
+// GetCooldown429DefaultSecsOk returns a tuple with the Cooldown429DefaultSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetCooldown429DefaultSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Cooldown429DefaultSecs, true
+}
+
+// SetCooldown429DefaultSecs sets field value
+func (o *ModelMappingWithBudgetStatus) SetCooldown429DefaultSecs(v int32) {
+	o.Cooldown429DefaultSecs = v
+}
+
+// GetCooldownBaseSecs returns the CooldownBaseSecs field value
+func (o *ModelMappingWithBudgetStatus) GetCooldownBaseSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownBaseSecs
+}
+
+// GetCooldownBaseSecsOk returns a tuple with the CooldownBaseSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetCooldownBaseSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownBaseSecs, true
+}
+
+// SetCooldownBaseSecs sets field value
+func (o *ModelMappingWithBudgetStatus) SetCooldownBaseSecs(v int32) {
+	o.CooldownBaseSecs = v
+}
+
+// GetCooldownFailureThreshold returns the CooldownFailureThreshold field value
+func (o *ModelMappingWithBudgetStatus) GetCooldownFailureThreshold() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownFailureThreshold
+}
+
+// GetCooldownFailureThresholdOk returns a tuple with the CooldownFailureThreshold field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetCooldownFailureThresholdOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownFailureThreshold, true
+}
+
+// SetCooldownFailureThreshold sets field value
+func (o *ModelMappingWithBudgetStatus) SetCooldownFailureThreshold(v int32) {
+	o.CooldownFailureThreshold = v
+}
+
+// GetCooldownMaxSecs returns the CooldownMaxSecs field value
+func (o *ModelMappingWithBudgetStatus) GetCooldownMaxSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownMaxSecs
+}
+
+// GetCooldownMaxSecsOk returns a tuple with the CooldownMaxSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetCooldownMaxSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownMaxSecs, true
+}
+
+// SetCooldownMaxSecs sets field value
+func (o *ModelMappingWithBudgetStatus) SetCooldownMaxSecs(v int32) {
+	o.CooldownMaxSecs = v
+}
+
+// GetCooldownOverloadedSecs returns the CooldownOverloadedSecs field value
+func (o *ModelMappingWithBudgetStatus) GetCooldownOverloadedSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownOverloadedSecs
+}
+
+// GetCooldownOverloadedSecsOk returns a tuple with the CooldownOverloadedSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetCooldownOverloadedSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownOverloadedSecs, true
+}
+
+// SetCooldownOverloadedSecs sets field value
+func (o *ModelMappingWithBudgetStatus) SetCooldownOverloadedSecs(v int32) {
+	o.CooldownOverloadedSecs = v
+}
+
+// GetCooldownWindowSecs returns the CooldownWindowSecs field value
+func (o *ModelMappingWithBudgetStatus) GetCooldownWindowSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownWindowSecs
+}
+
+// GetCooldownWindowSecsOk returns a tuple with the CooldownWindowSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetCooldownWindowSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownWindowSecs, true
+}
+
+// SetCooldownWindowSecs sets field value
+func (o *ModelMappingWithBudgetStatus) SetCooldownWindowSecs(v int32) {
+	o.CooldownWindowSecs = v
 }
 
 // GetCreatedByEmail returns the CreatedByEmail field value if set, zero value otherwise.
@@ -844,6 +1006,12 @@ func (o ModelMappingWithBudgetStatus) MarshalJSON() ([]byte, error) {
 
 func (o ModelMappingWithBudgetStatus) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["cooldown_429_default_secs"] = o.Cooldown429DefaultSecs
+	toSerialize["cooldown_base_secs"] = o.CooldownBaseSecs
+	toSerialize["cooldown_failure_threshold"] = o.CooldownFailureThreshold
+	toSerialize["cooldown_max_secs"] = o.CooldownMaxSecs
+	toSerialize["cooldown_overloaded_secs"] = o.CooldownOverloadedSecs
+	toSerialize["cooldown_window_secs"] = o.CooldownWindowSecs
 	if !IsNil(o.CreatedByEmail) {
 		toSerialize["created_by_email"] = o.CreatedByEmail
 	}
@@ -905,6 +1073,12 @@ func (o *ModelMappingWithBudgetStatus) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"cooldown_429_default_secs",
+		"cooldown_base_secs",
+		"cooldown_failure_threshold",
+		"cooldown_max_secs",
+		"cooldown_overloaded_secs",
+		"cooldown_window_secs",
 		"bare_alias",
 		"enabled",
 		"id",

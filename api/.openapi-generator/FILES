@@ -63,6 +63,7 @@ model_connection.go
 model_connection_initiate_response.go
 model_connection_read.go
 model_connection_status.go
+model_cooldown_policy.go
 model_create_allow_list_entry_request.go
 model_create_api_key_request.go
 model_create_api_key_response.go

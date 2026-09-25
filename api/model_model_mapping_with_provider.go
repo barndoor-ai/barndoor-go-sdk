@@ -22,6 +22,18 @@ var _ MappedNullable = &ModelMappingWithProvider{}
 
 // ModelMappingWithProvider struct for ModelMappingWithProvider
 type ModelMappingWithProvider struct {
+	// Cooldown on a 429 with no usable `Retry-After`, seconds.
+	Cooldown429DefaultSecs int32 `json:"cooldown_429_default_secs"`
+	// First cooldown window, doubled on each failed recovery probe up to `cooldown_max_secs`.
+	CooldownBaseSecs int32 `json:"cooldown_base_secs"`
+	// Gateway failures within `cooldown_window_secs` that cool the route. `0` disables every cooldown of the shared route.
+	CooldownFailureThreshold int32 `json:"cooldown_failure_threshold"`
+	// Cap on every cooldown window.
+	CooldownMaxSecs int32 `json:"cooldown_max_secs"`
+	// Flat cooldown on a 529 \"overloaded\" with no usable `Retry-After`, seconds. `0` counts a 529 as an ordinary gateway failure instead.
+	CooldownOverloadedSecs int32 `json:"cooldown_overloaded_secs"`
+	// Width of the rolling failure window, seconds.
+	CooldownWindowSecs int32 `json:"cooldown_window_secs"`
 	CreatedByEmail NullableString `json:"created_by_email,omitempty"`
 	CreatedByName NullableString `json:"created_by_name,omitempty"`
 	CreatedByUserId NullableString `json:"created_by_user_id,omitempty"`
@@ -59,8 +71,14 @@ type _ModelMappingWithProvider ModelMappingWithProvider
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewModelMappingWithProvider(bareAlias bool, createdAt bdtime.Time, enabled bool, id string, modelAlias string, priority int32, providerAuthType string, providerId string, providerName string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string) *ModelMappingWithProvider {
+func NewModelMappingWithProvider(cooldown429DefaultSecs int32, cooldownBaseSecs int32, cooldownFailureThreshold int32, cooldownMaxSecs int32, cooldownOverloadedSecs int32, cooldownWindowSecs int32, bareAlias bool, createdAt bdtime.Time, enabled bool, id string, modelAlias string, priority int32, providerAuthType string, providerId string, providerName string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string) *ModelMappingWithProvider {
 	this := ModelMappingWithProvider{}
+	this.Cooldown429DefaultSecs = cooldown429DefaultSecs
+	this.CooldownBaseSecs = cooldownBaseSecs
+	this.CooldownFailureThreshold = cooldownFailureThreshold
+	this.CooldownMaxSecs = cooldownMaxSecs
+	this.CooldownOverloadedSecs = cooldownOverloadedSecs
+	this.CooldownWindowSecs = cooldownWindowSecs
 	this.BareAlias = bareAlias
 	this.CreatedAt = createdAt
 	this.Enabled = enabled
@@ -83,6 +101,150 @@ func NewModelMappingWithProvider(bareAlias bool, createdAt bdtime.Time, enabled 
 func NewModelMappingWithProviderWithDefaults() *ModelMappingWithProvider {
 	this := ModelMappingWithProvider{}
 	return &this
+}
+
+// GetCooldown429DefaultSecs returns the Cooldown429DefaultSecs field value
+func (o *ModelMappingWithProvider) GetCooldown429DefaultSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.Cooldown429DefaultSecs
+}
+
+// GetCooldown429DefaultSecsOk returns a tuple with the Cooldown429DefaultSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetCooldown429DefaultSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Cooldown429DefaultSecs, true
+}
+
+// SetCooldown429DefaultSecs sets field value
+func (o *ModelMappingWithProvider) SetCooldown429DefaultSecs(v int32) {
+	o.Cooldown429DefaultSecs = v
+}
+
+// GetCooldownBaseSecs returns the CooldownBaseSecs field value
+func (o *ModelMappingWithProvider) GetCooldownBaseSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownBaseSecs
+}
+
+// GetCooldownBaseSecsOk returns a tuple with the CooldownBaseSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetCooldownBaseSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownBaseSecs, true
+}
+
+// SetCooldownBaseSecs sets field value
+func (o *ModelMappingWithProvider) SetCooldownBaseSecs(v int32) {
+	o.CooldownBaseSecs = v
+}
+
+// GetCooldownFailureThreshold returns the CooldownFailureThreshold field value
+func (o *ModelMappingWithProvider) GetCooldownFailureThreshold() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownFailureThreshold
+}
+
+// GetCooldownFailureThresholdOk returns a tuple with the CooldownFailureThreshold field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetCooldownFailureThresholdOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownFailureThreshold, true
+}
+
+// SetCooldownFailureThreshold sets field value
+func (o *ModelMappingWithProvider) SetCooldownFailureThreshold(v int32) {
+	o.CooldownFailureThreshold = v
+}
+
+// GetCooldownMaxSecs returns the CooldownMaxSecs field value
+func (o *ModelMappingWithProvider) GetCooldownMaxSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownMaxSecs
+}
+
+// GetCooldownMaxSecsOk returns a tuple with the CooldownMaxSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetCooldownMaxSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownMaxSecs, true
+}
+
+// SetCooldownMaxSecs sets field value
+func (o *ModelMappingWithProvider) SetCooldownMaxSecs(v int32) {
+	o.CooldownMaxSecs = v
+}
+
+// GetCooldownOverloadedSecs returns the CooldownOverloadedSecs field value
+func (o *ModelMappingWithProvider) GetCooldownOverloadedSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownOverloadedSecs
+}
+
+// GetCooldownOverloadedSecsOk returns a tuple with the CooldownOverloadedSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetCooldownOverloadedSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownOverloadedSecs, true
+}
+
+// SetCooldownOverloadedSecs sets field value
+func (o *ModelMappingWithProvider) SetCooldownOverloadedSecs(v int32) {
+	o.CooldownOverloadedSecs = v
+}
+
+// GetCooldownWindowSecs returns the CooldownWindowSecs field value
+func (o *ModelMappingWithProvider) GetCooldownWindowSecs() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.CooldownWindowSecs
+}
+
+// GetCooldownWindowSecsOk returns a tuple with the CooldownWindowSecs field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetCooldownWindowSecsOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CooldownWindowSecs, true
+}
+
+// SetCooldownWindowSecs sets field value
+func (o *ModelMappingWithProvider) SetCooldownWindowSecs(v int32) {
+	o.CooldownWindowSecs = v
 }
 
 // GetCreatedByEmail returns the CreatedByEmail field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -869,6 +1031,12 @@ func (o ModelMappingWithProvider) MarshalJSON() ([]byte, error) {
 
 func (o ModelMappingWithProvider) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["cooldown_429_default_secs"] = o.Cooldown429DefaultSecs
+	toSerialize["cooldown_base_secs"] = o.CooldownBaseSecs
+	toSerialize["cooldown_failure_threshold"] = o.CooldownFailureThreshold
+	toSerialize["cooldown_max_secs"] = o.CooldownMaxSecs
+	toSerialize["cooldown_overloaded_secs"] = o.CooldownOverloadedSecs
+	toSerialize["cooldown_window_secs"] = o.CooldownWindowSecs
 	if o.CreatedByEmail.IsSet() {
 		toSerialize["created_by_email"] = o.CreatedByEmail.Get()
 	}
@@ -923,6 +1091,12 @@ func (o *ModelMappingWithProvider) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"cooldown_429_default_secs",
+		"cooldown_base_secs",
+		"cooldown_failure_threshold",
+		"cooldown_max_secs",
+		"cooldown_overloaded_secs",
+		"cooldown_window_secs",
 		"bare_alias",
 		"created_at",
 		"enabled",
