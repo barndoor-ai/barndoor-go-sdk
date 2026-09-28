@@ -13,12 +13,52 @@ This project uses:
 
 ## Version Strategy
 
-We follow [Semantic Versioning](https://semver.org/):
-- **Major** (X.0.0): Breaking changes to the public API
-- **Minor** (0.X.0): New features, backward compatible
-- **Patch** (0.0.X): Bug fixes, backward compatible
+This SDK is generated. The version is decided in `barndoor-ai/bdai-platform` by
+`sdk/VERSION`, which `make check-api-version` holds to what actually changed in
+the public OpenAPI spec — oasdiff classifies the diff and refuses a number lower
+than it requires:
 
-The version constant in `barndoor.go` must match the git tag.
+- **Major** (X.0.0): a breaking API change — an operation removed, an enum
+  narrowed, a field made required
+- **Minor** (0.X.0): an additive API change — a new operation, a new optional
+  field
+- **Patch** (0.0.X): an SDK-only change — a fix in the hand-written half, a
+  dependency bump, a generator upgrade
+
+So the tag you cut here follows the delivered code rather than being chosen.
+`release.yml` verifies it: the tag must match the version in the generated
+client's User-Agent (`api/configuration.go`), and for v2+ the module path must
+end in `/vN`.
+
+### v2 and the module path
+
+From v2 on, Go requires the major version in the module path — this module is
+`github.com/barndoor-ai/barndoor-go-sdk/v2`. A `v2.x.x` tag on a path without
+`/v2` is served to nobody, which is why `release.yml` checks it.
+
+## Prereleases: there are none, and none are needed
+
+The other Barndoor SDKs publish a prerelease on every regeneration — npm's `dev`
+dist-tag, PyPI's `.devN`. **Go does not, deliberately.**
+
+The module proxy already provides it. Any commit on `main` is installable with
+no tag and no workflow:
+
+```bash
+go get github.com/barndoor-ai/barndoor-go-sdk/v2@main
+```
+
+The proxy synthesises a pseudo-version from the commit
+(`v2.2.1-0.20260925181123-0f875595d629`), which sorts below any real release and
+is ignored by `go get -u` and by minimal version selection unless asked for by
+name — exactly the semantics a `dev` channel has elsewhere.
+
+Tagging prereleases instead would be strictly worse. **The proxy caches a tag
+immutably**: it cannot be moved, deleted or replaced, only superseded. A tag per
+regeneration would mean dozens of permanent, uncleanable tags a week, for a
+version nobody resolves by default.
+
+So: tag formal releases only.
 
 ---
 
@@ -40,21 +80,19 @@ git checkout -b release/1.2.x
 git push origin release/1.2.x
 ```
 
-#### Step 2: Update the version constant
+#### Step 2: Confirm the version, do not set it
 
-Edit `barndoor.go` and update the `Version` constant:
-
-```go
-const Version = "1.2.0"
-```
-
-Commit the change:
+There is nothing to edit. The version is already in the tree, delivered from
+`bdai-platform` along with the client, and the release must match it:
 
 ```bash
-git add barndoor.go
-git commit -m "chore: bump version to v1.2.0"
-git push origin release/1.2.x
+grep -oE 'OpenAPI-Generator/[^/]+/go' api/configuration.go
 ```
+
+If that reports a different number from the release you intend to cut, tag the
+commit whose delivery carried the one you want — do not edit the file, because
+the next regeneration push overwrites it. `release.yml` fails the release on a
+mismatch.
 
 #### Step 3: Verify locally
 
@@ -89,8 +127,8 @@ This triggers the release workflow which verifies the build and tests pass on Go
 
 Check that:
 - The [Release workflow](../../actions/workflows/release.yml) completed successfully
-- The module is available: `go get github.com/barndoor-ai/barndoor-go-sdk@v1.2.0`
-- The Go module proxy has indexed it: `https://pkg.go.dev/github.com/barndoor-ai/barndoor-go-sdk@v1.2.0`
+- The module is available: `go get github.com/barndoor-ai/barndoor-go-sdk/v2@v2.2.0`
+- The Go module proxy has indexed it: `https://pkg.go.dev/github.com/barndoor-ai/barndoor-go-sdk/v2@v2.2.0`
 
 > **Note:** The release branch (`release/1.2.x`) remains available for future patch releases. You do not need to merge it back to `main` unless you make changes on the release branch that should be backported.
 
@@ -138,10 +176,10 @@ git checkout release/1.2.x
 git pull origin release/1.2.x
 ```
 
-Update the `Version` constant in `barndoor.go` to `"1.2.1"`, then:
+Confirm the delivered version matches the patch you intend to tag (see Step 2
+above — there is no constant to edit), then:
 
 ```bash
-git add barndoor.go
 git commit -m "chore: bump version to v1.2.1"
 git push origin release/1.2.x
 
@@ -187,7 +225,7 @@ Before creating a release, ensure:
 - [ ] Tests pass locally: `go test -race ./...`
 - [ ] Linting passes: `go vet ./...`
 - [ ] `go mod tidy` produces no changes
-- [ ] `Version` constant in `barndoor.go` matches the tag you're about to create
+- [ ] `api/configuration.go`'s User-Agent version matches the tag you're about to create
 - [ ] Release notes are prepared
 - [ ] Breaking changes are clearly documented (for major releases)
 
