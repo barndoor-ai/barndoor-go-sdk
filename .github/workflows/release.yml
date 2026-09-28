@@ -24,20 +24,50 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
-      # The User-Agent is built from the hand-maintained `Version` const, and the only
-      # test touching it compares against that same const — so it passes for ANY value
-      # and cannot detect staleness. That is exactly how the const sat at "0.1.1" while
-      # v1.0.x was released. Compare it to the tag being released instead.
-      - name: Version const matches the release tag
+      # The version this SDK reports lives in the generated client's User-Agent,
+      # which is the only place the Go generator puts packageVersion — a Go
+      # module has no manifest, because its version IS its git tag. So the tag
+      # and the code can disagree, and nothing else would notice.
+      #
+      # This used to grep a hand-maintained `const Version` in barndoor.go. That
+      # file was the old hand-written SDK and is gone; the check would now fail
+      # on a missing file for every release. Its rationale still holds, so it
+      # moves to where the version actually is.
+      #
+      # bdai-platform runs the same assertion before it pushes
+      # (sdk/go/publish.json's version_probe). This is the second half of that:
+      # there, that the generator honoured the version; here, that the tag being
+      # cut matches what was generated.
+      - name: Generated version matches the release tag
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
           want="${RELEASE_TAG#v}"
-          got=$(grep -oE 'const Version = "[^"]+"' barndoor.go | sed -E 's/.*"([^"]+)".*/\1/')
-          echo "release tag: ${RELEASE_TAG} (want Version=${want}); barndoor.go has Version=${got}"
+          got="$(grep -oE 'OpenAPI-Generator/[^/]+/go' api/configuration.go | head -1 | cut -d/ -f2)"
+          echo "release tag: ${RELEASE_TAG} (want ${want}); api/configuration.go reports ${got}"
+          if [ -z "$got" ]; then
+            echo "::error::could not read a version from api/configuration.go. The generated client is missing or its User-Agent changed shape; check the delivery from bdai-platform."
+            exit 1
+          fi
           if [ "$got" != "$want" ]; then
-            echo "::error::const Version in barndoor.go is \"${got}\" but the release tag is \"${RELEASE_TAG}\". Update the const to ${want} and re-cut the release, or every client's User-Agent will misreport its version."
+            echo "::error::the generated client is ${got} but the release tag is ${RELEASE_TAG}. Tag the commit whose delivery carried ${want}, or every client's User-Agent will misreport its version."
+            exit 1
+          fi
+
+      # Go resolves this module by its path, so a v2+ tag on a module path that
+      # does not end in /v2 is served to nobody. Cheap to check, permanent to
+      # get wrong: the proxy caches a tag immutably.
+      - name: Module path matches the tag's major version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          major="$(echo "${RELEASE_TAG#v}" | cut -d. -f1)"
+          path="$(go list -m)"
+          echo "tag major: v${major}; module path: ${path}"
+          if [ "$major" -ge 2 ] && [ "${path##*/}" != "v${major}" ]; then
+            echo "::error::${RELEASE_TAG} needs the module path to end in /v${major}, but it is ${path}. Go would serve this tag to nobody."
             exit 1
           fi
 
