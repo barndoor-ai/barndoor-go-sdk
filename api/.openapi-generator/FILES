@@ -232,6 +232,7 @@ model_scope_type.go
 model_server_connection_response.go
 model_server_connection_status.go
 model_server_list_response.go
+model_server_policy_revisions_page.go
 model_server_response.go
 model_server_source.go
 model_set_api_key_disabled_request.go
