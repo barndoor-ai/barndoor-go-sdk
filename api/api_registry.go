@@ -67,7 +67,7 @@ Authenticates the caller against an MCP server that is ALREADY registered in thi
 
 For OAuth providers it returns an authorization URL for the user to visit. For non-OAuth providers (api_key, bearer_token, basic_auth, generic) credentials go in the request body — prefer a server registered with managed credentials so no secret passes through the caller at all, and never solicit one in a chat transcript.
 
-`as_service: true` connects the tenant's shared service account rather than the calling user, which is what a server needs before it can be published.
+`as_service: true` connects the tenant's shared service account rather than the calling user, which is what a server needs before it can be published, and requires an organization admin.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param serverId
