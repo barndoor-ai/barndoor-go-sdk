@@ -26,9 +26,9 @@ type RoutingPolicy struct {
 	CreatedAt bdtime.Time `json:"created_at"`
 	DefaultSlotOnFailure int32 `json:"default_slot_on_failure"`
 	Description NullableString `json:"description,omitempty"`
-	// The LLM that picks a slot. Optional because a policy may be saved before one is chosen; the picker falls back to the context-size floor when it is absent.
+	// The model that picks a slot. Optional because a policy may be saved before one is chosen; the picker falls back to the context-size floor when it is absent. Either a chat model that supports JSON-mode output, or a Jev classifier model (TypeSafe, or OpenRouter's `typesafe/` models), which is asked on System One instead of prompted for JSON.
 	DeterminerModelAlias NullableString `json:"determiner_model_alias,omitempty"`
-	// Optional override for the determiner's instruction preamble. `None` (or empty) falls back to the built-in default (see `routing::determiner`). The slot catalog, request-metadata block, and JSON-output schema are always appended by the gateway so the structured-output contract holds regardless of what an admin writes here.
+	// Optional override for the determiner's instruction preamble. `None` (or empty) falls back to the built-in default (see `routing::determiner`). The slot catalog, request-metadata block, and JSON-output schema are always appended by the gateway so the structured-output contract holds regardless of what an admin writes here. Not used by a Jev determiner, whose questions carry their own instructions.
 	DeterminerPrompt NullableString `json:"determiner_prompt,omitempty"`
 	Enabled bool `json:"enabled"`
 	Id string `json:"id"`
