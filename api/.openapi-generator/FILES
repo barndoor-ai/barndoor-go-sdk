@@ -14,6 +14,8 @@ model_affected_policy_preview.go
 model_agent_policy_counts.go
 model_agent_runtime_capabilities.go
 model_agent_runtime_profile.go
+model_agent_scope_request.go
+model_agent_scope_response.go
 model_agent_type.go
 model_alert_type.go
 model_alert_type_option.go
