@@ -93,6 +93,9 @@ func TestMcpConnectionParamsResolvesAnIdToItsSlug(t *testing.T) {
 	fixture.McpServerDirectory.Meta = map[string]any{}
 	fixture.McpServerDirectory.AuthParams = map[string]any{}
 	fixture.McpServerDirectory.CredentialSchema = map[string]any{}
+	fixture.McpServerDirectory.Runtime = map[string]any{"kind": "remote"}
+	fixture.McpServerDirectory.ConfigurationSchema = map[string]any{}
+	fixture.McpServerDirectory.ToolManifest = []*map[string]interface{}{}
 	body, err := json.Marshal(fixture)
 	if err != nil {
 		t.Fatal(err)
