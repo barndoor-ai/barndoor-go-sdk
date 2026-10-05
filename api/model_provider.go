@@ -49,7 +49,7 @@ type Provider struct {
 	EnforceHealthCheck bool `json:"enforce_health_check"`
 	// When the last connectivity probe ran (NULL until the first probe).
 	HealthCheckedAt NullableTime `json:"health_checked_at,omitempty"`
-	// Human-readable reason for the last `unhealthy` probe (NULL otherwise).
+	// Reason for the last `unhealthy` or `unverified` probe (NULL if healthy or never probed).
 	HealthDetail NullableString `json:"health_detail,omitempty"`
 	// Observed upstream reachability, recorded separately from `enabled` (operator intent) so the system never overwrites the toggle (V45). One of `unverified` | `healthy` | `unhealthy`. `unverified` is the back-compat default and also covers provider families we don't probe (Bedrock/Vertex/Azure, claude_oauth, codex_oauth). A provider serves traffic only when `enabled` AND `health_status <> 'unhealthy'`: a failed probe auto-suspends it from routing (see `resolve_*`) without disabling it, and it resumes once a probe records it healthy again.
 	HealthStatus string `json:"health_status"`
