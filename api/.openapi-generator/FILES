@@ -198,7 +198,6 @@ model_policy_status.go
 model_policy_summary.go
 model_policy_summary_response.go
 model_posture.go
-model_presidio_connection_response.go
 model_pricing_change_source.go
 model_pricing_rule_summary.go
 model_pricing_sync_mode.go
@@ -211,7 +210,6 @@ model_provider_connection_response_one_of_2.go
 model_provider_connection_response_one_of_3.go
 model_provider_connection_response_one_of_4.go
 model_provider_connection_response_one_of_5.go
-model_provider_connection_response_one_of_6.go
 model_publish_blocker.go
 model_reorder_entry.go
 model_reorder_model_mappings_request.go
@@ -271,10 +269,8 @@ model_upsert_connection_request_one_of_2.go
 model_upsert_connection_request_one_of_3.go
 model_upsert_connection_request_one_of_4.go
 model_upsert_connection_request_one_of_5.go
-model_upsert_connection_request_one_of_6.go
 model_upsert_field_control_policy_request.go
 model_upsert_google_dlp_request.go
-model_upsert_presidio_request.go
 model_upsert_tokenization_request.go
 model_validate_aws_role_request.go
 model_validate_policy_request.go

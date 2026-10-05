@@ -21,11 +21,9 @@ var _ MappedNullable = &ProviderConnectionResponseOneOf{}
 
 // ProviderConnectionResponseOneOf struct for ProviderConnectionResponseOneOf
 type ProviderConnectionResponseOneOf struct {
-	AnalyzerUrl string `json:"analyzer_url"`
-	AnonymizerUrl string `json:"anonymizer_url"`
+	Endpoint string `json:"endpoint"`
 	// Whether a bearer token is configured. The token value is never returned.
 	HasBearerToken bool `json:"has_bearer_token"`
-	Language string `json:"language"`
 	OrgId string `json:"org_id"`
 	Provider string `json:"provider"`
 }
@@ -36,12 +34,10 @@ type _ProviderConnectionResponseOneOf ProviderConnectionResponseOneOf
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProviderConnectionResponseOneOf(analyzerUrl string, anonymizerUrl string, hasBearerToken bool, language string, orgId string, provider string) *ProviderConnectionResponseOneOf {
+func NewProviderConnectionResponseOneOf(endpoint string, hasBearerToken bool, orgId string, provider string) *ProviderConnectionResponseOneOf {
 	this := ProviderConnectionResponseOneOf{}
-	this.AnalyzerUrl = analyzerUrl
-	this.AnonymizerUrl = anonymizerUrl
+	this.Endpoint = endpoint
 	this.HasBearerToken = hasBearerToken
-	this.Language = language
 	this.OrgId = orgId
 	this.Provider = provider
 	return &this
@@ -55,52 +51,28 @@ func NewProviderConnectionResponseOneOfWithDefaults() *ProviderConnectionRespons
 	return &this
 }
 
-// GetAnalyzerUrl returns the AnalyzerUrl field value
-func (o *ProviderConnectionResponseOneOf) GetAnalyzerUrl() string {
+// GetEndpoint returns the Endpoint field value
+func (o *ProviderConnectionResponseOneOf) GetEndpoint() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.AnalyzerUrl
+	return o.Endpoint
 }
 
-// GetAnalyzerUrlOk returns a tuple with the AnalyzerUrl field value
+// GetEndpointOk returns a tuple with the Endpoint field value
 // and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf) GetAnalyzerUrlOk() (*string, bool) {
+func (o *ProviderConnectionResponseOneOf) GetEndpointOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.AnalyzerUrl, true
+	return &o.Endpoint, true
 }
 
-// SetAnalyzerUrl sets field value
-func (o *ProviderConnectionResponseOneOf) SetAnalyzerUrl(v string) {
-	o.AnalyzerUrl = v
-}
-
-// GetAnonymizerUrl returns the AnonymizerUrl field value
-func (o *ProviderConnectionResponseOneOf) GetAnonymizerUrl() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.AnonymizerUrl
-}
-
-// GetAnonymizerUrlOk returns a tuple with the AnonymizerUrl field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf) GetAnonymizerUrlOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.AnonymizerUrl, true
-}
-
-// SetAnonymizerUrl sets field value
-func (o *ProviderConnectionResponseOneOf) SetAnonymizerUrl(v string) {
-	o.AnonymizerUrl = v
+// SetEndpoint sets field value
+func (o *ProviderConnectionResponseOneOf) SetEndpoint(v string) {
+	o.Endpoint = v
 }
 
 // GetHasBearerToken returns the HasBearerToken field value
@@ -125,30 +97,6 @@ func (o *ProviderConnectionResponseOneOf) GetHasBearerTokenOk() (*bool, bool) {
 // SetHasBearerToken sets field value
 func (o *ProviderConnectionResponseOneOf) SetHasBearerToken(v bool) {
 	o.HasBearerToken = v
-}
-
-// GetLanguage returns the Language field value
-func (o *ProviderConnectionResponseOneOf) GetLanguage() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Language
-}
-
-// GetLanguageOk returns a tuple with the Language field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf) GetLanguageOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Language, true
-}
-
-// SetLanguage sets field value
-func (o *ProviderConnectionResponseOneOf) SetLanguage(v string) {
-	o.Language = v
 }
 
 // GetOrgId returns the OrgId field value
@@ -209,10 +157,8 @@ func (o ProviderConnectionResponseOneOf) MarshalJSON() ([]byte, error) {
 
 func (o ProviderConnectionResponseOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["analyzer_url"] = o.AnalyzerUrl
-	toSerialize["anonymizer_url"] = o.AnonymizerUrl
+	toSerialize["endpoint"] = o.Endpoint
 	toSerialize["has_bearer_token"] = o.HasBearerToken
-	toSerialize["language"] = o.Language
 	toSerialize["org_id"] = o.OrgId
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
@@ -223,10 +169,8 @@ func (o *ProviderConnectionResponseOneOf) UnmarshalJSON(data []byte) (err error)
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"analyzer_url",
-		"anonymizer_url",
+		"endpoint",
 		"has_bearer_token",
-		"language",
 		"org_id",
 		"provider",
 	}

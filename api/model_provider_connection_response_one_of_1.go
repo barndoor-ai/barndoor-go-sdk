@@ -24,7 +24,9 @@ type ProviderConnectionResponseOneOf1 struct {
 	Endpoint string `json:"endpoint"`
 	// Whether a bearer token is configured. The token value is never returned.
 	HasBearerToken bool `json:"has_bearer_token"`
+	Location string `json:"location"`
 	OrgId string `json:"org_id"`
+	ProjectId string `json:"project_id"`
 	Provider string `json:"provider"`
 }
 
@@ -34,11 +36,13 @@ type _ProviderConnectionResponseOneOf1 ProviderConnectionResponseOneOf1
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProviderConnectionResponseOneOf1(endpoint string, hasBearerToken bool, orgId string, provider string) *ProviderConnectionResponseOneOf1 {
+func NewProviderConnectionResponseOneOf1(endpoint string, hasBearerToken bool, location string, orgId string, projectId string, provider string) *ProviderConnectionResponseOneOf1 {
 	this := ProviderConnectionResponseOneOf1{}
 	this.Endpoint = endpoint
 	this.HasBearerToken = hasBearerToken
+	this.Location = location
 	this.OrgId = orgId
+	this.ProjectId = projectId
 	this.Provider = provider
 	return &this
 }
@@ -99,6 +103,30 @@ func (o *ProviderConnectionResponseOneOf1) SetHasBearerToken(v bool) {
 	o.HasBearerToken = v
 }
 
+// GetLocation returns the Location field value
+func (o *ProviderConnectionResponseOneOf1) GetLocation() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Location
+}
+
+// GetLocationOk returns a tuple with the Location field value
+// and a boolean to check if the value has been set.
+func (o *ProviderConnectionResponseOneOf1) GetLocationOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Location, true
+}
+
+// SetLocation sets field value
+func (o *ProviderConnectionResponseOneOf1) SetLocation(v string) {
+	o.Location = v
+}
+
 // GetOrgId returns the OrgId field value
 func (o *ProviderConnectionResponseOneOf1) GetOrgId() string {
 	if o == nil {
@@ -121,6 +149,30 @@ func (o *ProviderConnectionResponseOneOf1) GetOrgIdOk() (*string, bool) {
 // SetOrgId sets field value
 func (o *ProviderConnectionResponseOneOf1) SetOrgId(v string) {
 	o.OrgId = v
+}
+
+// GetProjectId returns the ProjectId field value
+func (o *ProviderConnectionResponseOneOf1) GetProjectId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.ProjectId
+}
+
+// GetProjectIdOk returns a tuple with the ProjectId field value
+// and a boolean to check if the value has been set.
+func (o *ProviderConnectionResponseOneOf1) GetProjectIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ProjectId, true
+}
+
+// SetProjectId sets field value
+func (o *ProviderConnectionResponseOneOf1) SetProjectId(v string) {
+	o.ProjectId = v
 }
 
 // GetProvider returns the Provider field value
@@ -159,7 +211,9 @@ func (o ProviderConnectionResponseOneOf1) ToMap() (map[string]interface{}, error
 	toSerialize := map[string]interface{}{}
 	toSerialize["endpoint"] = o.Endpoint
 	toSerialize["has_bearer_token"] = o.HasBearerToken
+	toSerialize["location"] = o.Location
 	toSerialize["org_id"] = o.OrgId
+	toSerialize["project_id"] = o.ProjectId
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
 }
@@ -171,7 +225,9 @@ func (o *ProviderConnectionResponseOneOf1) UnmarshalJSON(data []byte) (err error
 	requiredProperties := []string{
 		"endpoint",
 		"has_bearer_token",
+		"location",
 		"org_id",
+		"project_id",
 		"provider",
 	}
 

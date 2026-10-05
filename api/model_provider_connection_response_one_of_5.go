@@ -24,8 +24,8 @@ type ProviderConnectionResponseOneOf5 struct {
 	ApiVersion string `json:"api_version"`
 	Endpoint string `json:"endpoint"`
 	HasApiKey bool `json:"has_api_key"`
-	Language string `json:"language"`
 	OrgId string `json:"org_id"`
+	SeverityThreshold int32 `json:"severity_threshold"`
 	Provider string `json:"provider"`
 }
 
@@ -35,13 +35,13 @@ type _ProviderConnectionResponseOneOf5 ProviderConnectionResponseOneOf5
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProviderConnectionResponseOneOf5(apiVersion string, endpoint string, hasApiKey bool, language string, orgId string, provider string) *ProviderConnectionResponseOneOf5 {
+func NewProviderConnectionResponseOneOf5(apiVersion string, endpoint string, hasApiKey bool, orgId string, severityThreshold int32, provider string) *ProviderConnectionResponseOneOf5 {
 	this := ProviderConnectionResponseOneOf5{}
 	this.ApiVersion = apiVersion
 	this.Endpoint = endpoint
 	this.HasApiKey = hasApiKey
-	this.Language = language
 	this.OrgId = orgId
+	this.SeverityThreshold = severityThreshold
 	this.Provider = provider
 	return &this
 }
@@ -126,30 +126,6 @@ func (o *ProviderConnectionResponseOneOf5) SetHasApiKey(v bool) {
 	o.HasApiKey = v
 }
 
-// GetLanguage returns the Language field value
-func (o *ProviderConnectionResponseOneOf5) GetLanguage() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Language
-}
-
-// GetLanguageOk returns a tuple with the Language field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf5) GetLanguageOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Language, true
-}
-
-// SetLanguage sets field value
-func (o *ProviderConnectionResponseOneOf5) SetLanguage(v string) {
-	o.Language = v
-}
-
 // GetOrgId returns the OrgId field value
 func (o *ProviderConnectionResponseOneOf5) GetOrgId() string {
 	if o == nil {
@@ -172,6 +148,30 @@ func (o *ProviderConnectionResponseOneOf5) GetOrgIdOk() (*string, bool) {
 // SetOrgId sets field value
 func (o *ProviderConnectionResponseOneOf5) SetOrgId(v string) {
 	o.OrgId = v
+}
+
+// GetSeverityThreshold returns the SeverityThreshold field value
+func (o *ProviderConnectionResponseOneOf5) GetSeverityThreshold() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.SeverityThreshold
+}
+
+// GetSeverityThresholdOk returns a tuple with the SeverityThreshold field value
+// and a boolean to check if the value has been set.
+func (o *ProviderConnectionResponseOneOf5) GetSeverityThresholdOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.SeverityThreshold, true
+}
+
+// SetSeverityThreshold sets field value
+func (o *ProviderConnectionResponseOneOf5) SetSeverityThreshold(v int32) {
+	o.SeverityThreshold = v
 }
 
 // GetProvider returns the Provider field value
@@ -211,8 +211,8 @@ func (o ProviderConnectionResponseOneOf5) ToMap() (map[string]interface{}, error
 	toSerialize["api_version"] = o.ApiVersion
 	toSerialize["endpoint"] = o.Endpoint
 	toSerialize["has_api_key"] = o.HasApiKey
-	toSerialize["language"] = o.Language
 	toSerialize["org_id"] = o.OrgId
+	toSerialize["severity_threshold"] = o.SeverityThreshold
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
 }
@@ -225,8 +225,8 @@ func (o *ProviderConnectionResponseOneOf5) UnmarshalJSON(data []byte) (err error
 		"api_version",
 		"endpoint",
 		"has_api_key",
-		"language",
 		"org_id",
+		"severity_threshold",
 		"provider",
 	}
 

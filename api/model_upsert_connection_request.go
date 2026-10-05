@@ -24,7 +24,6 @@ type UpsertConnectionRequest struct {
 	UpsertConnectionRequestOneOf3 *UpsertConnectionRequestOneOf3
 	UpsertConnectionRequestOneOf4 *UpsertConnectionRequestOneOf4
 	UpsertConnectionRequestOneOf5 *UpsertConnectionRequestOneOf5
-	UpsertConnectionRequestOneOf6 *UpsertConnectionRequestOneOf6
 }
 
 // UpsertConnectionRequestOneOfAsUpsertConnectionRequest is a convenience function that returns UpsertConnectionRequestOneOf wrapped in UpsertConnectionRequest
@@ -66,13 +65,6 @@ func UpsertConnectionRequestOneOf4AsUpsertConnectionRequest(v *UpsertConnectionR
 func UpsertConnectionRequestOneOf5AsUpsertConnectionRequest(v *UpsertConnectionRequestOneOf5) UpsertConnectionRequest {
 	return UpsertConnectionRequest{
 		UpsertConnectionRequestOneOf5: v,
-	}
-}
-
-// UpsertConnectionRequestOneOf6AsUpsertConnectionRequest is a convenience function that returns UpsertConnectionRequestOneOf6 wrapped in UpsertConnectionRequest
-func UpsertConnectionRequestOneOf6AsUpsertConnectionRequest(v *UpsertConnectionRequestOneOf6) UpsertConnectionRequest {
-	return UpsertConnectionRequest{
-		UpsertConnectionRequestOneOf6: v,
 	}
 }
 
@@ -183,23 +175,6 @@ func (dst *UpsertConnectionRequest) UnmarshalJSON(data []byte) error {
 		dst.UpsertConnectionRequestOneOf5 = nil
 	}
 
-	// try to unmarshal data into UpsertConnectionRequestOneOf6
-	err = newStrictDecoder(data).Decode(&dst.UpsertConnectionRequestOneOf6)
-	if err == nil {
-		jsonUpsertConnectionRequestOneOf6, _ := json.Marshal(dst.UpsertConnectionRequestOneOf6)
-		if string(jsonUpsertConnectionRequestOneOf6) == "{}" { // empty struct
-			dst.UpsertConnectionRequestOneOf6 = nil
-		} else {
-			if err = validator.Validate(dst.UpsertConnectionRequestOneOf6); err != nil {
-				dst.UpsertConnectionRequestOneOf6 = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.UpsertConnectionRequestOneOf6 = nil
-	}
-
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.UpsertConnectionRequestOneOf = nil
@@ -208,7 +183,6 @@ func (dst *UpsertConnectionRequest) UnmarshalJSON(data []byte) error {
 		dst.UpsertConnectionRequestOneOf3 = nil
 		dst.UpsertConnectionRequestOneOf4 = nil
 		dst.UpsertConnectionRequestOneOf5 = nil
-		dst.UpsertConnectionRequestOneOf6 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(UpsertConnectionRequest)")
 	} else if match == 1 {
@@ -248,10 +222,6 @@ func (src UpsertConnectionRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.UpsertConnectionRequestOneOf5)
 	}
 
-	if src.UpsertConnectionRequestOneOf6 != nil {
-		return json.Marshal(&src.UpsertConnectionRequestOneOf6)
-	}
-
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -284,10 +254,6 @@ func (obj *UpsertConnectionRequest) GetActualInstance() (interface{}) {
 		return obj.UpsertConnectionRequestOneOf5
 	}
 
-	if obj.UpsertConnectionRequestOneOf6 != nil {
-		return obj.UpsertConnectionRequestOneOf6
-	}
-
 	// all schemas are nil
 	return nil
 }
@@ -316,10 +282,6 @@ func (obj UpsertConnectionRequest) GetActualInstanceValue() (interface{}) {
 
 	if obj.UpsertConnectionRequestOneOf5 != nil {
 		return *obj.UpsertConnectionRequestOneOf5
-	}
-
-	if obj.UpsertConnectionRequestOneOf6 != nil {
-		return *obj.UpsertConnectionRequestOneOf6
 	}
 
 	// all schemas are nil

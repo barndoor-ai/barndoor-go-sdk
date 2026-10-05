@@ -21,16 +21,11 @@ var _ MappedNullable = &ProviderConnectionResponseOneOf4{}
 
 // ProviderConnectionResponseOneOf4 struct for ProviderConnectionResponseOneOf4
 type ProviderConnectionResponseOneOf4 struct {
-	AccessKeyId *string `json:"access_key_id,omitempty"`
-	AuthType string `json:"auth_type"`
-	Endpoint *string `json:"endpoint,omitempty"`
-	ExternalId *string `json:"external_id,omitempty"`
-	GuardrailIdentifier string `json:"guardrail_identifier"`
-	GuardrailVersion string `json:"guardrail_version"`
-	HasCredentials bool `json:"has_credentials"`
-	IamRoleArn *string `json:"iam_role_arn,omitempty"`
+	ApiVersion string `json:"api_version"`
+	Endpoint string `json:"endpoint"`
+	HasApiKey bool `json:"has_api_key"`
+	Language string `json:"language"`
 	OrgId string `json:"org_id"`
-	Region string `json:"region"`
 	Provider string `json:"provider"`
 }
 
@@ -40,14 +35,13 @@ type _ProviderConnectionResponseOneOf4 ProviderConnectionResponseOneOf4
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProviderConnectionResponseOneOf4(authType string, guardrailIdentifier string, guardrailVersion string, hasCredentials bool, orgId string, region string, provider string) *ProviderConnectionResponseOneOf4 {
+func NewProviderConnectionResponseOneOf4(apiVersion string, endpoint string, hasApiKey bool, language string, orgId string, provider string) *ProviderConnectionResponseOneOf4 {
 	this := ProviderConnectionResponseOneOf4{}
-	this.AuthType = authType
-	this.GuardrailIdentifier = guardrailIdentifier
-	this.GuardrailVersion = guardrailVersion
-	this.HasCredentials = hasCredentials
+	this.ApiVersion = apiVersion
+	this.Endpoint = endpoint
+	this.HasApiKey = hasApiKey
+	this.Language = language
 	this.OrgId = orgId
-	this.Region = region
 	this.Provider = provider
 	return &this
 }
@@ -60,228 +54,100 @@ func NewProviderConnectionResponseOneOf4WithDefaults() *ProviderConnectionRespon
 	return &this
 }
 
-// GetAccessKeyId returns the AccessKeyId field value if set, zero value otherwise.
-func (o *ProviderConnectionResponseOneOf4) GetAccessKeyId() string {
-	if o == nil || IsNil(o.AccessKeyId) {
-		var ret string
-		return ret
-	}
-	return *o.AccessKeyId
-}
-
-// GetAccessKeyIdOk returns a tuple with the AccessKeyId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetAccessKeyIdOk() (*string, bool) {
-	if o == nil || IsNil(o.AccessKeyId) {
-		return nil, false
-	}
-	return o.AccessKeyId, true
-}
-
-// HasAccessKeyId returns a boolean if a field has been set.
-func (o *ProviderConnectionResponseOneOf4) HasAccessKeyId() bool {
-	if o != nil && !IsNil(o.AccessKeyId) {
-		return true
-	}
-
-	return false
-}
-
-// SetAccessKeyId gets a reference to the given string and assigns it to the AccessKeyId field.
-func (o *ProviderConnectionResponseOneOf4) SetAccessKeyId(v string) {
-	o.AccessKeyId = &v
-}
-
-// GetAuthType returns the AuthType field value
-func (o *ProviderConnectionResponseOneOf4) GetAuthType() string {
+// GetApiVersion returns the ApiVersion field value
+func (o *ProviderConnectionResponseOneOf4) GetApiVersion() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.AuthType
+	return o.ApiVersion
 }
 
-// GetAuthTypeOk returns a tuple with the AuthType field value
+// GetApiVersionOk returns a tuple with the ApiVersion field value
 // and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetAuthTypeOk() (*string, bool) {
+func (o *ProviderConnectionResponseOneOf4) GetApiVersionOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.AuthType, true
+	return &o.ApiVersion, true
 }
 
-// SetAuthType sets field value
-func (o *ProviderConnectionResponseOneOf4) SetAuthType(v string) {
-	o.AuthType = v
+// SetApiVersion sets field value
+func (o *ProviderConnectionResponseOneOf4) SetApiVersion(v string) {
+	o.ApiVersion = v
 }
 
-// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
+// GetEndpoint returns the Endpoint field value
 func (o *ProviderConnectionResponseOneOf4) GetEndpoint() string {
-	if o == nil || IsNil(o.Endpoint) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Endpoint
+
+	return o.Endpoint
 }
 
-// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
+// GetEndpointOk returns a tuple with the Endpoint field value
 // and a boolean to check if the value has been set.
 func (o *ProviderConnectionResponseOneOf4) GetEndpointOk() (*string, bool) {
-	if o == nil || IsNil(o.Endpoint) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Endpoint, true
+	return &o.Endpoint, true
 }
 
-// HasEndpoint returns a boolean if a field has been set.
-func (o *ProviderConnectionResponseOneOf4) HasEndpoint() bool {
-	if o != nil && !IsNil(o.Endpoint) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpoint gets a reference to the given string and assigns it to the Endpoint field.
+// SetEndpoint sets field value
 func (o *ProviderConnectionResponseOneOf4) SetEndpoint(v string) {
-	o.Endpoint = &v
+	o.Endpoint = v
 }
 
-// GetExternalId returns the ExternalId field value if set, zero value otherwise.
-func (o *ProviderConnectionResponseOneOf4) GetExternalId() string {
-	if o == nil || IsNil(o.ExternalId) {
-		var ret string
-		return ret
-	}
-	return *o.ExternalId
-}
-
-// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetExternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ExternalId) {
-		return nil, false
-	}
-	return o.ExternalId, true
-}
-
-// HasExternalId returns a boolean if a field has been set.
-func (o *ProviderConnectionResponseOneOf4) HasExternalId() bool {
-	if o != nil && !IsNil(o.ExternalId) {
-		return true
-	}
-
-	return false
-}
-
-// SetExternalId gets a reference to the given string and assigns it to the ExternalId field.
-func (o *ProviderConnectionResponseOneOf4) SetExternalId(v string) {
-	o.ExternalId = &v
-}
-
-// GetGuardrailIdentifier returns the GuardrailIdentifier field value
-func (o *ProviderConnectionResponseOneOf4) GetGuardrailIdentifier() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.GuardrailIdentifier
-}
-
-// GetGuardrailIdentifierOk returns a tuple with the GuardrailIdentifier field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetGuardrailIdentifierOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.GuardrailIdentifier, true
-}
-
-// SetGuardrailIdentifier sets field value
-func (o *ProviderConnectionResponseOneOf4) SetGuardrailIdentifier(v string) {
-	o.GuardrailIdentifier = v
-}
-
-// GetGuardrailVersion returns the GuardrailVersion field value
-func (o *ProviderConnectionResponseOneOf4) GetGuardrailVersion() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.GuardrailVersion
-}
-
-// GetGuardrailVersionOk returns a tuple with the GuardrailVersion field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetGuardrailVersionOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.GuardrailVersion, true
-}
-
-// SetGuardrailVersion sets field value
-func (o *ProviderConnectionResponseOneOf4) SetGuardrailVersion(v string) {
-	o.GuardrailVersion = v
-}
-
-// GetHasCredentials returns the HasCredentials field value
-func (o *ProviderConnectionResponseOneOf4) GetHasCredentials() bool {
+// GetHasApiKey returns the HasApiKey field value
+func (o *ProviderConnectionResponseOneOf4) GetHasApiKey() bool {
 	if o == nil {
 		var ret bool
 		return ret
 	}
 
-	return o.HasCredentials
+	return o.HasApiKey
 }
 
-// GetHasCredentialsOk returns a tuple with the HasCredentials field value
+// GetHasApiKeyOk returns a tuple with the HasApiKey field value
 // and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetHasCredentialsOk() (*bool, bool) {
+func (o *ProviderConnectionResponseOneOf4) GetHasApiKeyOk() (*bool, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.HasCredentials, true
+	return &o.HasApiKey, true
 }
 
-// SetHasCredentials sets field value
-func (o *ProviderConnectionResponseOneOf4) SetHasCredentials(v bool) {
-	o.HasCredentials = v
+// SetHasApiKey sets field value
+func (o *ProviderConnectionResponseOneOf4) SetHasApiKey(v bool) {
+	o.HasApiKey = v
 }
 
-// GetIamRoleArn returns the IamRoleArn field value if set, zero value otherwise.
-func (o *ProviderConnectionResponseOneOf4) GetIamRoleArn() string {
-	if o == nil || IsNil(o.IamRoleArn) {
+// GetLanguage returns the Language field value
+func (o *ProviderConnectionResponseOneOf4) GetLanguage() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.IamRoleArn
+
+	return o.Language
 }
 
-// GetIamRoleArnOk returns a tuple with the IamRoleArn field value if set, nil otherwise
+// GetLanguageOk returns a tuple with the Language field value
 // and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetIamRoleArnOk() (*string, bool) {
-	if o == nil || IsNil(o.IamRoleArn) {
+func (o *ProviderConnectionResponseOneOf4) GetLanguageOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.IamRoleArn, true
+	return &o.Language, true
 }
 
-// HasIamRoleArn returns a boolean if a field has been set.
-func (o *ProviderConnectionResponseOneOf4) HasIamRoleArn() bool {
-	if o != nil && !IsNil(o.IamRoleArn) {
-		return true
-	}
-
-	return false
-}
-
-// SetIamRoleArn gets a reference to the given string and assigns it to the IamRoleArn field.
-func (o *ProviderConnectionResponseOneOf4) SetIamRoleArn(v string) {
-	o.IamRoleArn = &v
+// SetLanguage sets field value
+func (o *ProviderConnectionResponseOneOf4) SetLanguage(v string) {
+	o.Language = v
 }
 
 // GetOrgId returns the OrgId field value
@@ -306,30 +172,6 @@ func (o *ProviderConnectionResponseOneOf4) GetOrgIdOk() (*string, bool) {
 // SetOrgId sets field value
 func (o *ProviderConnectionResponseOneOf4) SetOrgId(v string) {
 	o.OrgId = v
-}
-
-// GetRegion returns the Region field value
-func (o *ProviderConnectionResponseOneOf4) GetRegion() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Region
-}
-
-// GetRegionOk returns a tuple with the Region field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf4) GetRegionOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Region, true
-}
-
-// SetRegion sets field value
-func (o *ProviderConnectionResponseOneOf4) SetRegion(v string) {
-	o.Region = v
 }
 
 // GetProvider returns the Provider field value
@@ -366,24 +208,11 @@ func (o ProviderConnectionResponseOneOf4) MarshalJSON() ([]byte, error) {
 
 func (o ProviderConnectionResponseOneOf4) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.AccessKeyId) {
-		toSerialize["access_key_id"] = o.AccessKeyId
-	}
-	toSerialize["auth_type"] = o.AuthType
-	if !IsNil(o.Endpoint) {
-		toSerialize["endpoint"] = o.Endpoint
-	}
-	if !IsNil(o.ExternalId) {
-		toSerialize["external_id"] = o.ExternalId
-	}
-	toSerialize["guardrail_identifier"] = o.GuardrailIdentifier
-	toSerialize["guardrail_version"] = o.GuardrailVersion
-	toSerialize["has_credentials"] = o.HasCredentials
-	if !IsNil(o.IamRoleArn) {
-		toSerialize["iam_role_arn"] = o.IamRoleArn
-	}
+	toSerialize["api_version"] = o.ApiVersion
+	toSerialize["endpoint"] = o.Endpoint
+	toSerialize["has_api_key"] = o.HasApiKey
+	toSerialize["language"] = o.Language
 	toSerialize["org_id"] = o.OrgId
-	toSerialize["region"] = o.Region
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
 }
@@ -393,12 +222,11 @@ func (o *ProviderConnectionResponseOneOf4) UnmarshalJSON(data []byte) (err error
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"auth_type",
-		"guardrail_identifier",
-		"guardrail_version",
-		"has_credentials",
+		"api_version",
+		"endpoint",
+		"has_api_key",
+		"language",
 		"org_id",
-		"region",
 		"provider",
 	}
 

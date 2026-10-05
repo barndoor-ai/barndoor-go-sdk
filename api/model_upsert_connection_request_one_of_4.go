@@ -21,18 +21,11 @@ var _ MappedNullable = &UpsertConnectionRequestOneOf4{}
 
 // UpsertConnectionRequestOneOf4 struct for UpsertConnectionRequestOneOf4
 type UpsertConnectionRequestOneOf4 struct {
-	AccessKeyId *string `json:"access_key_id,omitempty"`
-	AuthType *string `json:"auth_type,omitempty"`
-	Endpoint *string `json:"endpoint,omitempty"`
-	ExternalId *string `json:"external_id,omitempty"`
-	GuardrailIdentifier string `json:"guardrail_identifier"`
-	GuardrailVersion *string `json:"guardrail_version,omitempty"`
-	IamRoleArn *string `json:"iam_role_arn,omitempty"`
-	Region *string `json:"region,omitempty"`
-	// Supply to set or rotate the AWS secret; omit to leave unchanged.
-	SecretAccessKey *string `json:"secret_access_key,omitempty"`
-	// Optional AWS session token stored with the secret access key.
-	SessionToken *string `json:"session_token,omitempty"`
+	// Supply to set or rotate the API key; omit to leave unchanged.
+	ApiKey *string `json:"api_key,omitempty"`
+	ApiVersion *string `json:"api_version,omitempty"`
+	Endpoint string `json:"endpoint"`
+	Language *string `json:"language,omitempty"`
 	Provider string `json:"provider"`
 }
 
@@ -42,9 +35,9 @@ type _UpsertConnectionRequestOneOf4 UpsertConnectionRequestOneOf4
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpsertConnectionRequestOneOf4(guardrailIdentifier string, provider string) *UpsertConnectionRequestOneOf4 {
+func NewUpsertConnectionRequestOneOf4(endpoint string, provider string) *UpsertConnectionRequestOneOf4 {
 	this := UpsertConnectionRequestOneOf4{}
-	this.GuardrailIdentifier = guardrailIdentifier
+	this.Endpoint = endpoint
 	this.Provider = provider
 	return &this
 }
@@ -57,316 +50,124 @@ func NewUpsertConnectionRequestOneOf4WithDefaults() *UpsertConnectionRequestOneO
 	return &this
 }
 
-// GetAccessKeyId returns the AccessKeyId field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetAccessKeyId() string {
-	if o == nil || IsNil(o.AccessKeyId) {
+// GetApiKey returns the ApiKey field value if set, zero value otherwise.
+func (o *UpsertConnectionRequestOneOf4) GetApiKey() string {
+	if o == nil || IsNil(o.ApiKey) {
 		var ret string
 		return ret
 	}
-	return *o.AccessKeyId
+	return *o.ApiKey
 }
 
-// GetAccessKeyIdOk returns a tuple with the AccessKeyId field value if set, nil otherwise
+// GetApiKeyOk returns a tuple with the ApiKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetAccessKeyIdOk() (*string, bool) {
-	if o == nil || IsNil(o.AccessKeyId) {
+func (o *UpsertConnectionRequestOneOf4) GetApiKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.ApiKey) {
 		return nil, false
 	}
-	return o.AccessKeyId, true
+	return o.ApiKey, true
 }
 
-// HasAccessKeyId returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasAccessKeyId() bool {
-	if o != nil && !IsNil(o.AccessKeyId) {
+// HasApiKey returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf4) HasApiKey() bool {
+	if o != nil && !IsNil(o.ApiKey) {
 		return true
 	}
 
 	return false
 }
 
-// SetAccessKeyId gets a reference to the given string and assigns it to the AccessKeyId field.
-func (o *UpsertConnectionRequestOneOf4) SetAccessKeyId(v string) {
-	o.AccessKeyId = &v
+// SetApiKey gets a reference to the given string and assigns it to the ApiKey field.
+func (o *UpsertConnectionRequestOneOf4) SetApiKey(v string) {
+	o.ApiKey = &v
 }
 
-// GetAuthType returns the AuthType field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetAuthType() string {
-	if o == nil || IsNil(o.AuthType) {
+// GetApiVersion returns the ApiVersion field value if set, zero value otherwise.
+func (o *UpsertConnectionRequestOneOf4) GetApiVersion() string {
+	if o == nil || IsNil(o.ApiVersion) {
 		var ret string
 		return ret
 	}
-	return *o.AuthType
+	return *o.ApiVersion
 }
 
-// GetAuthTypeOk returns a tuple with the AuthType field value if set, nil otherwise
+// GetApiVersionOk returns a tuple with the ApiVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetAuthTypeOk() (*string, bool) {
-	if o == nil || IsNil(o.AuthType) {
+func (o *UpsertConnectionRequestOneOf4) GetApiVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.ApiVersion) {
 		return nil, false
 	}
-	return o.AuthType, true
+	return o.ApiVersion, true
 }
 
-// HasAuthType returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasAuthType() bool {
-	if o != nil && !IsNil(o.AuthType) {
+// HasApiVersion returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf4) HasApiVersion() bool {
+	if o != nil && !IsNil(o.ApiVersion) {
 		return true
 	}
 
 	return false
 }
 
-// SetAuthType gets a reference to the given string and assigns it to the AuthType field.
-func (o *UpsertConnectionRequestOneOf4) SetAuthType(v string) {
-	o.AuthType = &v
+// SetApiVersion gets a reference to the given string and assigns it to the ApiVersion field.
+func (o *UpsertConnectionRequestOneOf4) SetApiVersion(v string) {
+	o.ApiVersion = &v
 }
 
-// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
+// GetEndpoint returns the Endpoint field value
 func (o *UpsertConnectionRequestOneOf4) GetEndpoint() string {
-	if o == nil || IsNil(o.Endpoint) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Endpoint
+
+	return o.Endpoint
 }
 
-// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
+// GetEndpointOk returns a tuple with the Endpoint field value
 // and a boolean to check if the value has been set.
 func (o *UpsertConnectionRequestOneOf4) GetEndpointOk() (*string, bool) {
-	if o == nil || IsNil(o.Endpoint) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Endpoint, true
+	return &o.Endpoint, true
 }
 
-// HasEndpoint returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasEndpoint() bool {
-	if o != nil && !IsNil(o.Endpoint) {
-		return true
-	}
-
-	return false
-}
-
-// SetEndpoint gets a reference to the given string and assigns it to the Endpoint field.
+// SetEndpoint sets field value
 func (o *UpsertConnectionRequestOneOf4) SetEndpoint(v string) {
-	o.Endpoint = &v
+	o.Endpoint = v
 }
 
-// GetExternalId returns the ExternalId field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetExternalId() string {
-	if o == nil || IsNil(o.ExternalId) {
+// GetLanguage returns the Language field value if set, zero value otherwise.
+func (o *UpsertConnectionRequestOneOf4) GetLanguage() string {
+	if o == nil || IsNil(o.Language) {
 		var ret string
 		return ret
 	}
-	return *o.ExternalId
+	return *o.Language
 }
 
-// GetExternalIdOk returns a tuple with the ExternalId field value if set, nil otherwise
+// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetExternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ExternalId) {
+func (o *UpsertConnectionRequestOneOf4) GetLanguageOk() (*string, bool) {
+	if o == nil || IsNil(o.Language) {
 		return nil, false
 	}
-	return o.ExternalId, true
+	return o.Language, true
 }
 
-// HasExternalId returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasExternalId() bool {
-	if o != nil && !IsNil(o.ExternalId) {
+// HasLanguage returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf4) HasLanguage() bool {
+	if o != nil && !IsNil(o.Language) {
 		return true
 	}
 
 	return false
 }
 
-// SetExternalId gets a reference to the given string and assigns it to the ExternalId field.
-func (o *UpsertConnectionRequestOneOf4) SetExternalId(v string) {
-	o.ExternalId = &v
-}
-
-// GetGuardrailIdentifier returns the GuardrailIdentifier field value
-func (o *UpsertConnectionRequestOneOf4) GetGuardrailIdentifier() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.GuardrailIdentifier
-}
-
-// GetGuardrailIdentifierOk returns a tuple with the GuardrailIdentifier field value
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetGuardrailIdentifierOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.GuardrailIdentifier, true
-}
-
-// SetGuardrailIdentifier sets field value
-func (o *UpsertConnectionRequestOneOf4) SetGuardrailIdentifier(v string) {
-	o.GuardrailIdentifier = v
-}
-
-// GetGuardrailVersion returns the GuardrailVersion field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetGuardrailVersion() string {
-	if o == nil || IsNil(o.GuardrailVersion) {
-		var ret string
-		return ret
-	}
-	return *o.GuardrailVersion
-}
-
-// GetGuardrailVersionOk returns a tuple with the GuardrailVersion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetGuardrailVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.GuardrailVersion) {
-		return nil, false
-	}
-	return o.GuardrailVersion, true
-}
-
-// HasGuardrailVersion returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasGuardrailVersion() bool {
-	if o != nil && !IsNil(o.GuardrailVersion) {
-		return true
-	}
-
-	return false
-}
-
-// SetGuardrailVersion gets a reference to the given string and assigns it to the GuardrailVersion field.
-func (o *UpsertConnectionRequestOneOf4) SetGuardrailVersion(v string) {
-	o.GuardrailVersion = &v
-}
-
-// GetIamRoleArn returns the IamRoleArn field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetIamRoleArn() string {
-	if o == nil || IsNil(o.IamRoleArn) {
-		var ret string
-		return ret
-	}
-	return *o.IamRoleArn
-}
-
-// GetIamRoleArnOk returns a tuple with the IamRoleArn field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetIamRoleArnOk() (*string, bool) {
-	if o == nil || IsNil(o.IamRoleArn) {
-		return nil, false
-	}
-	return o.IamRoleArn, true
-}
-
-// HasIamRoleArn returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasIamRoleArn() bool {
-	if o != nil && !IsNil(o.IamRoleArn) {
-		return true
-	}
-
-	return false
-}
-
-// SetIamRoleArn gets a reference to the given string and assigns it to the IamRoleArn field.
-func (o *UpsertConnectionRequestOneOf4) SetIamRoleArn(v string) {
-	o.IamRoleArn = &v
-}
-
-// GetRegion returns the Region field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetRegion() string {
-	if o == nil || IsNil(o.Region) {
-		var ret string
-		return ret
-	}
-	return *o.Region
-}
-
-// GetRegionOk returns a tuple with the Region field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetRegionOk() (*string, bool) {
-	if o == nil || IsNil(o.Region) {
-		return nil, false
-	}
-	return o.Region, true
-}
-
-// HasRegion returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasRegion() bool {
-	if o != nil && !IsNil(o.Region) {
-		return true
-	}
-
-	return false
-}
-
-// SetRegion gets a reference to the given string and assigns it to the Region field.
-func (o *UpsertConnectionRequestOneOf4) SetRegion(v string) {
-	o.Region = &v
-}
-
-// GetSecretAccessKey returns the SecretAccessKey field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetSecretAccessKey() string {
-	if o == nil || IsNil(o.SecretAccessKey) {
-		var ret string
-		return ret
-	}
-	return *o.SecretAccessKey
-}
-
-// GetSecretAccessKeyOk returns a tuple with the SecretAccessKey field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetSecretAccessKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.SecretAccessKey) {
-		return nil, false
-	}
-	return o.SecretAccessKey, true
-}
-
-// HasSecretAccessKey returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasSecretAccessKey() bool {
-	if o != nil && !IsNil(o.SecretAccessKey) {
-		return true
-	}
-
-	return false
-}
-
-// SetSecretAccessKey gets a reference to the given string and assigns it to the SecretAccessKey field.
-func (o *UpsertConnectionRequestOneOf4) SetSecretAccessKey(v string) {
-	o.SecretAccessKey = &v
-}
-
-// GetSessionToken returns the SessionToken field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf4) GetSessionToken() string {
-	if o == nil || IsNil(o.SessionToken) {
-		var ret string
-		return ret
-	}
-	return *o.SessionToken
-}
-
-// GetSessionTokenOk returns a tuple with the SessionToken field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf4) GetSessionTokenOk() (*string, bool) {
-	if o == nil || IsNil(o.SessionToken) {
-		return nil, false
-	}
-	return o.SessionToken, true
-}
-
-// HasSessionToken returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf4) HasSessionToken() bool {
-	if o != nil && !IsNil(o.SessionToken) {
-		return true
-	}
-
-	return false
-}
-
-// SetSessionToken gets a reference to the given string and assigns it to the SessionToken field.
-func (o *UpsertConnectionRequestOneOf4) SetSessionToken(v string) {
-	o.SessionToken = &v
+// SetLanguage gets a reference to the given string and assigns it to the Language field.
+func (o *UpsertConnectionRequestOneOf4) SetLanguage(v string) {
+	o.Language = &v
 }
 
 // GetProvider returns the Provider field value
@@ -403,33 +204,15 @@ func (o UpsertConnectionRequestOneOf4) MarshalJSON() ([]byte, error) {
 
 func (o UpsertConnectionRequestOneOf4) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.AccessKeyId) {
-		toSerialize["access_key_id"] = o.AccessKeyId
+	if !IsNil(o.ApiKey) {
+		toSerialize["api_key"] = o.ApiKey
 	}
-	if !IsNil(o.AuthType) {
-		toSerialize["auth_type"] = o.AuthType
+	if !IsNil(o.ApiVersion) {
+		toSerialize["api_version"] = o.ApiVersion
 	}
-	if !IsNil(o.Endpoint) {
-		toSerialize["endpoint"] = o.Endpoint
-	}
-	if !IsNil(o.ExternalId) {
-		toSerialize["external_id"] = o.ExternalId
-	}
-	toSerialize["guardrail_identifier"] = o.GuardrailIdentifier
-	if !IsNil(o.GuardrailVersion) {
-		toSerialize["guardrail_version"] = o.GuardrailVersion
-	}
-	if !IsNil(o.IamRoleArn) {
-		toSerialize["iam_role_arn"] = o.IamRoleArn
-	}
-	if !IsNil(o.Region) {
-		toSerialize["region"] = o.Region
-	}
-	if !IsNil(o.SecretAccessKey) {
-		toSerialize["secret_access_key"] = o.SecretAccessKey
-	}
-	if !IsNil(o.SessionToken) {
-		toSerialize["session_token"] = o.SessionToken
+	toSerialize["endpoint"] = o.Endpoint
+	if !IsNil(o.Language) {
+		toSerialize["language"] = o.Language
 	}
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
@@ -440,7 +223,7 @@ func (o *UpsertConnectionRequestOneOf4) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"guardrail_identifier",
+		"endpoint",
 		"provider",
 	}
 

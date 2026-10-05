@@ -1273,7 +1273,7 @@ func (r ApiDeleteProviderConnectionRequest) Execute() (*DlpErrorResponse, *http.
 DeleteProviderConnection Delete a provider connection and its stored secrets
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param name Provider name, e.g. `presidio`
+ @param name Provider name, e.g. `google_dlp`
  @return ApiDeleteProviderConnectionRequest
 */
 func (a *DlpAPIService) DeleteProviderConnection(ctx context.Context, name string) ApiDeleteProviderConnectionRequest {
@@ -2056,7 +2056,7 @@ func (r ApiGetProviderConnectionRequest) Execute() (*ProviderConnectionResponse,
 GetProviderConnection Fetch one provider connection
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param name Provider name, e.g. `presidio`
+ @param name Provider name, e.g. `google_dlp`
  @return ApiGetProviderConnectionRequest
 */
 func (a *DlpAPIService) GetProviderConnection(ctx context.Context, name string) ApiGetProviderConnectionRequest {
@@ -3315,7 +3315,7 @@ func (r ApiProviderConnectionAwsTrustInfoRequest) Execute() (*DlpAwsTrustInfoRes
 ProviderConnectionAwsTrustInfo Get the principal and external id for a connection's trust policy
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param name Provider name, e.g. `presidio`
+ @param name Provider name, e.g. `google_dlp`
  @return ApiProviderConnectionAwsTrustInfoRequest
 */
 func (a *DlpAPIService) ProviderConnectionAwsTrustInfo(ctx context.Context, name string) ApiProviderConnectionAwsTrustInfoRequest {
@@ -4431,7 +4431,7 @@ func (r ApiUpsertConnectionRequest) Execute() (*ProviderConnectionResponse, *htt
 UpsertConnection Create or update a provider connection
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param name Provider name, e.g. `presidio`
+ @param name Provider name, e.g. `google_dlp`
  @return ApiUpsertConnectionRequest
 */
 func (a *DlpAPIService) UpsertConnection(ctx context.Context, name string) ApiUpsertConnectionRequest {

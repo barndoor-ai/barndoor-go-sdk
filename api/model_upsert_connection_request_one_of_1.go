@@ -23,7 +23,9 @@ var _ MappedNullable = &UpsertConnectionRequestOneOf1{}
 type UpsertConnectionRequestOneOf1 struct {
 	// Supply to set or rotate the token; omit to leave unchanged.
 	BearerToken *string `json:"bearer_token,omitempty"`
-	Endpoint string `json:"endpoint"`
+	Endpoint *string `json:"endpoint,omitempty"`
+	Location *string `json:"location,omitempty"`
+	ProjectId string `json:"project_id"`
 	Provider string `json:"provider"`
 }
 
@@ -33,9 +35,9 @@ type _UpsertConnectionRequestOneOf1 UpsertConnectionRequestOneOf1
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpsertConnectionRequestOneOf1(endpoint string, provider string) *UpsertConnectionRequestOneOf1 {
+func NewUpsertConnectionRequestOneOf1(projectId string, provider string) *UpsertConnectionRequestOneOf1 {
 	this := UpsertConnectionRequestOneOf1{}
-	this.Endpoint = endpoint
+	this.ProjectId = projectId
 	this.Provider = provider
 	return &this
 }
@@ -80,28 +82,92 @@ func (o *UpsertConnectionRequestOneOf1) SetBearerToken(v string) {
 	o.BearerToken = &v
 }
 
-// GetEndpoint returns the Endpoint field value
+// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
 func (o *UpsertConnectionRequestOneOf1) GetEndpoint() string {
+	if o == nil || IsNil(o.Endpoint) {
+		var ret string
+		return ret
+	}
+	return *o.Endpoint
+}
+
+// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpsertConnectionRequestOneOf1) GetEndpointOk() (*string, bool) {
+	if o == nil || IsNil(o.Endpoint) {
+		return nil, false
+	}
+	return o.Endpoint, true
+}
+
+// HasEndpoint returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf1) HasEndpoint() bool {
+	if o != nil && !IsNil(o.Endpoint) {
+		return true
+	}
+
+	return false
+}
+
+// SetEndpoint gets a reference to the given string and assigns it to the Endpoint field.
+func (o *UpsertConnectionRequestOneOf1) SetEndpoint(v string) {
+	o.Endpoint = &v
+}
+
+// GetLocation returns the Location field value if set, zero value otherwise.
+func (o *UpsertConnectionRequestOneOf1) GetLocation() string {
+	if o == nil || IsNil(o.Location) {
+		var ret string
+		return ret
+	}
+	return *o.Location
+}
+
+// GetLocationOk returns a tuple with the Location field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpsertConnectionRequestOneOf1) GetLocationOk() (*string, bool) {
+	if o == nil || IsNil(o.Location) {
+		return nil, false
+	}
+	return o.Location, true
+}
+
+// HasLocation returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf1) HasLocation() bool {
+	if o != nil && !IsNil(o.Location) {
+		return true
+	}
+
+	return false
+}
+
+// SetLocation gets a reference to the given string and assigns it to the Location field.
+func (o *UpsertConnectionRequestOneOf1) SetLocation(v string) {
+	o.Location = &v
+}
+
+// GetProjectId returns the ProjectId field value
+func (o *UpsertConnectionRequestOneOf1) GetProjectId() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Endpoint
+	return o.ProjectId
 }
 
-// GetEndpointOk returns a tuple with the Endpoint field value
+// GetProjectIdOk returns a tuple with the ProjectId field value
 // and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf1) GetEndpointOk() (*string, bool) {
+func (o *UpsertConnectionRequestOneOf1) GetProjectIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.Endpoint, true
+	return &o.ProjectId, true
 }
 
-// SetEndpoint sets field value
-func (o *UpsertConnectionRequestOneOf1) SetEndpoint(v string) {
-	o.Endpoint = v
+// SetProjectId sets field value
+func (o *UpsertConnectionRequestOneOf1) SetProjectId(v string) {
+	o.ProjectId = v
 }
 
 // GetProvider returns the Provider field value
@@ -141,7 +207,13 @@ func (o UpsertConnectionRequestOneOf1) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.BearerToken) {
 		toSerialize["bearer_token"] = o.BearerToken
 	}
-	toSerialize["endpoint"] = o.Endpoint
+	if !IsNil(o.Endpoint) {
+		toSerialize["endpoint"] = o.Endpoint
+	}
+	if !IsNil(o.Location) {
+		toSerialize["location"] = o.Location
+	}
+	toSerialize["project_id"] = o.ProjectId
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
 }
@@ -151,7 +223,7 @@ func (o *UpsertConnectionRequestOneOf1) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"endpoint",
+		"project_id",
 		"provider",
 	}
 

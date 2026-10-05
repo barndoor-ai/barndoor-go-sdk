@@ -21,11 +21,9 @@ var _ MappedNullable = &UpsertConnectionRequestOneOf{}
 
 // UpsertConnectionRequestOneOf struct for UpsertConnectionRequestOneOf
 type UpsertConnectionRequestOneOf struct {
-	AnalyzerUrl string `json:"analyzer_url"`
-	AnonymizerUrl *string `json:"anonymizer_url,omitempty"`
 	// Supply to set or rotate the token; omit to leave unchanged.
 	BearerToken *string `json:"bearer_token,omitempty"`
-	Language *string `json:"language,omitempty"`
+	Endpoint string `json:"endpoint"`
 	Provider string `json:"provider"`
 }
 
@@ -35,9 +33,9 @@ type _UpsertConnectionRequestOneOf UpsertConnectionRequestOneOf
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpsertConnectionRequestOneOf(analyzerUrl string, provider string) *UpsertConnectionRequestOneOf {
+func NewUpsertConnectionRequestOneOf(endpoint string, provider string) *UpsertConnectionRequestOneOf {
 	this := UpsertConnectionRequestOneOf{}
-	this.AnalyzerUrl = analyzerUrl
+	this.Endpoint = endpoint
 	this.Provider = provider
 	return &this
 }
@@ -48,62 +46,6 @@ func NewUpsertConnectionRequestOneOf(analyzerUrl string, provider string) *Upser
 func NewUpsertConnectionRequestOneOfWithDefaults() *UpsertConnectionRequestOneOf {
 	this := UpsertConnectionRequestOneOf{}
 	return &this
-}
-
-// GetAnalyzerUrl returns the AnalyzerUrl field value
-func (o *UpsertConnectionRequestOneOf) GetAnalyzerUrl() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.AnalyzerUrl
-}
-
-// GetAnalyzerUrlOk returns a tuple with the AnalyzerUrl field value
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf) GetAnalyzerUrlOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.AnalyzerUrl, true
-}
-
-// SetAnalyzerUrl sets field value
-func (o *UpsertConnectionRequestOneOf) SetAnalyzerUrl(v string) {
-	o.AnalyzerUrl = v
-}
-
-// GetAnonymizerUrl returns the AnonymizerUrl field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf) GetAnonymizerUrl() string {
-	if o == nil || IsNil(o.AnonymizerUrl) {
-		var ret string
-		return ret
-	}
-	return *o.AnonymizerUrl
-}
-
-// GetAnonymizerUrlOk returns a tuple with the AnonymizerUrl field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf) GetAnonymizerUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.AnonymizerUrl) {
-		return nil, false
-	}
-	return o.AnonymizerUrl, true
-}
-
-// HasAnonymizerUrl returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf) HasAnonymizerUrl() bool {
-	if o != nil && !IsNil(o.AnonymizerUrl) {
-		return true
-	}
-
-	return false
-}
-
-// SetAnonymizerUrl gets a reference to the given string and assigns it to the AnonymizerUrl field.
-func (o *UpsertConnectionRequestOneOf) SetAnonymizerUrl(v string) {
-	o.AnonymizerUrl = &v
 }
 
 // GetBearerToken returns the BearerToken field value if set, zero value otherwise.
@@ -138,36 +80,28 @@ func (o *UpsertConnectionRequestOneOf) SetBearerToken(v string) {
 	o.BearerToken = &v
 }
 
-// GetLanguage returns the Language field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf) GetLanguage() string {
-	if o == nil || IsNil(o.Language) {
+// GetEndpoint returns the Endpoint field value
+func (o *UpsertConnectionRequestOneOf) GetEndpoint() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Language
+
+	return o.Endpoint
 }
 
-// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
+// GetEndpointOk returns a tuple with the Endpoint field value
 // and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf) GetLanguageOk() (*string, bool) {
-	if o == nil || IsNil(o.Language) {
+func (o *UpsertConnectionRequestOneOf) GetEndpointOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Language, true
+	return &o.Endpoint, true
 }
 
-// HasLanguage returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf) HasLanguage() bool {
-	if o != nil && !IsNil(o.Language) {
-		return true
-	}
-
-	return false
-}
-
-// SetLanguage gets a reference to the given string and assigns it to the Language field.
-func (o *UpsertConnectionRequestOneOf) SetLanguage(v string) {
-	o.Language = &v
+// SetEndpoint sets field value
+func (o *UpsertConnectionRequestOneOf) SetEndpoint(v string) {
+	o.Endpoint = v
 }
 
 // GetProvider returns the Provider field value
@@ -204,16 +138,10 @@ func (o UpsertConnectionRequestOneOf) MarshalJSON() ([]byte, error) {
 
 func (o UpsertConnectionRequestOneOf) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["analyzer_url"] = o.AnalyzerUrl
-	if !IsNil(o.AnonymizerUrl) {
-		toSerialize["anonymizer_url"] = o.AnonymizerUrl
-	}
 	if !IsNil(o.BearerToken) {
 		toSerialize["bearer_token"] = o.BearerToken
 	}
-	if !IsNil(o.Language) {
-		toSerialize["language"] = o.Language
-	}
+	toSerialize["endpoint"] = o.Endpoint
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil
 }
@@ -223,7 +151,7 @@ func (o *UpsertConnectionRequestOneOf) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"analyzer_url",
+		"endpoint",
 		"provider",
 	}
 

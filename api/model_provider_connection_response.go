@@ -24,7 +24,6 @@ type ProviderConnectionResponse struct {
 	ProviderConnectionResponseOneOf3 *ProviderConnectionResponseOneOf3
 	ProviderConnectionResponseOneOf4 *ProviderConnectionResponseOneOf4
 	ProviderConnectionResponseOneOf5 *ProviderConnectionResponseOneOf5
-	ProviderConnectionResponseOneOf6 *ProviderConnectionResponseOneOf6
 }
 
 // ProviderConnectionResponseOneOfAsProviderConnectionResponse is a convenience function that returns ProviderConnectionResponseOneOf wrapped in ProviderConnectionResponse
@@ -66,13 +65,6 @@ func ProviderConnectionResponseOneOf4AsProviderConnectionResponse(v *ProviderCon
 func ProviderConnectionResponseOneOf5AsProviderConnectionResponse(v *ProviderConnectionResponseOneOf5) ProviderConnectionResponse {
 	return ProviderConnectionResponse{
 		ProviderConnectionResponseOneOf5: v,
-	}
-}
-
-// ProviderConnectionResponseOneOf6AsProviderConnectionResponse is a convenience function that returns ProviderConnectionResponseOneOf6 wrapped in ProviderConnectionResponse
-func ProviderConnectionResponseOneOf6AsProviderConnectionResponse(v *ProviderConnectionResponseOneOf6) ProviderConnectionResponse {
-	return ProviderConnectionResponse{
-		ProviderConnectionResponseOneOf6: v,
 	}
 }
 
@@ -183,23 +175,6 @@ func (dst *ProviderConnectionResponse) UnmarshalJSON(data []byte) error {
 		dst.ProviderConnectionResponseOneOf5 = nil
 	}
 
-	// try to unmarshal data into ProviderConnectionResponseOneOf6
-	err = newStrictDecoder(data).Decode(&dst.ProviderConnectionResponseOneOf6)
-	if err == nil {
-		jsonProviderConnectionResponseOneOf6, _ := json.Marshal(dst.ProviderConnectionResponseOneOf6)
-		if string(jsonProviderConnectionResponseOneOf6) == "{}" { // empty struct
-			dst.ProviderConnectionResponseOneOf6 = nil
-		} else {
-			if err = validator.Validate(dst.ProviderConnectionResponseOneOf6); err != nil {
-				dst.ProviderConnectionResponseOneOf6 = nil
-			} else {
-				match++
-			}
-		}
-	} else {
-		dst.ProviderConnectionResponseOneOf6 = nil
-	}
-
 	if match > 1 { // more than 1 match
 		// reset to nil
 		dst.ProviderConnectionResponseOneOf = nil
@@ -208,7 +183,6 @@ func (dst *ProviderConnectionResponse) UnmarshalJSON(data []byte) error {
 		dst.ProviderConnectionResponseOneOf3 = nil
 		dst.ProviderConnectionResponseOneOf4 = nil
 		dst.ProviderConnectionResponseOneOf5 = nil
-		dst.ProviderConnectionResponseOneOf6 = nil
 
 		return fmt.Errorf("data matches more than one schema in oneOf(ProviderConnectionResponse)")
 	} else if match == 1 {
@@ -248,10 +222,6 @@ func (src ProviderConnectionResponse) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.ProviderConnectionResponseOneOf5)
 	}
 
-	if src.ProviderConnectionResponseOneOf6 != nil {
-		return json.Marshal(&src.ProviderConnectionResponseOneOf6)
-	}
-
 	return nil, nil // no data in oneOf schemas
 }
 
@@ -284,10 +254,6 @@ func (obj *ProviderConnectionResponse) GetActualInstance() (interface{}) {
 		return obj.ProviderConnectionResponseOneOf5
 	}
 
-	if obj.ProviderConnectionResponseOneOf6 != nil {
-		return obj.ProviderConnectionResponseOneOf6
-	}
-
 	// all schemas are nil
 	return nil
 }
@@ -316,10 +282,6 @@ func (obj ProviderConnectionResponse) GetActualInstanceValue() (interface{}) {
 
 	if obj.ProviderConnectionResponseOneOf5 != nil {
 		return *obj.ProviderConnectionResponseOneOf5
-	}
-
-	if obj.ProviderConnectionResponseOneOf6 != nil {
-		return *obj.ProviderConnectionResponseOneOf6
 	}
 
 	// all schemas are nil

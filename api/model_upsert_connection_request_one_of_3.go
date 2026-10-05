@@ -25,8 +25,9 @@ type UpsertConnectionRequestOneOf3 struct {
 	AuthType *string `json:"auth_type,omitempty"`
 	Endpoint *string `json:"endpoint,omitempty"`
 	ExternalId *string `json:"external_id,omitempty"`
+	GuardrailIdentifier string `json:"guardrail_identifier"`
+	GuardrailVersion *string `json:"guardrail_version,omitempty"`
 	IamRoleArn *string `json:"iam_role_arn,omitempty"`
-	Language *string `json:"language,omitempty"`
 	Region *string `json:"region,omitempty"`
 	// Supply to set or rotate the AWS secret; omit to leave unchanged.
 	SecretAccessKey *string `json:"secret_access_key,omitempty"`
@@ -41,8 +42,9 @@ type _UpsertConnectionRequestOneOf3 UpsertConnectionRequestOneOf3
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUpsertConnectionRequestOneOf3(provider string) *UpsertConnectionRequestOneOf3 {
+func NewUpsertConnectionRequestOneOf3(guardrailIdentifier string, provider string) *UpsertConnectionRequestOneOf3 {
 	this := UpsertConnectionRequestOneOf3{}
+	this.GuardrailIdentifier = guardrailIdentifier
 	this.Provider = provider
 	return &this
 }
@@ -183,6 +185,62 @@ func (o *UpsertConnectionRequestOneOf3) SetExternalId(v string) {
 	o.ExternalId = &v
 }
 
+// GetGuardrailIdentifier returns the GuardrailIdentifier field value
+func (o *UpsertConnectionRequestOneOf3) GetGuardrailIdentifier() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.GuardrailIdentifier
+}
+
+// GetGuardrailIdentifierOk returns a tuple with the GuardrailIdentifier field value
+// and a boolean to check if the value has been set.
+func (o *UpsertConnectionRequestOneOf3) GetGuardrailIdentifierOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.GuardrailIdentifier, true
+}
+
+// SetGuardrailIdentifier sets field value
+func (o *UpsertConnectionRequestOneOf3) SetGuardrailIdentifier(v string) {
+	o.GuardrailIdentifier = v
+}
+
+// GetGuardrailVersion returns the GuardrailVersion field value if set, zero value otherwise.
+func (o *UpsertConnectionRequestOneOf3) GetGuardrailVersion() string {
+	if o == nil || IsNil(o.GuardrailVersion) {
+		var ret string
+		return ret
+	}
+	return *o.GuardrailVersion
+}
+
+// GetGuardrailVersionOk returns a tuple with the GuardrailVersion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UpsertConnectionRequestOneOf3) GetGuardrailVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.GuardrailVersion) {
+		return nil, false
+	}
+	return o.GuardrailVersion, true
+}
+
+// HasGuardrailVersion returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf3) HasGuardrailVersion() bool {
+	if o != nil && !IsNil(o.GuardrailVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetGuardrailVersion gets a reference to the given string and assigns it to the GuardrailVersion field.
+func (o *UpsertConnectionRequestOneOf3) SetGuardrailVersion(v string) {
+	o.GuardrailVersion = &v
+}
+
 // GetIamRoleArn returns the IamRoleArn field value if set, zero value otherwise.
 func (o *UpsertConnectionRequestOneOf3) GetIamRoleArn() string {
 	if o == nil || IsNil(o.IamRoleArn) {
@@ -213,38 +271,6 @@ func (o *UpsertConnectionRequestOneOf3) HasIamRoleArn() bool {
 // SetIamRoleArn gets a reference to the given string and assigns it to the IamRoleArn field.
 func (o *UpsertConnectionRequestOneOf3) SetIamRoleArn(v string) {
 	o.IamRoleArn = &v
-}
-
-// GetLanguage returns the Language field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf3) GetLanguage() string {
-	if o == nil || IsNil(o.Language) {
-		var ret string
-		return ret
-	}
-	return *o.Language
-}
-
-// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf3) GetLanguageOk() (*string, bool) {
-	if o == nil || IsNil(o.Language) {
-		return nil, false
-	}
-	return o.Language, true
-}
-
-// HasLanguage returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf3) HasLanguage() bool {
-	if o != nil && !IsNil(o.Language) {
-		return true
-	}
-
-	return false
-}
-
-// SetLanguage gets a reference to the given string and assigns it to the Language field.
-func (o *UpsertConnectionRequestOneOf3) SetLanguage(v string) {
-	o.Language = &v
 }
 
 // GetRegion returns the Region field value if set, zero value otherwise.
@@ -389,11 +415,12 @@ func (o UpsertConnectionRequestOneOf3) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ExternalId) {
 		toSerialize["external_id"] = o.ExternalId
 	}
+	toSerialize["guardrail_identifier"] = o.GuardrailIdentifier
+	if !IsNil(o.GuardrailVersion) {
+		toSerialize["guardrail_version"] = o.GuardrailVersion
+	}
 	if !IsNil(o.IamRoleArn) {
 		toSerialize["iam_role_arn"] = o.IamRoleArn
-	}
-	if !IsNil(o.Language) {
-		toSerialize["language"] = o.Language
 	}
 	if !IsNil(o.Region) {
 		toSerialize["region"] = o.Region
@@ -413,6 +440,7 @@ func (o *UpsertConnectionRequestOneOf3) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"guardrail_identifier",
 		"provider",
 	}
 

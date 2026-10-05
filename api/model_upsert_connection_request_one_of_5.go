@@ -25,7 +25,7 @@ type UpsertConnectionRequestOneOf5 struct {
 	ApiKey *string `json:"api_key,omitempty"`
 	ApiVersion *string `json:"api_version,omitempty"`
 	Endpoint string `json:"endpoint"`
-	Language *string `json:"language,omitempty"`
+	SeverityThreshold *int32 `json:"severity_threshold,omitempty"`
 	Provider string `json:"provider"`
 }
 
@@ -138,36 +138,36 @@ func (o *UpsertConnectionRequestOneOf5) SetEndpoint(v string) {
 	o.Endpoint = v
 }
 
-// GetLanguage returns the Language field value if set, zero value otherwise.
-func (o *UpsertConnectionRequestOneOf5) GetLanguage() string {
-	if o == nil || IsNil(o.Language) {
-		var ret string
+// GetSeverityThreshold returns the SeverityThreshold field value if set, zero value otherwise.
+func (o *UpsertConnectionRequestOneOf5) GetSeverityThreshold() int32 {
+	if o == nil || IsNil(o.SeverityThreshold) {
+		var ret int32
 		return ret
 	}
-	return *o.Language
+	return *o.SeverityThreshold
 }
 
-// GetLanguageOk returns a tuple with the Language field value if set, nil otherwise
+// GetSeverityThresholdOk returns a tuple with the SeverityThreshold field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UpsertConnectionRequestOneOf5) GetLanguageOk() (*string, bool) {
-	if o == nil || IsNil(o.Language) {
+func (o *UpsertConnectionRequestOneOf5) GetSeverityThresholdOk() (*int32, bool) {
+	if o == nil || IsNil(o.SeverityThreshold) {
 		return nil, false
 	}
-	return o.Language, true
+	return o.SeverityThreshold, true
 }
 
-// HasLanguage returns a boolean if a field has been set.
-func (o *UpsertConnectionRequestOneOf5) HasLanguage() bool {
-	if o != nil && !IsNil(o.Language) {
+// HasSeverityThreshold returns a boolean if a field has been set.
+func (o *UpsertConnectionRequestOneOf5) HasSeverityThreshold() bool {
+	if o != nil && !IsNil(o.SeverityThreshold) {
 		return true
 	}
 
 	return false
 }
 
-// SetLanguage gets a reference to the given string and assigns it to the Language field.
-func (o *UpsertConnectionRequestOneOf5) SetLanguage(v string) {
-	o.Language = &v
+// SetSeverityThreshold gets a reference to the given int32 and assigns it to the SeverityThreshold field.
+func (o *UpsertConnectionRequestOneOf5) SetSeverityThreshold(v int32) {
+	o.SeverityThreshold = &v
 }
 
 // GetProvider returns the Provider field value
@@ -211,8 +211,8 @@ func (o UpsertConnectionRequestOneOf5) ToMap() (map[string]interface{}, error) {
 		toSerialize["api_version"] = o.ApiVersion
 	}
 	toSerialize["endpoint"] = o.Endpoint
-	if !IsNil(o.Language) {
-		toSerialize["language"] = o.Language
+	if !IsNil(o.SeverityThreshold) {
+		toSerialize["severity_threshold"] = o.SeverityThreshold
 	}
 	toSerialize["provider"] = o.Provider
 	return toSerialize, nil

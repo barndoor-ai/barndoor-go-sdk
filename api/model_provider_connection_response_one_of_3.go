@@ -25,9 +25,10 @@ type ProviderConnectionResponseOneOf3 struct {
 	AuthType string `json:"auth_type"`
 	Endpoint *string `json:"endpoint,omitempty"`
 	ExternalId *string `json:"external_id,omitempty"`
+	GuardrailIdentifier string `json:"guardrail_identifier"`
+	GuardrailVersion string `json:"guardrail_version"`
 	HasCredentials bool `json:"has_credentials"`
 	IamRoleArn *string `json:"iam_role_arn,omitempty"`
-	Language string `json:"language"`
 	OrgId string `json:"org_id"`
 	Region string `json:"region"`
 	Provider string `json:"provider"`
@@ -39,11 +40,12 @@ type _ProviderConnectionResponseOneOf3 ProviderConnectionResponseOneOf3
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProviderConnectionResponseOneOf3(authType string, hasCredentials bool, language string, orgId string, region string, provider string) *ProviderConnectionResponseOneOf3 {
+func NewProviderConnectionResponseOneOf3(authType string, guardrailIdentifier string, guardrailVersion string, hasCredentials bool, orgId string, region string, provider string) *ProviderConnectionResponseOneOf3 {
 	this := ProviderConnectionResponseOneOf3{}
 	this.AuthType = authType
+	this.GuardrailIdentifier = guardrailIdentifier
+	this.GuardrailVersion = guardrailVersion
 	this.HasCredentials = hasCredentials
-	this.Language = language
 	this.OrgId = orgId
 	this.Region = region
 	this.Provider = provider
@@ -178,6 +180,54 @@ func (o *ProviderConnectionResponseOneOf3) SetExternalId(v string) {
 	o.ExternalId = &v
 }
 
+// GetGuardrailIdentifier returns the GuardrailIdentifier field value
+func (o *ProviderConnectionResponseOneOf3) GetGuardrailIdentifier() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.GuardrailIdentifier
+}
+
+// GetGuardrailIdentifierOk returns a tuple with the GuardrailIdentifier field value
+// and a boolean to check if the value has been set.
+func (o *ProviderConnectionResponseOneOf3) GetGuardrailIdentifierOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.GuardrailIdentifier, true
+}
+
+// SetGuardrailIdentifier sets field value
+func (o *ProviderConnectionResponseOneOf3) SetGuardrailIdentifier(v string) {
+	o.GuardrailIdentifier = v
+}
+
+// GetGuardrailVersion returns the GuardrailVersion field value
+func (o *ProviderConnectionResponseOneOf3) GetGuardrailVersion() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.GuardrailVersion
+}
+
+// GetGuardrailVersionOk returns a tuple with the GuardrailVersion field value
+// and a boolean to check if the value has been set.
+func (o *ProviderConnectionResponseOneOf3) GetGuardrailVersionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.GuardrailVersion, true
+}
+
+// SetGuardrailVersion sets field value
+func (o *ProviderConnectionResponseOneOf3) SetGuardrailVersion(v string) {
+	o.GuardrailVersion = v
+}
+
 // GetHasCredentials returns the HasCredentials field value
 func (o *ProviderConnectionResponseOneOf3) GetHasCredentials() bool {
 	if o == nil {
@@ -232,30 +282,6 @@ func (o *ProviderConnectionResponseOneOf3) HasIamRoleArn() bool {
 // SetIamRoleArn gets a reference to the given string and assigns it to the IamRoleArn field.
 func (o *ProviderConnectionResponseOneOf3) SetIamRoleArn(v string) {
 	o.IamRoleArn = &v
-}
-
-// GetLanguage returns the Language field value
-func (o *ProviderConnectionResponseOneOf3) GetLanguage() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.Language
-}
-
-// GetLanguageOk returns a tuple with the Language field value
-// and a boolean to check if the value has been set.
-func (o *ProviderConnectionResponseOneOf3) GetLanguageOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Language, true
-}
-
-// SetLanguage sets field value
-func (o *ProviderConnectionResponseOneOf3) SetLanguage(v string) {
-	o.Language = v
 }
 
 // GetOrgId returns the OrgId field value
@@ -350,11 +376,12 @@ func (o ProviderConnectionResponseOneOf3) ToMap() (map[string]interface{}, error
 	if !IsNil(o.ExternalId) {
 		toSerialize["external_id"] = o.ExternalId
 	}
+	toSerialize["guardrail_identifier"] = o.GuardrailIdentifier
+	toSerialize["guardrail_version"] = o.GuardrailVersion
 	toSerialize["has_credentials"] = o.HasCredentials
 	if !IsNil(o.IamRoleArn) {
 		toSerialize["iam_role_arn"] = o.IamRoleArn
 	}
-	toSerialize["language"] = o.Language
 	toSerialize["org_id"] = o.OrgId
 	toSerialize["region"] = o.Region
 	toSerialize["provider"] = o.Provider
@@ -367,8 +394,9 @@ func (o *ProviderConnectionResponseOneOf3) UnmarshalJSON(data []byte) (err error
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"auth_type",
+		"guardrail_identifier",
+		"guardrail_version",
 		"has_credentials",
-		"language",
 		"org_id",
 		"region",
 		"provider",
