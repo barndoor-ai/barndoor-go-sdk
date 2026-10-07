@@ -1102,6 +1102,8 @@ func (r ApiCreateProfileRequest) Execute() (*AgentRuntimeProfile, *http.Response
 /*
 CreateProfile Create an agent runtime profile
 
+Creates an active profile at version 1. If the organization has no usable default profile for the profile's client yet, the new profile also becomes that client's organization default; an existing default is never changed.
+
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiCreateProfileRequest
 */
