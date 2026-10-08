@@ -21,11 +21,19 @@ var _ MappedNullable = &RenameModelRouteResponse{}
 
 // RenameModelRouteResponse struct for RenameModelRouteResponse
 type RenameModelRouteResponse struct {
+	// Budgets, rate limits and model-access policies that stayed on the old name, because a model enablement or routing policy still answers to it. Nonzero means those rows no longer apply to this route.
+	GovernanceTargetsKept int64 `json:"governance_targets_kept"`
+	// How many model-access policies had a target renamed.
+	ModelAccessPoliciesRetargeted int64 `json:"model_access_policies_retargeted"`
 	ModelAlias string `json:"model_alias"`
+	// How many rate-limit policies now target the new name.
+	RateLimitPoliciesRetargeted int64 `json:"rate_limit_policies_retargeted"`
 	// How many route-group memberships moved to the new name.
 	RouteGroupMembershipsMoved int64 `json:"route_group_memberships_moved"`
 	// How many route targets were renamed.
 	TargetsRenamed int64 `json:"targets_renamed"`
+	// How many token budgets now target the new name. Their usage so far this period moved with them.
+	TokenBudgetsRetargeted int64 `json:"token_budgets_retargeted"`
 }
 
 type _RenameModelRouteResponse RenameModelRouteResponse
@@ -34,11 +42,15 @@ type _RenameModelRouteResponse RenameModelRouteResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRenameModelRouteResponse(modelAlias string, routeGroupMembershipsMoved int64, targetsRenamed int64) *RenameModelRouteResponse {
+func NewRenameModelRouteResponse(governanceTargetsKept int64, modelAccessPoliciesRetargeted int64, modelAlias string, rateLimitPoliciesRetargeted int64, routeGroupMembershipsMoved int64, targetsRenamed int64, tokenBudgetsRetargeted int64) *RenameModelRouteResponse {
 	this := RenameModelRouteResponse{}
+	this.GovernanceTargetsKept = governanceTargetsKept
+	this.ModelAccessPoliciesRetargeted = modelAccessPoliciesRetargeted
 	this.ModelAlias = modelAlias
+	this.RateLimitPoliciesRetargeted = rateLimitPoliciesRetargeted
 	this.RouteGroupMembershipsMoved = routeGroupMembershipsMoved
 	this.TargetsRenamed = targetsRenamed
+	this.TokenBudgetsRetargeted = tokenBudgetsRetargeted
 	return &this
 }
 
@@ -48,6 +60,54 @@ func NewRenameModelRouteResponse(modelAlias string, routeGroupMembershipsMoved i
 func NewRenameModelRouteResponseWithDefaults() *RenameModelRouteResponse {
 	this := RenameModelRouteResponse{}
 	return &this
+}
+
+// GetGovernanceTargetsKept returns the GovernanceTargetsKept field value
+func (o *RenameModelRouteResponse) GetGovernanceTargetsKept() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
+
+	return o.GovernanceTargetsKept
+}
+
+// GetGovernanceTargetsKeptOk returns a tuple with the GovernanceTargetsKept field value
+// and a boolean to check if the value has been set.
+func (o *RenameModelRouteResponse) GetGovernanceTargetsKeptOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.GovernanceTargetsKept, true
+}
+
+// SetGovernanceTargetsKept sets field value
+func (o *RenameModelRouteResponse) SetGovernanceTargetsKept(v int64) {
+	o.GovernanceTargetsKept = v
+}
+
+// GetModelAccessPoliciesRetargeted returns the ModelAccessPoliciesRetargeted field value
+func (o *RenameModelRouteResponse) GetModelAccessPoliciesRetargeted() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
+
+	return o.ModelAccessPoliciesRetargeted
+}
+
+// GetModelAccessPoliciesRetargetedOk returns a tuple with the ModelAccessPoliciesRetargeted field value
+// and a boolean to check if the value has been set.
+func (o *RenameModelRouteResponse) GetModelAccessPoliciesRetargetedOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ModelAccessPoliciesRetargeted, true
+}
+
+// SetModelAccessPoliciesRetargeted sets field value
+func (o *RenameModelRouteResponse) SetModelAccessPoliciesRetargeted(v int64) {
+	o.ModelAccessPoliciesRetargeted = v
 }
 
 // GetModelAlias returns the ModelAlias field value
@@ -72,6 +132,30 @@ func (o *RenameModelRouteResponse) GetModelAliasOk() (*string, bool) {
 // SetModelAlias sets field value
 func (o *RenameModelRouteResponse) SetModelAlias(v string) {
 	o.ModelAlias = v
+}
+
+// GetRateLimitPoliciesRetargeted returns the RateLimitPoliciesRetargeted field value
+func (o *RenameModelRouteResponse) GetRateLimitPoliciesRetargeted() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
+
+	return o.RateLimitPoliciesRetargeted
+}
+
+// GetRateLimitPoliciesRetargetedOk returns a tuple with the RateLimitPoliciesRetargeted field value
+// and a boolean to check if the value has been set.
+func (o *RenameModelRouteResponse) GetRateLimitPoliciesRetargetedOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.RateLimitPoliciesRetargeted, true
+}
+
+// SetRateLimitPoliciesRetargeted sets field value
+func (o *RenameModelRouteResponse) SetRateLimitPoliciesRetargeted(v int64) {
+	o.RateLimitPoliciesRetargeted = v
 }
 
 // GetRouteGroupMembershipsMoved returns the RouteGroupMembershipsMoved field value
@@ -122,6 +206,30 @@ func (o *RenameModelRouteResponse) SetTargetsRenamed(v int64) {
 	o.TargetsRenamed = v
 }
 
+// GetTokenBudgetsRetargeted returns the TokenBudgetsRetargeted field value
+func (o *RenameModelRouteResponse) GetTokenBudgetsRetargeted() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
+
+	return o.TokenBudgetsRetargeted
+}
+
+// GetTokenBudgetsRetargetedOk returns a tuple with the TokenBudgetsRetargeted field value
+// and a boolean to check if the value has been set.
+func (o *RenameModelRouteResponse) GetTokenBudgetsRetargetedOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.TokenBudgetsRetargeted, true
+}
+
+// SetTokenBudgetsRetargeted sets field value
+func (o *RenameModelRouteResponse) SetTokenBudgetsRetargeted(v int64) {
+	o.TokenBudgetsRetargeted = v
+}
+
 func (o RenameModelRouteResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -132,9 +240,13 @@ func (o RenameModelRouteResponse) MarshalJSON() ([]byte, error) {
 
 func (o RenameModelRouteResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["governance_targets_kept"] = o.GovernanceTargetsKept
+	toSerialize["model_access_policies_retargeted"] = o.ModelAccessPoliciesRetargeted
 	toSerialize["model_alias"] = o.ModelAlias
+	toSerialize["rate_limit_policies_retargeted"] = o.RateLimitPoliciesRetargeted
 	toSerialize["route_group_memberships_moved"] = o.RouteGroupMembershipsMoved
 	toSerialize["targets_renamed"] = o.TargetsRenamed
+	toSerialize["token_budgets_retargeted"] = o.TokenBudgetsRetargeted
 	return toSerialize, nil
 }
 
@@ -143,9 +255,13 @@ func (o *RenameModelRouteResponse) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"governance_targets_kept",
+		"model_access_policies_retargeted",
 		"model_alias",
+		"rate_limit_policies_retargeted",
 		"route_group_memberships_moved",
 		"targets_renamed",
+		"token_budgets_retargeted",
 	}
 
 	allProperties := make(map[string]interface{})
