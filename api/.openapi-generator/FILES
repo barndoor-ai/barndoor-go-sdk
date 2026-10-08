@@ -89,6 +89,10 @@ model_custom_detection_type_response.go
 model_custom_detection_types_response.go
 model_default_model_access.go
 model_default_pricing_entry.go
+model_default_setup_profile.go
+model_default_setup_request.go
+model_default_setup_response.go
+model_default_setup_route.go
 model_deleted_response.go
 model_destination_response.go
 model_detection_engine_capabilities_response.go
@@ -186,6 +190,7 @@ model_policy_detail.go
 model_policy_detail_response.go
 model_policy_impact_severity_counts.go
 model_policy_impact_summary.go
+model_policy_needing_update.go
 model_policy_revision_compare_response.go
 model_policy_revision_compare_side.go
 model_policy_revision_detail_response.go
