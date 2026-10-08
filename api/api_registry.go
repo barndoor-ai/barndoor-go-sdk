@@ -2084,7 +2084,7 @@ func (r ApiListMcpServersRequest) AudienceScoped(audienceScoped bool) ApiListMcp
 	return r
 }
 
-// BCP-4300: include servers that run locally through the Barndoor CLI (embedded and local catalogs). Default true, so existing callers keep every server; the admin MCP Servers page sends false while local MCP management is not rolled out to the org.
+// BCP-4300: include servers that run locally through the Barndoor CLI (embedded and local catalogs). Omitted, the registry resolves it from the org&#39;s &#x60;local-cli-mcp-tooling&#x60; flag (fail-closed); an explicit value is always honoured.
 func (r ApiListMcpServersRequest) IncludeLocal(includeLocal bool) ApiListMcpServersRequest {
 	r.includeLocal = &includeLocal
 	return r
@@ -2187,10 +2187,6 @@ func (a *RegistryAPIService) ListMcpServersExecute(r ApiListMcpServersRequest) (
 	}
 	if r.includeLocal != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", r.includeLocal, "form", "")
-	} else {
-		var defaultValue bool = true
-		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", defaultValue, "form", "")
-		r.includeLocal = &defaultValue
 	}
 	if r.page != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
