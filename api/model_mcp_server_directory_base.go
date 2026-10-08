@@ -48,6 +48,7 @@ type MCPServerDirectoryBase struct {
 	CredentialSchema interface{} `json:"credential_schema"`
 	Public bool `json:"public"`
 	RequiresAuth bool `json:"requires_auth"`
+	// When requires_auth was last observed. NULL = not observed since the last URL change.
 	RequiresAuthObservedAt NullableTime `json:"requires_auth_observed_at"`
 }
 
