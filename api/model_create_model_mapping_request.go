@@ -21,7 +21,7 @@ var _ MappedNullable = &CreateModelMappingRequest{}
 
 // CreateModelMappingRequest struct for CreateModelMappingRequest
 type CreateModelMappingRequest struct {
-	// Whether this row should participate in bare-name resolution. The admin handler treats `None` as \"infer from alias shape\" — custom aliases imply `true`, 1:1 enablement rows imply `false`. Pass `Some(true)` explicitly from the Model Routes tab to opt a 1:1 row into bare resolution.
+	// Whether a route target participates in bare-name resolution. Defaults to `true` for a route and is always `false` for an enablement, which is reachable only as `<provider>/<model>`.
 	BareAlias NullableBool `json:"bare_alias,omitempty"`
 	// Optional free-text note explaining why this route was added (BCP-3998). Surfaced on the row and mirrored into the audit event.
 	ChangeNote NullableString `json:"change_note,omitempty"`
@@ -38,6 +38,8 @@ type CreateModelMappingRequest struct {
 	// Width of the rolling failure window, seconds. Range 1-3600; default 60.
 	CooldownWindowSecs NullableInt32 `json:"cooldown_window_secs,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
+	// `model` enables the model on the provider; `route` adds a target to the route named `model_alias`, which may be the upstream's own name.  Omitted, it is inferred the way callers predating the field meant it (see [`MappingKind::infer`]): `model_alias == upstream_model` without `bare_alias: true` is an enablement, anything else a route. A route named after its upstream with no enablement yet on the provider is accepted only in that legacy form, which enables the model first.
+	Kind NullableMappingKind `json:"kind,omitempty"`
 	ModelAlias string `json:"model_alias"`
 	Priority *int32 `json:"priority,omitempty"`
 	ProviderId string `json:"provider_id"`
@@ -444,6 +446,48 @@ func (o *CreateModelMappingRequest) SetEnabled(v bool) {
 	o.Enabled = &v
 }
 
+// GetKind returns the Kind field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateModelMappingRequest) GetKind() MappingKind {
+	if o == nil || IsNil(o.Kind.Get()) {
+		var ret MappingKind
+		return ret
+	}
+	return *o.Kind.Get()
+}
+
+// GetKindOk returns a tuple with the Kind field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateModelMappingRequest) GetKindOk() (*MappingKind, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Kind.Get(), o.Kind.IsSet()
+}
+
+// HasKind returns a boolean if a field has been set.
+func (o *CreateModelMappingRequest) HasKind() bool {
+	if o != nil && o.Kind.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetKind gets a reference to the given NullableMappingKind and assigns it to the Kind field.
+func (o *CreateModelMappingRequest) SetKind(v MappingKind) {
+	o.Kind.Set(&v)
+}
+// SetKindNil sets the value for Kind to be an explicit nil
+func (o *CreateModelMappingRequest) SetKindNil() {
+	o.Kind.Set(nil)
+}
+
+// UnsetKind ensures that no value is present for Kind, not even an explicit nil
+func (o *CreateModelMappingRequest) UnsetKind() {
+	o.Kind.Unset()
+}
+
 // GetModelAlias returns the ModelAlias field value
 func (o *CreateModelMappingRequest) GetModelAlias() string {
 	if o == nil {
@@ -774,6 +818,9 @@ func (o CreateModelMappingRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Enabled) {
 		toSerialize["enabled"] = o.Enabled
+	}
+	if o.Kind.IsSet() {
+		toSerialize["kind"] = o.Kind.Get()
 	}
 	toSerialize["model_alias"] = o.ModelAlias
 	if !IsNil(o.Priority) {

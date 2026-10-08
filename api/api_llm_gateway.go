@@ -5278,6 +5278,120 @@ func (a *LlmGatewayAPIService) RemoveRouteGroupMemberExecute(r ApiRemoveRouteGro
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiRenameModelRouteRequest struct {
+	ctx context.Context
+	ApiService *LlmGatewayAPIService
+	renameModelRouteRequest *RenameModelRouteRequest
+}
+
+func (r ApiRenameModelRouteRequest) RenameModelRouteRequest(renameModelRouteRequest RenameModelRouteRequest) ApiRenameModelRouteRequest {
+	r.renameModelRouteRequest = &renameModelRouteRequest
+	return r
+}
+
+func (r ApiRenameModelRouteRequest) Execute() (*RenameModelRouteResponse, *http.Response, error) {
+	return r.ApiService.RenameModelRouteExecute(r)
+}
+
+/*
+RenameModelRoute Rename a model route
+
+Renames a route in one transaction: every target, and the route's
+route-group memberships (BCP-4580). Renaming target by target through
+`PUT /admin/model-mappings/{id}` still works, but leaves the route split
+across two names until the last PUT lands, and moves the memberships on the
+first one.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiRenameModelRouteRequest
+*/
+func (a *LlmGatewayAPIService) RenameModelRoute(ctx context.Context) ApiRenameModelRouteRequest {
+	return ApiRenameModelRouteRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return RenameModelRouteResponse
+func (a *LlmGatewayAPIService) RenameModelRouteExecute(r ApiRenameModelRouteRequest) (*RenameModelRouteResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *RenameModelRouteResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LlmGatewayAPIService.RenameModelRoute")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/llm-gateway/admin/model-routes/rename"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.renameModelRouteRequest == nil {
+		return localVarReturnValue, nil, reportError("renameModelRouteRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.renameModelRouteRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiReorderModelMappingsRequest struct {
 	ctx context.Context
 	ApiService *LlmGatewayAPIService

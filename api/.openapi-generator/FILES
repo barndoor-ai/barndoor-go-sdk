@@ -140,6 +140,7 @@ model_location_inner.go
 model_long_context_tier.go
 model_long_context_tier_entry.go
 model_long_context_tier_request.go
+model_mapping_kind.go
 model_mask_format.go
 model_mask_keep.go
 model_match.go
@@ -216,6 +217,8 @@ model_provider_connection_response_one_of_3.go
 model_provider_connection_response_one_of_4.go
 model_provider_connection_response_one_of_5.go
 model_publish_blocker.go
+model_rename_model_route_request.go
+model_rename_model_route_response.go
 model_reorder_entry.go
 model_reorder_model_mappings_request.go
 model_reordered_response.go

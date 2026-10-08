@@ -46,14 +46,16 @@ type ModelMappingWithBudgetStatus struct {
 	LastModifiedByUserId *string `json:"last_modified_by_user_id,omitempty"`
 	// Set when the *gateway* turned this row off (BCP-3811's `full` sync retiring a model the catalog dropped). `None` means a human decided the `enabled` flag, and the reconciler will not touch it in either direction — see migration V63. Any admin write to `enabled` clears this.  Clearing it is *not* a durable claim on the row, and it is easy to read it that way. It protects a human's **disable** — the re-enable branch requires the marker to be present, so a row a human turned off is never turned back on. It cannot protect a human's **re-enable**: a cleared marker is exactly what makes the row eligible for retirement again, so under `full` a model the catalog still does not list is re-disabled on the next tick. That is `full`'s contract (\"enabled set tracks the catalog\"), not a bug — see `model_sync::tests::re_enabling_a_dropped_model_is_retired_again_on_the_next_tick`.
 	AutoDisabledReason *AutoDisabledReason `json:"auto_disabled_reason,omitempty"`
-	// When `true` the row participates in bare-name resolution (`POST /v1/chat/completions {\"model\": \"<alias>\"}`). When `false` the row is enablement-only — addressable solely via the explicit `<provider>/<upstream>` form. Custom-alias rows (`model_alias != upstream_model`) are always `true`; 1:1 rows default to `false` and admins opt in by creating an explicit Route on the Model Routes tab.
+	// When `true` the row participates in bare-name resolution (`POST /v1/chat/completions {\"model\": \"<alias>\"}`). Route targets are `true`; enablements (`kind = model`) are always `false` and are addressable solely via the explicit `<provider>/<upstream>` form.
 	BareAlias bool `json:"bare_alias"`
 	Enabled bool `json:"enabled"`
 	Id string `json:"id"`
+	// Whether this row is the model's enablement or a route target — see [`MappingKind`]. Never inferred from `model_alias == upstream_model`: a route may carry its upstream's name (migration V84).
+	Kind MappingKind `json:"kind"`
 	ModelAlias string `json:"model_alias"`
 	Priority int32 `json:"priority"`
 	ProviderId string `json:"provider_id"`
-	// Per-mapping (route-tier / model-tier) total-request timeout for non-streaming requests (streaming responses have no total timeout). Defaults to `TOTAL_REQUEST_TIMEOUT_DEFAULT_SECS` at insert. On a custom-alias row this is the *route* tier; on the 1:1 enablement (anchor) row it is the *model* tier consulted by the resolver for every alias of that model. The range is fixed platform policy (`TOTAL_REQUEST_TIMEOUT_MIN_SECS..=TOTAL_REQUEST_TIMEOUT_MAX_SECS`), enforced by the column CHECK.
+	// Per-mapping (route-tier / model-tier) total-request timeout for non-streaming requests (streaming responses have no total timeout). Defaults to `TOTAL_REQUEST_TIMEOUT_DEFAULT_SECS` at insert. On a route target this is the *route* tier; on the enablement (`kind = model`) it is the *model* tier consulted by the resolver for every route target of that model. The range is fixed platform policy (`TOTAL_REQUEST_TIMEOUT_MIN_SECS..=TOTAL_REQUEST_TIMEOUT_MAX_SECS`), enforced by the column CHECK.
 	RequestTimeoutSecs *int32 `json:"request_timeout_secs,omitempty"`
 	// Same-route retries on upstream 429. 0 means immediate failover.
 	RetryOn429Count int32 `json:"retry_on_429_count"`
@@ -80,7 +82,7 @@ type _ModelMappingWithBudgetStatus ModelMappingWithBudgetStatus
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewModelMappingWithBudgetStatus(cooldown429DefaultSecs int32, cooldownBaseSecs int32, cooldownFailureThreshold int32, cooldownMaxSecs int32, cooldownOverloadedSecs int32, cooldownWindowSecs int32, bareAlias bool, enabled bool, id string, modelAlias string, priority int32, providerId string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string, effectivePricing EffectivePricing) *ModelMappingWithBudgetStatus {
+func NewModelMappingWithBudgetStatus(cooldown429DefaultSecs int32, cooldownBaseSecs int32, cooldownFailureThreshold int32, cooldownMaxSecs int32, cooldownOverloadedSecs int32, cooldownWindowSecs int32, bareAlias bool, enabled bool, id string, kind MappingKind, modelAlias string, priority int32, providerId string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string, effectivePricing EffectivePricing) *ModelMappingWithBudgetStatus {
 	this := ModelMappingWithBudgetStatus{}
 	this.Cooldown429DefaultSecs = cooldown429DefaultSecs
 	this.CooldownBaseSecs = cooldownBaseSecs
@@ -91,6 +93,7 @@ func NewModelMappingWithBudgetStatus(cooldown429DefaultSecs int32, cooldownBaseS
 	this.BareAlias = bareAlias
 	this.Enabled = enabled
 	this.Id = id
+	this.Kind = kind
 	this.ModelAlias = modelAlias
 	this.Priority = priority
 	this.ProviderId = providerId
@@ -614,6 +617,30 @@ func (o *ModelMappingWithBudgetStatus) SetId(v string) {
 	o.Id = v
 }
 
+// GetKind returns the Kind field value
+func (o *ModelMappingWithBudgetStatus) GetKind() MappingKind {
+	if o == nil {
+		var ret MappingKind
+		return ret
+	}
+
+	return o.Kind
+}
+
+// GetKindOk returns a tuple with the Kind field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithBudgetStatus) GetKindOk() (*MappingKind, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Kind, true
+}
+
+// SetKind sets field value
+func (o *ModelMappingWithBudgetStatus) SetKind(v MappingKind) {
+	o.Kind = v
+}
+
 // GetModelAlias returns the ModelAlias field value
 func (o *ModelMappingWithBudgetStatus) GetModelAlias() string {
 	if o == nil {
@@ -1042,6 +1069,7 @@ func (o ModelMappingWithBudgetStatus) ToMap() (map[string]interface{}, error) {
 	toSerialize["bare_alias"] = o.BareAlias
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
+	toSerialize["kind"] = o.Kind
 	toSerialize["model_alias"] = o.ModelAlias
 	toSerialize["priority"] = o.Priority
 	toSerialize["provider_id"] = o.ProviderId
@@ -1082,6 +1110,7 @@ func (o *ModelMappingWithBudgetStatus) UnmarshalJSON(data []byte) (err error) {
 		"bare_alias",
 		"enabled",
 		"id",
+		"kind",
 		"model_alias",
 		"priority",
 		"provider_id",

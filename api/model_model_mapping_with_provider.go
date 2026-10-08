@@ -51,6 +51,8 @@ type ModelMappingWithProvider struct {
 	CreatedAt bdtime.Time `json:"created_at"`
 	Enabled bool `json:"enabled"`
 	Id string `json:"id"`
+	// See [`ModelMapping::kind`].
+	Kind MappingKind `json:"kind"`
 	ModelAlias string `json:"model_alias"`
 	Priority int32 `json:"priority"`
 	ProviderAuthType string `json:"provider_auth_type"`
@@ -71,7 +73,7 @@ type _ModelMappingWithProvider ModelMappingWithProvider
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewModelMappingWithProvider(cooldown429DefaultSecs int32, cooldownBaseSecs int32, cooldownFailureThreshold int32, cooldownMaxSecs int32, cooldownOverloadedSecs int32, cooldownWindowSecs int32, bareAlias bool, createdAt bdtime.Time, enabled bool, id string, modelAlias string, priority int32, providerAuthType string, providerId string, providerName string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string) *ModelMappingWithProvider {
+func NewModelMappingWithProvider(cooldown429DefaultSecs int32, cooldownBaseSecs int32, cooldownFailureThreshold int32, cooldownMaxSecs int32, cooldownOverloadedSecs int32, cooldownWindowSecs int32, bareAlias bool, createdAt bdtime.Time, enabled bool, id string, kind MappingKind, modelAlias string, priority int32, providerAuthType string, providerId string, providerName string, retryOn429Count int32, retryOn429MaxWaitSecs int32, source ModelSource, upstreamModel string) *ModelMappingWithProvider {
 	this := ModelMappingWithProvider{}
 	this.Cooldown429DefaultSecs = cooldown429DefaultSecs
 	this.CooldownBaseSecs = cooldownBaseSecs
@@ -83,6 +85,7 @@ func NewModelMappingWithProvider(cooldown429DefaultSecs int32, cooldownBaseSecs 
 	this.CreatedAt = createdAt
 	this.Enabled = enabled
 	this.Id = id
+	this.Kind = kind
 	this.ModelAlias = modelAlias
 	this.Priority = priority
 	this.ProviderAuthType = providerAuthType
@@ -721,6 +724,30 @@ func (o *ModelMappingWithProvider) SetId(v string) {
 	o.Id = v
 }
 
+// GetKind returns the Kind field value
+func (o *ModelMappingWithProvider) GetKind() MappingKind {
+	if o == nil {
+		var ret MappingKind
+		return ret
+	}
+
+	return o.Kind
+}
+
+// GetKindOk returns a tuple with the Kind field value
+// and a boolean to check if the value has been set.
+func (o *ModelMappingWithProvider) GetKindOk() (*MappingKind, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Kind, true
+}
+
+// SetKind sets field value
+func (o *ModelMappingWithProvider) SetKind(v MappingKind) {
+	o.Kind = v
+}
+
 // GetModelAlias returns the ModelAlias field value
 func (o *ModelMappingWithProvider) GetModelAlias() string {
 	if o == nil {
@@ -1068,6 +1095,7 @@ func (o ModelMappingWithProvider) ToMap() (map[string]interface{}, error) {
 	toSerialize["created_at"] = o.CreatedAt
 	toSerialize["enabled"] = o.Enabled
 	toSerialize["id"] = o.Id
+	toSerialize["kind"] = o.Kind
 	toSerialize["model_alias"] = o.ModelAlias
 	toSerialize["priority"] = o.Priority
 	toSerialize["provider_auth_type"] = o.ProviderAuthType
@@ -1101,6 +1129,7 @@ func (o *ModelMappingWithProvider) UnmarshalJSON(data []byte) (err error) {
 		"created_at",
 		"enabled",
 		"id",
+		"kind",
 		"model_alias",
 		"priority",
 		"provider_auth_type",
