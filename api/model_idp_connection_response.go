@@ -34,6 +34,7 @@ type IdpConnectionResponse struct {
 	ClientIdConfigured *bool `json:"client_id_configured,omitempty"`
 	ClientSecretConfigured *bool `json:"client_secret_configured,omitempty"`
 	Domain NullableString `json:"domain,omitempty"`
+	Domains []string `json:"domains,omitempty"`
 }
 
 // NewIdpConnectionResponse instantiates a new IdpConnectionResponse object
@@ -659,6 +660,38 @@ func (o *IdpConnectionResponse) UnsetDomain() {
 	o.Domain.Unset()
 }
 
+// GetDomains returns the Domains field value if set, zero value otherwise.
+func (o *IdpConnectionResponse) GetDomains() []string {
+	if o == nil || IsNil(o.Domains) {
+		var ret []string
+		return ret
+	}
+	return o.Domains
+}
+
+// GetDomainsOk returns a tuple with the Domains field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IdpConnectionResponse) GetDomainsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Domains) {
+		return nil, false
+	}
+	return o.Domains, true
+}
+
+// HasDomains returns a boolean if a field has been set.
+func (o *IdpConnectionResponse) HasDomains() bool {
+	if o != nil && !IsNil(o.Domains) {
+		return true
+	}
+
+	return false
+}
+
+// SetDomains gets a reference to the given []string and assigns it to the Domains field.
+func (o *IdpConnectionResponse) SetDomains(v []string) {
+	o.Domains = v
+}
+
 func (o IdpConnectionResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -713,6 +746,9 @@ func (o IdpConnectionResponse) ToMap() (map[string]interface{}, error) {
 	}
 	if o.Domain.IsSet() {
 		toSerialize["domain"] = o.Domain.Get()
+	}
+	if !IsNil(o.Domains) {
+		toSerialize["domains"] = o.Domains
 	}
 	return toSerialize, nil
 }
