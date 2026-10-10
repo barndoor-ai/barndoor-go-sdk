@@ -37,9 +37,15 @@ type WithAttributionModelAccessPolicy struct {
 	Name string `json:"name"`
 	OrgId string `json:"org_id"`
 	PolicyType string `json:"policy_type"`
+	// First element of [`Self::scope_ids`], kept for clients that predate multi-entity scopes (BCP-5001). Never read for matching when `scope_ids` is non-empty -- see [`Self::bound_ids`].
 	ScopeId NullableString `json:"scope_id,omitempty"`
+	// Every UUID-keyed entity (user / project / api_key / agent) the policy is bound to (BCP-5001). Empty means unbound: the policy is not pinned to a specific entity of its scope type.
+	ScopeIds []string `json:"scope_ids"`
 	ScopeType string `json:"scope_type"`
+	// First element of [`Self::scope_values`]; same compatibility role as `scope_id`.
 	ScopeValue NullableString `json:"scope_value,omitempty"`
+	// Every role / group name the policy is bound to (BCP-5001). Empty means unbound.
+	ScopeValues []string `json:"scope_values"`
 	Targets []ModelAccessTarget `json:"targets"`
 	TrafficType string `json:"traffic_type"`
 }
@@ -50,14 +56,16 @@ type _WithAttributionModelAccessPolicy WithAttributionModelAccessPolicy
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWithAttributionModelAccessPolicy(enabled bool, id string, name string, orgId string, policyType string, scopeType string, targets []ModelAccessTarget, trafficType string) *WithAttributionModelAccessPolicy {
+func NewWithAttributionModelAccessPolicy(enabled bool, id string, name string, orgId string, policyType string, scopeIds []string, scopeType string, scopeValues []string, targets []ModelAccessTarget, trafficType string) *WithAttributionModelAccessPolicy {
 	this := WithAttributionModelAccessPolicy{}
 	this.Enabled = enabled
 	this.Id = id
 	this.Name = name
 	this.OrgId = orgId
 	this.PolicyType = policyType
+	this.ScopeIds = scopeIds
 	this.ScopeType = scopeType
+	this.ScopeValues = scopeValues
 	this.Targets = targets
 	this.TrafficType = trafficType
 	return &this
@@ -489,6 +497,30 @@ func (o *WithAttributionModelAccessPolicy) UnsetScopeId() {
 	o.ScopeId.Unset()
 }
 
+// GetScopeIds returns the ScopeIds field value
+func (o *WithAttributionModelAccessPolicy) GetScopeIds() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.ScopeIds
+}
+
+// GetScopeIdsOk returns a tuple with the ScopeIds field value
+// and a boolean to check if the value has been set.
+func (o *WithAttributionModelAccessPolicy) GetScopeIdsOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ScopeIds, true
+}
+
+// SetScopeIds sets field value
+func (o *WithAttributionModelAccessPolicy) SetScopeIds(v []string) {
+	o.ScopeIds = v
+}
+
 // GetScopeType returns the ScopeType field value
 func (o *WithAttributionModelAccessPolicy) GetScopeType() string {
 	if o == nil {
@@ -553,6 +585,30 @@ func (o *WithAttributionModelAccessPolicy) SetScopeValueNil() {
 // UnsetScopeValue ensures that no value is present for ScopeValue, not even an explicit nil
 func (o *WithAttributionModelAccessPolicy) UnsetScopeValue() {
 	o.ScopeValue.Unset()
+}
+
+// GetScopeValues returns the ScopeValues field value
+func (o *WithAttributionModelAccessPolicy) GetScopeValues() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.ScopeValues
+}
+
+// GetScopeValuesOk returns a tuple with the ScopeValues field value
+// and a boolean to check if the value has been set.
+func (o *WithAttributionModelAccessPolicy) GetScopeValuesOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ScopeValues, true
+}
+
+// SetScopeValues sets field value
+func (o *WithAttributionModelAccessPolicy) SetScopeValues(v []string) {
+	o.ScopeValues = v
 }
 
 // GetTargets returns the Targets field value
@@ -645,10 +701,12 @@ func (o WithAttributionModelAccessPolicy) ToMap() (map[string]interface{}, error
 	if o.ScopeId.IsSet() {
 		toSerialize["scope_id"] = o.ScopeId.Get()
 	}
+	toSerialize["scope_ids"] = o.ScopeIds
 	toSerialize["scope_type"] = o.ScopeType
 	if o.ScopeValue.IsSet() {
 		toSerialize["scope_value"] = o.ScopeValue.Get()
 	}
+	toSerialize["scope_values"] = o.ScopeValues
 	toSerialize["targets"] = o.Targets
 	toSerialize["traffic_type"] = o.TrafficType
 	return toSerialize, nil
@@ -664,7 +722,9 @@ func (o *WithAttributionModelAccessPolicy) UnmarshalJSON(data []byte) (err error
 		"name",
 		"org_id",
 		"policy_type",
+		"scope_ids",
 		"scope_type",
+		"scope_values",
 		"targets",
 		"traffic_type",
 	}

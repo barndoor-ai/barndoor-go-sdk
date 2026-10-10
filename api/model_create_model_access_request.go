@@ -25,9 +25,15 @@ type CreateModelAccessRequest struct {
 	ChangeNote NullableString `json:"change_note,omitempty"`
 	Name string `json:"name"`
 	PolicyType string `json:"policy_type"`
+	// Single-entity form of `scope_ids`, kept for existing clients. Send one or the other; when both are sent `scope_id` must be the first element of `scope_ids`.
 	ScopeId NullableString `json:"scope_id,omitempty"`
+	// Every user / project / API key / agent the policy applies to (BCP-5001). The policy applies when any one of them matches the caller. Empty or omitted means not bound to a specific entity.
+	ScopeIds []string `json:"scope_ids,omitempty"`
 	ScopeType string `json:"scope_type"`
+	// Single-entity form of `scope_values`; same rules as `scope_id`.
 	ScopeValue NullableString `json:"scope_value,omitempty"`
+	// Every role / group name the policy applies to (BCP-5001). Same any-of semantics as `scope_ids`.
+	ScopeValues []string `json:"scope_values,omitempty"`
 	Targets []ModelAccessTarget `json:"targets"`
 	TrafficType *string `json:"traffic_type,omitempty"`
 }
@@ -187,6 +193,39 @@ func (o *CreateModelAccessRequest) UnsetScopeId() {
 	o.ScopeId.Unset()
 }
 
+// GetScopeIds returns the ScopeIds field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateModelAccessRequest) GetScopeIds() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.ScopeIds
+}
+
+// GetScopeIdsOk returns a tuple with the ScopeIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateModelAccessRequest) GetScopeIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ScopeIds) {
+		return nil, false
+	}
+	return o.ScopeIds, true
+}
+
+// HasScopeIds returns a boolean if a field has been set.
+func (o *CreateModelAccessRequest) HasScopeIds() bool {
+	if o != nil && !IsNil(o.ScopeIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetScopeIds gets a reference to the given []string and assigns it to the ScopeIds field.
+func (o *CreateModelAccessRequest) SetScopeIds(v []string) {
+	o.ScopeIds = v
+}
+
 // GetScopeType returns the ScopeType field value
 func (o *CreateModelAccessRequest) GetScopeType() string {
 	if o == nil {
@@ -251,6 +290,39 @@ func (o *CreateModelAccessRequest) SetScopeValueNil() {
 // UnsetScopeValue ensures that no value is present for ScopeValue, not even an explicit nil
 func (o *CreateModelAccessRequest) UnsetScopeValue() {
 	o.ScopeValue.Unset()
+}
+
+// GetScopeValues returns the ScopeValues field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CreateModelAccessRequest) GetScopeValues() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.ScopeValues
+}
+
+// GetScopeValuesOk returns a tuple with the ScopeValues field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CreateModelAccessRequest) GetScopeValuesOk() ([]string, bool) {
+	if o == nil || IsNil(o.ScopeValues) {
+		return nil, false
+	}
+	return o.ScopeValues, true
+}
+
+// HasScopeValues returns a boolean if a field has been set.
+func (o *CreateModelAccessRequest) HasScopeValues() bool {
+	if o != nil && !IsNil(o.ScopeValues) {
+		return true
+	}
+
+	return false
+}
+
+// SetScopeValues gets a reference to the given []string and assigns it to the ScopeValues field.
+func (o *CreateModelAccessRequest) SetScopeValues(v []string) {
+	o.ScopeValues = v
 }
 
 // GetTargets returns the Targets field value
@@ -327,9 +399,15 @@ func (o CreateModelAccessRequest) ToMap() (map[string]interface{}, error) {
 	if o.ScopeId.IsSet() {
 		toSerialize["scope_id"] = o.ScopeId.Get()
 	}
+	if o.ScopeIds != nil {
+		toSerialize["scope_ids"] = o.ScopeIds
+	}
 	toSerialize["scope_type"] = o.ScopeType
 	if o.ScopeValue.IsSet() {
 		toSerialize["scope_value"] = o.ScopeValue.Get()
+	}
+	if o.ScopeValues != nil {
+		toSerialize["scope_values"] = o.ScopeValues
 	}
 	toSerialize["targets"] = o.Targets
 	if !IsNil(o.TrafficType) {
