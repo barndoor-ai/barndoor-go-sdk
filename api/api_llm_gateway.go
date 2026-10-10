@@ -1214,6 +1214,8 @@ Creates the client's settings at version 1. An organization has one settings obj
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiCreateProfileRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) CreateProfile(ctx context.Context) ApiCreateProfileRequest {
 	return ApiCreateProfileRequest{
@@ -1224,6 +1226,7 @@ func (a *LlmGatewayAPIService) CreateProfile(ctx context.Context) ApiCreateProfi
 
 // Execute executes the request
 //  @return AgentRuntimeProfile
+// Deprecated
 func (a *LlmGatewayAPIService) CreateProfileExecute(r ApiCreateProfileRequest) (*AgentRuntimeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
@@ -2273,6 +2276,8 @@ DeleteProfile Delete an agent runtime profile
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization
  @return ApiDeleteProfileRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) DeleteProfile(ctx context.Context, slug string) ApiDeleteProfileRequest {
 	return ApiDeleteProfileRequest{
@@ -2284,6 +2289,7 @@ func (a *LlmGatewayAPIService) DeleteProfile(ctx context.Context, slug string) A
 
 // Execute executes the request
 //  @return DeletedResponse
+// Deprecated
 func (a *LlmGatewayAPIService) DeleteProfileExecute(r ApiDeleteProfileRequest) (*DeletedResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodDelete
@@ -2962,6 +2968,107 @@ func (a *LlmGatewayAPIService) GetApiKeyExecute(r ApiGetApiKeyRequest) (*ApiKey,
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiGetClientSettingsRequest struct {
+	ctx context.Context
+	ApiService *LlmGatewayAPIService
+	client string
+}
+
+func (r ApiGetClientSettingsRequest) Execute() (*ClientSettings, *http.Response, error) {
+	return r.ApiService.GetClientSettingsExecute(r)
+}
+
+/*
+GetClientSettings Fetch one client's settings
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param client `claude` (Claude Code) or `codex` (Codex)
+ @return ApiGetClientSettingsRequest
+*/
+func (a *LlmGatewayAPIService) GetClientSettings(ctx context.Context, client string) ApiGetClientSettingsRequest {
+	return ApiGetClientSettingsRequest{
+		ApiService: a,
+		ctx: ctx,
+		client: client,
+	}
+}
+
+// Execute executes the request
+//  @return ClientSettings
+func (a *LlmGatewayAPIService) GetClientSettingsExecute(r ApiGetClientSettingsRequest) (*ClientSettings, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ClientSettings
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LlmGatewayAPIService.GetClientSettings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/llm-gateway/admin/client-settings/{client}"
+	localVarPath = strings.Replace(localVarPath, "{"+"client"+"}", url.PathEscape(parameterValueToString(r.client, "client")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiGetConnectionRequest struct {
 	ctx context.Context
 	ApiService *LlmGatewayAPIService
@@ -3176,6 +3283,8 @@ GetProfile Fetch one agent runtime profile
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization
  @return ApiGetProfileRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) GetProfile(ctx context.Context, slug string) ApiGetProfileRequest {
 	return ApiGetProfileRequest{
@@ -3187,6 +3296,7 @@ func (a *LlmGatewayAPIService) GetProfile(ctx context.Context, slug string) ApiG
 
 // Execute executes the request
 //  @return AgentRuntimeProfile
+// Deprecated
 func (a *LlmGatewayAPIService) GetProfileExecute(r ApiGetProfileRequest) (*AgentRuntimeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
@@ -3691,6 +3801,105 @@ func (a *LlmGatewayAPIService) ListBudgetsExecute(r ApiListBudgetsRequest) ([]Wi
 	}
 
 	localVarPath := localBasePath + "/api/llm-gateway/admin/budgets"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListClientSettingsRequest struct {
+	ctx context.Context
+	ApiService *LlmGatewayAPIService
+}
+
+func (r ApiListClientSettingsRequest) Execute() (*ListClientSettingsResponse, *http.Response, error) {
+	return r.ApiService.ListClientSettingsExecute(r)
+}
+
+/*
+ListClientSettings List the organization's client settings
+
+Returns the settings for both clients, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListClientSettingsRequest
+*/
+func (a *LlmGatewayAPIService) ListClientSettings(ctx context.Context) ApiListClientSettingsRequest {
+	return ApiListClientSettingsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ListClientSettingsResponse
+func (a *LlmGatewayAPIService) ListClientSettingsExecute(r ApiListClientSettingsRequest) (*ListClientSettingsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ListClientSettingsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LlmGatewayAPIService.ListClientSettings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/llm-gateway/admin/client-settings"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4378,6 +4587,8 @@ ListProfiles List the organization's agent runtime profiles
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListProfilesRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) ListProfiles(ctx context.Context) ApiListProfilesRequest {
 	return ApiListProfilesRequest{
@@ -4388,6 +4599,7 @@ func (a *LlmGatewayAPIService) ListProfiles(ctx context.Context) ApiListProfiles
 
 // Execute executes the request
 //  @return ListProfilesResponse
+// Deprecated
 func (a *LlmGatewayAPIService) ListProfilesExecute(r ApiListProfilesRequest) (*ListProfilesResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
@@ -5085,6 +5297,8 @@ Changes the display name. `active` is accepted only when it restates the profile
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization
  @return ApiPatchProfileMetadataRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) PatchProfileMetadata(ctx context.Context, slug string) ApiPatchProfileMetadataRequest {
 	return ApiPatchProfileMetadataRequest{
@@ -5096,6 +5310,7 @@ func (a *LlmGatewayAPIService) PatchProfileMetadata(ctx context.Context, slug st
 
 // Execute executes the request
 //  @return AgentRuntimeProfile
+// Deprecated
 func (a *LlmGatewayAPIService) PatchProfileMetadataExecute(r ApiPatchProfileMetadataRequest) (*AgentRuntimeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPatch
@@ -5138,6 +5353,120 @@ func (a *LlmGatewayAPIService) PatchProfileMetadataExecute(r ApiPatchProfileMeta
 	}
 	// body params
 	localVarPostBody = r.metadataPatchRequest
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPutClientSettingsRequest struct {
+	ctx context.Context
+	ApiService *LlmGatewayAPIService
+	client string
+	putClientSettingsRequest *PutClientSettingsRequest
+}
+
+func (r ApiPutClientSettingsRequest) PutClientSettingsRequest(putClientSettingsRequest PutClientSettingsRequest) ApiPutClientSettingsRequest {
+	r.putClientSettingsRequest = &putClientSettingsRequest
+	return r
+}
+
+func (r ApiPutClientSettingsRequest) Execute() (*ClientSettings, *http.Response, error) {
+	return r.ApiService.PutClientSettingsExecute(r)
+}
+
+/*
+PutClientSettings Save one client's settings
+
+Replaces the client's capabilities and preferred models, appending a version; the first save creates the settings. Preferences are optional and advisory: Model Access decides which models each person can use, and a launch uses a preference only when the person is allowed that model.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param client `claude` (Claude Code) or `codex` (Codex)
+ @return ApiPutClientSettingsRequest
+*/
+func (a *LlmGatewayAPIService) PutClientSettings(ctx context.Context, client string) ApiPutClientSettingsRequest {
+	return ApiPutClientSettingsRequest{
+		ApiService: a,
+		ctx: ctx,
+		client: client,
+	}
+}
+
+// Execute executes the request
+//  @return ClientSettings
+func (a *LlmGatewayAPIService) PutClientSettingsExecute(r ApiPutClientSettingsRequest) (*ClientSettings, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ClientSettings
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "LlmGatewayAPIService.PutClientSettings")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/llm-gateway/admin/client-settings/{client}"
+	localVarPath = strings.Replace(localVarPath, "{"+"client"+"}", url.PathEscape(parameterValueToString(r.client, "client")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.putClientSettingsRequest == nil {
+		return localVarReturnValue, nil, reportError("putClientSettingsRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.putClientSettingsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -5733,6 +6062,8 @@ Promotes an archived profile to the client's settings and archives the current s
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization
  @return ApiSetProfileDefaultRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) SetProfileDefault(ctx context.Context, slug string) ApiSetProfileDefaultRequest {
 	return ApiSetProfileDefaultRequest{
@@ -5744,6 +6075,7 @@ func (a *LlmGatewayAPIService) SetProfileDefault(ctx context.Context, slug strin
 
 // Execute executes the request
 //  @return AgentRuntimeProfile
+// Deprecated
 func (a *LlmGatewayAPIService) SetProfileDefaultExecute(r ApiSetProfileDefaultRequest) (*AgentRuntimeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
@@ -6514,6 +6846,8 @@ UpdateProfileContract Replace a profile's capability contract
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization
  @return ApiUpdateProfileContractRequest
+
+Deprecated
 */
 func (a *LlmGatewayAPIService) UpdateProfileContract(ctx context.Context, slug string) ApiUpdateProfileContractRequest {
 	return ApiUpdateProfileContractRequest{
@@ -6525,6 +6859,7 @@ func (a *LlmGatewayAPIService) UpdateProfileContract(ctx context.Context, slug s
 
 // Execute executes the request
 //  @return AgentRuntimeProfile
+// Deprecated
 func (a *LlmGatewayAPIService) UpdateProfileContractExecute(r ApiUpdateProfileContractRequest) (*AgentRuntimeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut

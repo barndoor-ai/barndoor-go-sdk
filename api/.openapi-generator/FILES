@@ -58,6 +58,7 @@ model_channel_subscription_input.go
 model_channel_test_response.go
 model_channel_type.go
 model_channel_upsert_request.go
+model_client_settings.go
 model_condition_of_input.go
 model_condition_of_output.go
 model_configure_destination_request.go
@@ -132,6 +133,7 @@ model_idp_role_mapping_response.go
 model_idp_settings_response.go
 model_idp_test_result.go
 model_labeled_option.go
+model_list_client_settings_response.go
 model_list_profiles_response.go
 model_list_routing_rules_response.go
 model_llm_gateway_aws_role_config_response.go
@@ -217,6 +219,7 @@ model_provider_connection_response_one_of_3.go
 model_provider_connection_response_one_of_4.go
 model_provider_connection_response_one_of_5.go
 model_publish_blocker.go
+model_put_client_settings_request.go
 model_rename_model_route_request.go
 model_rename_model_route_response.go
 model_reorder_entry.go

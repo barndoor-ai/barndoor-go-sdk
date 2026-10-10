@@ -21,8 +21,11 @@ var _ MappedNullable = &DefaultSetupProfile{}
 
 // DefaultSetupProfile struct for DefaultSetupProfile
 type DefaultSetupProfile struct {
+	// True when no settings row existed for the client and this run created it.
 	Created bool `json:"created"`
 	IsOrgDefault bool `json:"is_org_default"`
+	// True when this run wrote the setup's models as the settings' preferences (a new row, or a row whose preferences were empty). False when existing preferences were left alone.
+	PreferencesSeeded bool `json:"preferences_seeded"`
 	Slug string `json:"slug"`
 }
 
@@ -32,10 +35,11 @@ type _DefaultSetupProfile DefaultSetupProfile
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDefaultSetupProfile(created bool, isOrgDefault bool, slug string) *DefaultSetupProfile {
+func NewDefaultSetupProfile(created bool, isOrgDefault bool, preferencesSeeded bool, slug string) *DefaultSetupProfile {
 	this := DefaultSetupProfile{}
 	this.Created = created
 	this.IsOrgDefault = isOrgDefault
+	this.PreferencesSeeded = preferencesSeeded
 	this.Slug = slug
 	return &this
 }
@@ -96,6 +100,30 @@ func (o *DefaultSetupProfile) SetIsOrgDefault(v bool) {
 	o.IsOrgDefault = v
 }
 
+// GetPreferencesSeeded returns the PreferencesSeeded field value
+func (o *DefaultSetupProfile) GetPreferencesSeeded() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.PreferencesSeeded
+}
+
+// GetPreferencesSeededOk returns a tuple with the PreferencesSeeded field value
+// and a boolean to check if the value has been set.
+func (o *DefaultSetupProfile) GetPreferencesSeededOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.PreferencesSeeded, true
+}
+
+// SetPreferencesSeeded sets field value
+func (o *DefaultSetupProfile) SetPreferencesSeeded(v bool) {
+	o.PreferencesSeeded = v
+}
+
 // GetSlug returns the Slug field value
 func (o *DefaultSetupProfile) GetSlug() string {
 	if o == nil {
@@ -132,6 +160,7 @@ func (o DefaultSetupProfile) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["created"] = o.Created
 	toSerialize["is_org_default"] = o.IsOrgDefault
+	toSerialize["preferences_seeded"] = o.PreferencesSeeded
 	toSerialize["slug"] = o.Slug
 	return toSerialize, nil
 }
@@ -143,6 +172,7 @@ func (o *DefaultSetupProfile) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"created",
 		"is_org_default",
+		"preferences_seeded",
 		"slug",
 	}
 
