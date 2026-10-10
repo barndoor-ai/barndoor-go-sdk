@@ -1210,7 +1210,7 @@ func (r ApiCreateProfileRequest) Execute() (*AgentRuntimeProfile, *http.Response
 /*
 CreateProfile Create an agent runtime profile
 
-Creates an active profile at version 1. If the organization has no usable default profile for the profile's client yet, the new profile also becomes that client's organization default; an existing default is never changed.
+Creates the client's settings at version 1. An organization has one settings object per client, so this is refused with 409 when the client already has one; edit it instead.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiCreateProfileRequest
@@ -5080,6 +5080,8 @@ func (r ApiPatchProfileMetadataRequest) Execute() (*AgentRuntimeProfile, *http.R
 /*
 PatchProfileMetadata Update a profile's display metadata
 
+Changes the display name. `active` is accepted only when it restates the profile's current state: client settings can't be switched off, and an archived profile can't be switched back on (promote it instead).
+
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization
  @return ApiPatchProfileMetadataRequest
@@ -5724,7 +5726,9 @@ func (r ApiSetProfileDefaultRequest) Execute() (*AgentRuntimeProfile, *http.Resp
 }
 
 /*
-SetProfileDefault Make this the organization's default profile for its client
+SetProfileDefault Make this the organization's settings for its client
+
+Promotes an archived profile to the client's settings and archives the current settings, in one transaction. Naming the current settings is a no-op.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param slug Profile slug, unique within the organization

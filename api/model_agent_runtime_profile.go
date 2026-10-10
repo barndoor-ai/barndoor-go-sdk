@@ -22,18 +22,23 @@ var _ MappedNullable = &AgentRuntimeProfile{}
 
 // AgentRuntimeProfile A profile joined with the contract of its `current_version`.
 type AgentRuntimeProfile struct {
+	// True for the client's settings; false for an archived former profile.
 	Active bool `json:"active"`
+	// When this former launch profile was archived; null for the client's settings.
+	ArchivedAt NullableTime `json:"archived_at,omitempty"`
 	Capabilities AgentRuntimeCapabilities `json:"capabilities"`
 	Client string `json:"client"`
+	// Preferred model route per client slot. Advisory: a launch uses a preference only when the person is allowed that model.
 	Config map[string]string `json:"config"`
 	CreatedAt bdtime.Time `json:"created_at"`
 	DisplayName string `json:"display_name"`
 	Id string `json:"id"`
+	// True for the client's settings; false for an archived former profile.
 	IsOrgDefault bool `json:"is_org_default"`
 	OrgId string `json:"org_id"`
 	Slug string `json:"slug"`
 	UpdatedAt bdtime.Time `json:"updated_at"`
-	// The immutable version whose `config` is loaded below.
+	// The immutable version whose preferences are loaded below.
 	Version int32 `json:"version"`
 }
 
@@ -90,6 +95,48 @@ func (o *AgentRuntimeProfile) GetActiveOk() (*bool, bool) {
 // SetActive sets field value
 func (o *AgentRuntimeProfile) SetActive(v bool) {
 	o.Active = v
+}
+
+// GetArchivedAt returns the ArchivedAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AgentRuntimeProfile) GetArchivedAt() bdtime.Time {
+	if o == nil || IsNil(o.ArchivedAt.Get()) {
+		var ret bdtime.Time
+		return ret
+	}
+	return *o.ArchivedAt.Get()
+}
+
+// GetArchivedAtOk returns a tuple with the ArchivedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AgentRuntimeProfile) GetArchivedAtOk() (*bdtime.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ArchivedAt.Get(), o.ArchivedAt.IsSet()
+}
+
+// HasArchivedAt returns a boolean if a field has been set.
+func (o *AgentRuntimeProfile) HasArchivedAt() bool {
+	if o != nil && o.ArchivedAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetArchivedAt gets a reference to the given NullableTime and assigns it to the ArchivedAt field.
+func (o *AgentRuntimeProfile) SetArchivedAt(v bdtime.Time) {
+	o.ArchivedAt.Set(&v)
+}
+// SetArchivedAtNil sets the value for ArchivedAt to be an explicit nil
+func (o *AgentRuntimeProfile) SetArchivedAtNil() {
+	o.ArchivedAt.Set(nil)
+}
+
+// UnsetArchivedAt ensures that no value is present for ArchivedAt, not even an explicit nil
+func (o *AgentRuntimeProfile) UnsetArchivedAt() {
+	o.ArchivedAt.Unset()
 }
 
 // GetCapabilities returns the Capabilities field value
@@ -367,6 +414,9 @@ func (o AgentRuntimeProfile) MarshalJSON() ([]byte, error) {
 func (o AgentRuntimeProfile) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["active"] = o.Active
+	if o.ArchivedAt.IsSet() {
+		toSerialize["archived_at"] = o.ArchivedAt.Get()
+	}
 	toSerialize["capabilities"] = o.Capabilities
 	toSerialize["client"] = o.Client
 	toSerialize["config"] = o.Config
