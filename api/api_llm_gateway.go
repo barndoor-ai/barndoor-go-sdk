@@ -5409,7 +5409,7 @@ func (r ApiPutClientSettingsRequest) Execute() (*ClientSettings, *http.Response,
 /*
 PutClientSettings Save one client's settings
 
-Replaces the client's capabilities and preferred models, appending a version; the first save creates the settings. Preferences are optional and advisory: Model Access decides which models each person can use, and a launch uses a preference only when the person is allowed that model.
+Replaces the client's capabilities, appending a version; the first save creates the settings. `preferences` are stored but not read by a launch: Model Access decides which models each person can use, and every launch slot is derived from that (the newest allowed route of the slot's family).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param client `claude` (Claude Code) or `codex` (Codex)

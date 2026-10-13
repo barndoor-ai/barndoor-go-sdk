@@ -22,7 +22,7 @@ var _ MappedNullable = &PutClientSettingsRequest{}
 // PutClientSettingsRequest struct for PutClientSettingsRequest
 type PutClientSettingsRequest struct {
 	Capabilities AgentRuntimeCapabilities `json:"capabilities"`
-	// Any subset of the client's slot keys (possibly empty). Each value is a single Model Route or routing-policy alias. A trailing `[1m]` on a Claude value is accepted for older clients and dropped: whether a slot launches at 1M is derived from its route's upstream model at launch.
+	// Any subset of the client's slot keys (possibly empty). Each value is a single Model Route or routing-policy alias. Stored but not read by a launch, which derives every slot from the person's allowed models. A trailing `[1m]` on a Claude value is accepted for older clients and dropped.
 	Preferences map[string]string `json:"preferences,omitempty"`
 }
 

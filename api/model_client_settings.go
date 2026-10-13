@@ -29,7 +29,7 @@ type ClientSettings struct {
 	Exists bool `json:"exists"`
 	// Stable settings id (deterministic per organization and client, so it is the same before and after the first save).
 	Id string `json:"id"`
-	// Preferred model per slot. Optional and advisory: a launch uses a preference only when the person is allowed that model; Model Access decides who can use what.
+	// Stored per-slot model preferences. Accepted and kept, but not read by a launch: every slot is derived from the models Model Access allows the person (the newest allowed route of the slot's family).
 	Preferences map[string]string `json:"preferences"`
 	UpdatedAt NullableTime `json:"updated_at,omitempty"`
 	// Current version, 0 when `exists` is false. Each save appends a version.

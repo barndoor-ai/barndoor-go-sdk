@@ -28,7 +28,7 @@ type AgentRuntimeProfile struct {
 	ArchivedAt NullableTime `json:"archived_at,omitempty"`
 	Capabilities AgentRuntimeCapabilities `json:"capabilities"`
 	Client string `json:"client"`
-	// Preferred model route per client slot. Advisory: a launch uses a preference only when the person is allowed that model.
+	// Stored model route per client slot (the settings' `preferences`). Kept, but not read by a launch: every slot is derived from the models Model Access allows the person.
 	Config map[string]string `json:"config"`
 	CreatedAt bdtime.Time `json:"created_at"`
 	DisplayName string `json:"display_name"`
