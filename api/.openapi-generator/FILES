@@ -124,6 +124,7 @@ model_filter_category.go
 model_filter_option.go
 model_google_dlp_connection_response.go
 model_governance_config.go
+model_guardrail_policy_ref.go
 model_http_validation_error.go
 model_id_list_response.go
 model_idp_connection_config.go
@@ -209,6 +210,7 @@ model_posture.go
 model_pricing_change_source.go
 model_pricing_rule_summary.go
 model_pricing_sync_mode.go
+model_profile_guardrail_finding.go
 model_protocol.go
 model_provider.go
 model_provider_connection_response.go
