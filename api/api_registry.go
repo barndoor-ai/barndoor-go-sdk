@@ -638,6 +638,7 @@ type ApiGetMcpServerRequest struct {
 	serverId string
 	includeServiceAccounts *bool
 	includeConnectionStatus *bool
+	includeLocal *bool
 }
 
 // Include service account connections for can_manage_policies computation (does not affect connection_status)
@@ -649,6 +650,12 @@ func (r ApiGetMcpServerRequest) IncludeServiceAccounts(includeServiceAccounts bo
 // Include connection_status computation (requires Bao calls). Set to false for better performance when connection_status is not needed.
 func (r ApiGetMcpServerRequest) IncludeConnectionStatus(includeConnectionStatus bool) ApiGetMcpServerRequest {
 	r.includeConnectionStatus = &includeConnectionStatus
+	return r
+}
+
+// BCP-4300: allow servers that run locally through the Barndoor CLI (embedded and local catalogs). Omitted, the registry resolves it from the org&#39;s &#x60;local-cli-mcp-tooling&#x60; flag (fail-closed); an explicit value is always honoured. An excluded server is left out of the result, and a single-server read of one returns 404.
+func (r ApiGetMcpServerRequest) IncludeLocal(includeLocal bool) ApiGetMcpServerRequest {
+	r.includeLocal = &includeLocal
 	return r
 }
 
@@ -713,6 +720,9 @@ func (a *RegistryAPIService) GetMcpServerExecute(r ApiGetMcpServerRequest) (*Ser
 		var defaultValue bool = true
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_connection_status", defaultValue, "form", "")
 		r.includeConnectionStatus = &defaultValue
+	}
+	if r.includeLocal != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", r.includeLocal, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -784,6 +794,7 @@ type ApiGetMcpServerBySlugRequest struct {
 	slug string
 	includeServiceAccounts *bool
 	includeConnectionStatus *bool
+	includeLocal *bool
 }
 
 // Include service account connections for can_manage_policies computation (does not affect connection_status)
@@ -795,6 +806,12 @@ func (r ApiGetMcpServerBySlugRequest) IncludeServiceAccounts(includeServiceAccou
 // Include connection_status computation (requires Bao calls). Set to false for better performance when connection_status is not needed.
 func (r ApiGetMcpServerBySlugRequest) IncludeConnectionStatus(includeConnectionStatus bool) ApiGetMcpServerBySlugRequest {
 	r.includeConnectionStatus = &includeConnectionStatus
+	return r
+}
+
+// BCP-4300: allow servers that run locally through the Barndoor CLI (embedded and local catalogs). Omitted, the registry resolves it from the org&#39;s &#x60;local-cli-mcp-tooling&#x60; flag (fail-closed); an explicit value is always honoured. An excluded server is left out of the result, and a single-server read of one returns 404.
+func (r ApiGetMcpServerBySlugRequest) IncludeLocal(includeLocal bool) ApiGetMcpServerBySlugRequest {
+	r.includeLocal = &includeLocal
 	return r
 }
 
@@ -857,6 +874,9 @@ func (a *RegistryAPIService) GetMcpServerBySlugExecute(r ApiGetMcpServerBySlugRe
 		var defaultValue bool = true
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_connection_status", defaultValue, "form", "")
 		r.includeConnectionStatus = &defaultValue
+	}
+	if r.includeLocal != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", r.includeLocal, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1381,17 +1401,24 @@ type ApiListActiveMcpServerIdsRequest struct {
 	ApiService *RegistryAPIService
 	availabilityStatus *bool
 	audienceScoped *bool
+	includeLocal *bool
 }
 
-// When omitted, returns all alive (non-soft-deleted) server IDs for the org. True returns only available servers (with the publishing flag on — BCP-3039 — published AND still operationally sound; else operationally available); False returns the complement. Uncapped — no pagination.
+// When omitted, returns all alive (non-soft-deleted) server IDs for the org (local servers only per &#x60;include_local&#x60;). True returns only available servers (with the publishing flag on — BCP-3039 — published AND still operationally sound; else operationally available); False returns the complement. Uncapped — no pagination.
 func (r ApiListActiveMcpServerIdsRequest) AvailabilityStatus(availabilityStatus bool) ApiListActiveMcpServerIdsRequest {
 	r.availabilityStatus = &availabilityStatus
 	return r
 }
 
-// BCP-3735: restrict the returned IDs to servers this user may discover — published AND named by an active allow rule on one of the server&#39;s ACTIVE policies (same semantics as GET /servers?audience_scoped&#x3D;true). Opt-in: the default keeps existing callers (audit-history deleted tagging, dashboard denominators) seeing every server. Fails closed with HTTP 503 when the visible set cannot be resolved.
+// BCP-3735: restrict the returned IDs to servers this user may discover — published AND named by an active allow rule on one of the server&#39;s ACTIVE policies (same semantics as GET /servers?audience_scoped&#x3D;true). Opt-in: the default keeps existing callers (audit-history deleted tagging, dashboard denominators) seeing every server the &#x60;include_local&#x60; gate allows. Fails closed with HTTP 503 when the visible set cannot be resolved.
 func (r ApiListActiveMcpServerIdsRequest) AudienceScoped(audienceScoped bool) ApiListActiveMcpServerIdsRequest {
 	r.audienceScoped = &audienceScoped
+	return r
+}
+
+// BCP-4300: allow servers that run locally through the Barndoor CLI (embedded and local catalogs). Omitted, the registry resolves it from the org&#39;s &#x60;local-cli-mcp-tooling&#x60; flag (fail-closed); an explicit value is always honoured. An excluded server is left out of the result, and a single-server read of one returns 404.
+func (r ApiListActiveMcpServerIdsRequest) IncludeLocal(includeLocal bool) ApiListActiveMcpServerIdsRequest {
+	r.includeLocal = &includeLocal
 	return r
 }
 
@@ -1447,6 +1474,9 @@ func (a *RegistryAPIService) ListActiveMcpServerIdsExecute(r ApiListActiveMcpSer
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "audience_scoped", defaultValue, "form", "")
 		r.audienceScoped = &defaultValue
+	}
+	if r.includeLocal != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", r.includeLocal, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1824,6 +1854,7 @@ type ApiListMcpServerDirectoryRequest struct {
 	orderBy *string
 	order *string
 	includeServers *bool
+	includeLocal *bool
 	page *int32
 	limit *int32
 	source *string
@@ -1856,6 +1887,12 @@ func (r ApiListMcpServerDirectoryRequest) Order(order string) ApiListMcpServerDi
 // Include server instances for the current user&#39;s organization
 func (r ApiListMcpServerDirectoryRequest) IncludeServers(includeServers bool) ApiListMcpServerDirectoryRequest {
 	r.includeServers = &includeServers
+	return r
+}
+
+// BCP-4300: false drops catalogs that run locally through the Barndoor CLI (embedded and local sources) before pagination, so page counts match what an org without the &#x60;local-cli-mcp-tooling&#x60; flag is shown. Defaults to true (unchanged listing).
+func (r ApiListMcpServerDirectoryRequest) IncludeLocal(includeLocal bool) ApiListMcpServerDirectoryRequest {
+	r.includeLocal = &includeLocal
 	return r
 }
 
@@ -1943,6 +1980,13 @@ func (a *RegistryAPIService) ListMcpServerDirectoryExecute(r ApiListMcpServerDir
 		var defaultValue bool = false
 		parameterAddToHeaderOrQuery(localVarQueryParams, "include_servers", defaultValue, "form", "")
 		r.includeServers = &defaultValue
+	}
+	if r.includeLocal != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", r.includeLocal, "form", "")
+	} else {
+		var defaultValue bool = true
+		parameterAddToHeaderOrQuery(localVarQueryParams, "include_local", defaultValue, "form", "")
+		r.includeLocal = &defaultValue
 	}
 	if r.page != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "page", r.page, "form", "")
