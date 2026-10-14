@@ -249,6 +249,7 @@ model_server_policy_revisions_page.go
 model_server_response.go
 model_server_source.go
 model_set_api_key_disabled_request.go
+model_set_catalog_unlisted_table_action_request.go
 model_stale_reason.go
 model_test_finding_response.go
 model_test_process_text_request.go
