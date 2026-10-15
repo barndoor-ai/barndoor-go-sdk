@@ -63,6 +63,7 @@ model_condition_of_input.go
 model_condition_of_output.go
 model_configure_destination_request.go
 model_connection.go
+model_connection_error_reason.go
 model_connection_initiate_response.go
 model_connection_read.go
 model_connection_status.go
