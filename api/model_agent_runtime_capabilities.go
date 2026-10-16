@@ -33,6 +33,8 @@ type AgentRuntimeCapabilities struct {
 	Shell *string `json:"shell,omitempty"`
 	Skills *bool `json:"skills,omitempty"`
 	Subagents *bool `json:"subagents,omitempty"`
+	// Codex only. When true, Codex Desktop may launch a version newer than the installed Barndoor CLI has reviewed, under the newest reviewed version's rules and with a warning to the user, instead of being refused until Barndoor is updated. A managed-device setting can still turn it off. Default false; independent of `preset`.
+	UnreviewedDesktopBuilds *bool `json:"unreviewed_desktop_builds,omitempty"`
 }
 
 // NewAgentRuntimeCapabilities instantiates a new AgentRuntimeCapabilities object
@@ -61,6 +63,8 @@ func NewAgentRuntimeCapabilities() *AgentRuntimeCapabilities {
 	this.Skills = &skills
 	var subagents bool = true
 	this.Subagents = &subagents
+	var unreviewedDesktopBuilds bool = false
+	this.UnreviewedDesktopBuilds = &unreviewedDesktopBuilds
 	return &this
 }
 
@@ -89,6 +93,8 @@ func NewAgentRuntimeCapabilitiesWithDefaults() *AgentRuntimeCapabilities {
 	this.Skills = &skills
 	var subagents bool = true
 	this.Subagents = &subagents
+	var unreviewedDesktopBuilds bool = false
+	this.UnreviewedDesktopBuilds = &unreviewedDesktopBuilds
 	return &this
 }
 
@@ -540,6 +546,38 @@ func (o *AgentRuntimeCapabilities) SetSubagents(v bool) {
 	o.Subagents = &v
 }
 
+// GetUnreviewedDesktopBuilds returns the UnreviewedDesktopBuilds field value if set, zero value otherwise.
+func (o *AgentRuntimeCapabilities) GetUnreviewedDesktopBuilds() bool {
+	if o == nil || IsNil(o.UnreviewedDesktopBuilds) {
+		var ret bool
+		return ret
+	}
+	return *o.UnreviewedDesktopBuilds
+}
+
+// GetUnreviewedDesktopBuildsOk returns a tuple with the UnreviewedDesktopBuilds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AgentRuntimeCapabilities) GetUnreviewedDesktopBuildsOk() (*bool, bool) {
+	if o == nil || IsNil(o.UnreviewedDesktopBuilds) {
+		return nil, false
+	}
+	return o.UnreviewedDesktopBuilds, true
+}
+
+// HasUnreviewedDesktopBuilds returns a boolean if a field has been set.
+func (o *AgentRuntimeCapabilities) HasUnreviewedDesktopBuilds() bool {
+	if o != nil && !IsNil(o.UnreviewedDesktopBuilds) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnreviewedDesktopBuilds gets a reference to the given bool and assigns it to the UnreviewedDesktopBuilds field.
+func (o *AgentRuntimeCapabilities) SetUnreviewedDesktopBuilds(v bool) {
+	o.UnreviewedDesktopBuilds = &v
+}
+
 func (o AgentRuntimeCapabilities) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -591,6 +629,9 @@ func (o AgentRuntimeCapabilities) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Subagents) {
 		toSerialize["subagents"] = o.Subagents
+	}
+	if !IsNil(o.UnreviewedDesktopBuilds) {
+		toSerialize["unreviewed_desktop_builds"] = o.UnreviewedDesktopBuilds
 	}
 	return toSerialize, nil
 }
