@@ -84,6 +84,7 @@ model_create_profile_request.go
 model_create_provider_request.go
 model_create_rate_limit_request.go
 model_create_route_group_request.go
+model_credential_mode.go
 model_credentials_payload.go
 model_custom_detection_pattern_request.go
 model_custom_detection_pattern_response.go

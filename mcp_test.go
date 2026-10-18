@@ -79,6 +79,8 @@ func TestMcpConnectionParamsResolvesAnIdToItsSlug(t *testing.T) {
 	fixture := api.NewServerResponseWithDefaults()
 	fixture.Id = "11111111-1111-1111-1111-111111111111"
 	fixture.Slug = "gmail"
+	// A required enum's zero value is not one of its values, so decoding refuses it.
+	fixture.CredentialMode = api.CREDENTIALMODE_NONE
 	// Required properties the zero value leaves nil, which MarshalJSON omits.
 	fixture.Scopes = []string{}
 	fixture.PublishBlockers = []api.PublishBlocker{}
