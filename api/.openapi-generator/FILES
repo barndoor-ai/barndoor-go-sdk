@@ -102,6 +102,7 @@ model_detection_engine_capabilities_response.go
 model_detection_engine_response.go
 model_detection_type_info_response.go
 model_detection_types_response.go
+model_directory_credential_modes.go
 model_dlp_aws_trust_info_response.go
 model_dlp_error_response.go
 model_effective_pricing.go
