@@ -21,11 +21,13 @@ type StaleReason string
 // List of StaleReason
 const (
 	STALEREASON_CATALOG_REMOVED StaleReason = "catalog_removed"
+	STALEREASON_UPSTREAM_UNLISTED StaleReason = "upstream_unlisted"
 )
 
 // All allowed values of StaleReason enum
 var AllowedStaleReasonEnumValues = []StaleReason{
 	"catalog_removed",
+	"upstream_unlisted",
 }
 
 func (v *StaleReason) UnmarshalJSON(src []byte) error {
