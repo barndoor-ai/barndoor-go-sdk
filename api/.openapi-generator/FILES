@@ -23,6 +23,9 @@ model_allow_list_entry_response.go
 model_api_key.go
 model_api_key_disabled_response.go
 model_api_key_kind.go
+model_api_key_lifetime_policies.go
+model_api_key_lifetime_policy.go
+model_api_key_lifetime_user_override.go
 model_app_type.go
 model_application.go
 model_application_counts.go
@@ -76,6 +79,7 @@ model_create_connection_request.go
 model_create_custom_detection_type_request.go
 model_create_detection_engine_request.go
 model_create_enforcement_policy_request.go
+model_create_group_lifetime_policy_request.go
 model_create_model_access_request.go
 model_create_model_mapping_request.go
 model_create_policy.go
@@ -84,6 +88,7 @@ model_create_profile_request.go
 model_create_provider_request.go
 model_create_rate_limit_request.go
 model_create_route_group_request.go
+model_create_user_lifetime_policy_request.go
 model_credential_mode.go
 model_credentials_payload.go
 model_custom_detection_pattern_request.go
@@ -137,6 +142,7 @@ model_idp_role_mapping_response.go
 model_idp_settings_response.go
 model_idp_test_result.go
 model_labeled_option.go
+model_lifetime_limit_input.go
 model_list_client_settings_response.go
 model_list_profiles_response.go
 model_list_routing_rules_response.go
@@ -234,6 +240,8 @@ model_resolved_protection_response.go
 model_resolved_protection_rule_response.go
 model_resolved_ref.go
 model_revoked_response.go
+model_rotate_api_key_request.go
+model_rotate_api_key_response.go
 model_route_health_status.go
 model_routing_policy.go
 model_routing_policy_draft.go
@@ -252,6 +260,7 @@ model_server_policy_revisions_page.go
 model_server_response.go
 model_server_source.go
 model_set_api_key_disabled_request.go
+model_set_api_key_expiry_request.go
 model_set_catalog_unlisted_table_action_request.go
 model_stale_reason.go
 model_test_finding_response.go
