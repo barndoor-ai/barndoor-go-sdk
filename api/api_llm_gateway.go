@@ -3410,7 +3410,7 @@ func (r ApiGetClientSettingsRequest) Execute() (*ClientSettings, *http.Response,
 GetClientSettings Fetch one client's settings
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param client `claude` (Claude Code) or `codex` (Codex)
+ @param client `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)
  @return ApiGetClientSettingsRequest
 */
 func (a *LlmGatewayAPIService) GetClientSettings(ctx context.Context, client string) ApiGetClientSettingsRequest {
@@ -4300,7 +4300,7 @@ func (r ApiListClientSettingsRequest) Execute() (*ListClientSettingsResponse, *h
 /*
 ListClientSettings List the organization's client settings
 
-Returns the settings for both clients, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
+Returns the settings for every client, Claude Code first. A client the organization has not configured is returned with `exists: false`, version 0 and the built-in defaults.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListClientSettingsRequest
@@ -5939,7 +5939,7 @@ PutClientSettings Save one client's settings
 Replaces the client's capabilities, appending a version; the first save creates the settings. `preferences` are stored but not read by a launch: Model Access decides which models each person can use, and every launch slot is derived from that (the newest allowed route of the slot's family).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param client `claude` (Claude Code) or `codex` (Codex)
+ @param client `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code)
  @return ApiPutClientSettingsRequest
 */
 func (a *LlmGatewayAPIService) PutClientSettings(ctx context.Context, client string) ApiPutClientSettingsRequest {

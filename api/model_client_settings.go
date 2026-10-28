@@ -23,7 +23,7 @@ var _ MappedNullable = &ClientSettings{}
 // ClientSettings One client's settings, or the built-in defaults when the organization has not saved any.
 type ClientSettings struct {
 	Capabilities AgentRuntimeCapabilities `json:"capabilities"`
-	// `claude` (Claude Code) or `codex` (Codex).
+	// `claude` (Claude Code), `codex` (Codex) or `kilo` (Kilo Code).
 	Client string `json:"client"`
 	// False until the organization first saves settings for the client; the other fields then describe the built-in defaults.
 	Exists bool `json:"exists"`

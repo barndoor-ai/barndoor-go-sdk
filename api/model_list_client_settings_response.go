@@ -21,7 +21,7 @@ var _ MappedNullable = &ListClientSettingsResponse{}
 
 // ListClientSettingsResponse struct for ListClientSettingsResponse
 type ListClientSettingsResponse struct {
-	// Both clients, Claude Code first.
+	// Every client, Claude Code first.
 	Settings []ClientSettings `json:"settings"`
 }
 
