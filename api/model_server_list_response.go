@@ -34,6 +34,7 @@ type ServerListResponse struct {
 	ClientSecret NullableString `json:"client_secret"`
 	UsesManagedCredentials NullableBool `json:"uses_managed_credentials"`
 	EmaEnabled bool `json:"ema_enabled"`
+	LocalAvailability string `json:"local_availability"`
 	Scopes []string `json:"scopes"`
 	OrganizationId NullableString `json:"organization_id"`
 	McpServerDirectoryId string `json:"mcp_server_directory_id"`
@@ -71,7 +72,7 @@ type _ServerListResponse ServerListResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServerListResponse(id string, createdAt bdtime.Time, updatedAt bdtime.Time, enabled bool, configuration map[string]interface{}, name string, slug string, oauthBaseUrlOverride NullableString, clientId NullableString, clientSecret NullableString, usesManagedCredentials NullableBool, emaEnabled bool, scopes []string, organizationId NullableString, mcpServerDirectoryId string, status NullableString, meta interface{}, toolsFetchStatus NullableString, toolsFetchError interface{}, toolsFetchedAt NullableTime, toolsFetchRequestedAt NullableTime, publishedAt NullableTime, mcpServerDirectory MCPServerDirectoryBase, mcpServerServiceConnection NullableServerConnectionResponse, connectionStatus NullableServerConnectionStatus, connectionErrorReason NullableConnectionErrorReason, url NullableString, proxyUrl NullableString, canManagePolicies NullableBool, attentionTier NullableAttentionTier, publishBlockers []PublishBlocker, deletedAt NullableTime, credentialMode CredentialMode, usesCimd bool, toolsCount int32, resourcesCount int32) *ServerListResponse {
+func NewServerListResponse(id string, createdAt bdtime.Time, updatedAt bdtime.Time, enabled bool, configuration map[string]interface{}, name string, slug string, oauthBaseUrlOverride NullableString, clientId NullableString, clientSecret NullableString, usesManagedCredentials NullableBool, emaEnabled bool, localAvailability string, scopes []string, organizationId NullableString, mcpServerDirectoryId string, status NullableString, meta interface{}, toolsFetchStatus NullableString, toolsFetchError interface{}, toolsFetchedAt NullableTime, toolsFetchRequestedAt NullableTime, publishedAt NullableTime, mcpServerDirectory MCPServerDirectoryBase, mcpServerServiceConnection NullableServerConnectionResponse, connectionStatus NullableServerConnectionStatus, connectionErrorReason NullableConnectionErrorReason, url NullableString, proxyUrl NullableString, canManagePolicies NullableBool, attentionTier NullableAttentionTier, publishBlockers []PublishBlocker, deletedAt NullableTime, credentialMode CredentialMode, usesCimd bool, toolsCount int32, resourcesCount int32) *ServerListResponse {
 	this := ServerListResponse{}
 	this.Id = id
 	this.CreatedAt = createdAt
@@ -85,6 +86,7 @@ func NewServerListResponse(id string, createdAt bdtime.Time, updatedAt bdtime.Ti
 	this.ClientSecret = clientSecret
 	this.UsesManagedCredentials = usesManagedCredentials
 	this.EmaEnabled = emaEnabled
+	this.LocalAvailability = localAvailability
 	this.Scopes = scopes
 	this.OrganizationId = organizationId
 	this.McpServerDirectoryId = mcpServerDirectoryId
@@ -121,6 +123,8 @@ func NewServerListResponseWithDefaults() *ServerListResponse {
 	this.Enabled = enabled
 	var emaEnabled bool = false
 	this.EmaEnabled = emaEnabled
+	var localAvailability string = "required"
+	this.LocalAvailability = localAvailability
 	var usesCimd bool = false
 	this.UsesCimd = usesCimd
 	return &this
@@ -420,6 +424,30 @@ func (o *ServerListResponse) GetEmaEnabledOk() (*bool, bool) {
 // SetEmaEnabled sets field value
 func (o *ServerListResponse) SetEmaEnabled(v bool) {
 	o.EmaEnabled = v
+}
+
+// GetLocalAvailability returns the LocalAvailability field value
+func (o *ServerListResponse) GetLocalAvailability() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.LocalAvailability
+}
+
+// GetLocalAvailabilityOk returns a tuple with the LocalAvailability field value
+// and a boolean to check if the value has been set.
+func (o *ServerListResponse) GetLocalAvailabilityOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.LocalAvailability, true
+}
+
+// SetLocalAvailability sets field value
+func (o *ServerListResponse) SetLocalAvailability(v string) {
+	o.LocalAvailability = v
 }
 
 // GetScopes returns the Scopes field value
@@ -1059,6 +1087,7 @@ func (o ServerListResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize["client_secret"] = o.ClientSecret.Get()
 	toSerialize["uses_managed_credentials"] = o.UsesManagedCredentials.Get()
 	toSerialize["ema_enabled"] = o.EmaEnabled
+	toSerialize["local_availability"] = o.LocalAvailability
 	if o.Scopes != nil {
 		toSerialize["scopes"] = o.Scopes
 	}
@@ -1111,6 +1140,7 @@ func (o *ServerListResponse) UnmarshalJSON(data []byte) (err error) {
 		"client_secret",
 		"uses_managed_credentials",
 		"ema_enabled",
+		"local_availability",
 		"scopes",
 		"organization_id",
 		"mcp_server_directory_id",
