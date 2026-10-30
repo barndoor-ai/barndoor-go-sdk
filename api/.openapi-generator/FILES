@@ -131,6 +131,8 @@ model_field_control_policy_response.go
 model_filter_category.go
 model_filter_option.go
 model_google_dlp_connection_response.go
+model_google_impersonation_config_response.go
+model_google_impersonation_validation_response.go
 model_governance_config.go
 model_guardrail_policy_ref.go
 model_http_validation_error.go
@@ -299,6 +301,7 @@ model_upsert_field_control_policy_request.go
 model_upsert_google_dlp_request.go
 model_upsert_tokenization_request.go
 model_validate_aws_role_request.go
+model_validate_google_impersonation_request.go
 model_validate_policy_request.go
 model_validate_policy_response.go
 model_validation_error.go
