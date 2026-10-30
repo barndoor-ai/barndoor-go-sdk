@@ -23,7 +23,8 @@ var _ MappedNullable = &UpsertFieldControlPolicyRequest{}
 type UpsertFieldControlPolicyRequest struct {
 	// This server's override for tables no catalog-aware SQL rule covers: `allow`, `block` or `observe`; `null` clears it back to the org default. Omit to keep the stored value. Ignored unless the catalog SQL controls feature is enabled for the organization.
 	CatalogUnlistedTableAction NullableString `json:"catalog_unlisted_table_action,omitempty"`
-	// Seeded directory slug (`slack`, `gdrive`). Required when `rules` contain `when`.
+	// Deprecated and ignored: the connector is taken from the MCP server (`mcp_server_id`). Still accepted so existing requests keep working.
+	// Deprecated
 	DirectorySlug NullableString `json:"directory_slug,omitempty"`
 	Enabled *bool `json:"enabled,omitempty"`
 	McpServerId string `json:"mcp_server_id"`
@@ -95,6 +96,7 @@ func (o *UpsertFieldControlPolicyRequest) UnsetCatalogUnlistedTableAction() {
 }
 
 // GetDirectorySlug returns the DirectorySlug field value if set, zero value otherwise (both if not set or set to explicit null).
+// Deprecated
 func (o *UpsertFieldControlPolicyRequest) GetDirectorySlug() string {
 	if o == nil || IsNil(o.DirectorySlug.Get()) {
 		var ret string
@@ -106,6 +108,7 @@ func (o *UpsertFieldControlPolicyRequest) GetDirectorySlug() string {
 // GetDirectorySlugOk returns a tuple with the DirectorySlug field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
+// Deprecated
 func (o *UpsertFieldControlPolicyRequest) GetDirectorySlugOk() (*string, bool) {
 	if o == nil {
 		return nil, false
@@ -123,6 +126,7 @@ func (o *UpsertFieldControlPolicyRequest) HasDirectorySlug() bool {
 }
 
 // SetDirectorySlug gets a reference to the given NullableString and assigns it to the DirectorySlug field.
+// Deprecated
 func (o *UpsertFieldControlPolicyRequest) SetDirectorySlug(v string) {
 	o.DirectorySlug.Set(&v)
 }

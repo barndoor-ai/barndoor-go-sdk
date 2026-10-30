@@ -19,7 +19,8 @@ var _ MappedNullable = &UpdateFieldControlPolicyRequest{}
 
 // UpdateFieldControlPolicyRequest struct for UpdateFieldControlPolicyRequest
 type UpdateFieldControlPolicyRequest struct {
-	// Seeded directory slug (`slack`, `gdrive`). Required when `rules` contain `when`.
+	// Deprecated and ignored: the connector is taken from the MCP server (`mcp_server_id`). Still accepted so existing requests keep working.
+	// Deprecated
 	DirectorySlug NullableString `json:"directory_slug,omitempty"`
 	Enabled NullableBool `json:"enabled,omitempty"`
 	Name NullableString `json:"name,omitempty"`
@@ -44,6 +45,7 @@ func NewUpdateFieldControlPolicyRequestWithDefaults() *UpdateFieldControlPolicyR
 }
 
 // GetDirectorySlug returns the DirectorySlug field value if set, zero value otherwise (both if not set or set to explicit null).
+// Deprecated
 func (o *UpdateFieldControlPolicyRequest) GetDirectorySlug() string {
 	if o == nil || IsNil(o.DirectorySlug.Get()) {
 		var ret string
@@ -55,6 +57,7 @@ func (o *UpdateFieldControlPolicyRequest) GetDirectorySlug() string {
 // GetDirectorySlugOk returns a tuple with the DirectorySlug field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
+// Deprecated
 func (o *UpdateFieldControlPolicyRequest) GetDirectorySlugOk() (*string, bool) {
 	if o == nil {
 		return nil, false
@@ -72,6 +75,7 @@ func (o *UpdateFieldControlPolicyRequest) HasDirectorySlug() bool {
 }
 
 // SetDirectorySlug gets a reference to the given NullableString and assigns it to the DirectorySlug field.
+// Deprecated
 func (o *UpdateFieldControlPolicyRequest) SetDirectorySlug(v string) {
 	o.DirectorySlug.Set(&v)
 }
