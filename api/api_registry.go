@@ -281,6 +281,126 @@ func (a *RegistryAPIService) CountAgentsByTypeExecute(r ApiCountAgentsByTypeRequ
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiCreateLocalMcpInstallationRequest struct {
+	ctx context.Context
+	ApiService *RegistryAPIService
+	installationCreate *InstallationCreate
+}
+
+func (r ApiCreateLocalMcpInstallationRequest) InstallationCreate(installationCreate InstallationCreate) ApiCreateLocalMcpInstallationRequest {
+	r.installationCreate = &installationCreate
+	return r
+}
+
+func (r ApiCreateLocalMcpInstallationRequest) Execute() (*InstallationRead, *http.Response, error) {
+	return r.ApiService.CreateLocalMcpInstallationExecute(r)
+}
+
+/*
+CreateLocalMcpInstallation Install a local MCP server for the organization
+
+Installs a local MCP catalog entry for the organization; requires an organization admin. `catalog_id` is the entry's id from `list_mcp_server_directory` (or `get_mcp_server_directory_entry`), whose `configuration_schema` says which `configuration` keys are required. Configuration holds non-secret settings only; never put a credential in it. `availability` is `opt_in` (users connect it themselves) or `required` (every CLI in the organization gets it). Set its policy separately.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiCreateLocalMcpInstallationRequest
+*/
+func (a *RegistryAPIService) CreateLocalMcpInstallation(ctx context.Context) ApiCreateLocalMcpInstallationRequest {
+	return ApiCreateLocalMcpInstallationRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return InstallationRead
+func (a *RegistryAPIService) CreateLocalMcpInstallationExecute(r ApiCreateLocalMcpInstallationRequest) (*InstallationRead, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *InstallationRead
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RegistryAPIService.CreateLocalMcpInstallation")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/registry/v1/local-providers/installations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.installationCreate == nil {
+		return localVarReturnValue, nil, reportError("installationCreate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.installationCreate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v HTTPValidationError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiDisconnectMcpServerRequest struct {
 	ctx context.Context
 	ApiService *RegistryAPIService
@@ -1846,6 +1966,105 @@ func (a *RegistryAPIService) ListAgentsExecute(r ApiListAgentsRequest) (*Paginat
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiListLocalMcpInstallationsRequest struct {
+	ctx context.Context
+	ApiService *RegistryAPIService
+}
+
+func (r ApiListLocalMcpInstallationsRequest) Execute() ([]InstallationRead, *http.Response, error) {
+	return r.ApiService.ListLocalMcpInstallationsExecute(r)
+}
+
+/*
+ListLocalMcpInstallations List local MCP server installations
+
+Lists the organization's installations of local MCP servers: catalog entries that run on users' machines through the Barndoor CLI, including servers the organization published itself. Each row carries its `catalog_id`, `slug`, `enabled`, `configuration` and `availability`. Read this before `create_local_mcp_installation`: a catalog entry that already has an installation is changed with `update_local_mcp_installation` instead.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListLocalMcpInstallationsRequest
+*/
+func (a *RegistryAPIService) ListLocalMcpInstallations(ctx context.Context) ApiListLocalMcpInstallationsRequest {
+	return ApiListLocalMcpInstallationsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return []InstallationRead
+func (a *RegistryAPIService) ListLocalMcpInstallationsExecute(r ApiListLocalMcpInstallationsRequest) ([]InstallationRead, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  []InstallationRead
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RegistryAPIService.ListLocalMcpInstallations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/registry/v1/local-providers/installations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiListMcpServerDirectoryRequest struct {
 	ctx context.Context
 	ApiService *RegistryAPIService
@@ -2988,6 +3207,130 @@ func (a *RegistryAPIService) UpdateAgentWriteConfirmationsExecute(r ApiUpdateAge
 	}
 	// body params
 	localVarPostBody = r.applicationWriteConfirmationsPayload
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v HTTPValidationError
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateLocalMcpInstallationRequest struct {
+	ctx context.Context
+	ApiService *RegistryAPIService
+	installationId string
+	installationUpdate *InstallationUpdate
+}
+
+func (r ApiUpdateLocalMcpInstallationRequest) InstallationUpdate(installationUpdate InstallationUpdate) ApiUpdateLocalMcpInstallationRequest {
+	r.installationUpdate = &installationUpdate
+	return r
+}
+
+func (r ApiUpdateLocalMcpInstallationRequest) Execute() (*InstallationRead, *http.Response, error) {
+	return r.ApiService.UpdateLocalMcpInstallationExecute(r)
+}
+
+/*
+UpdateLocalMcpInstallation Update a local MCP server installation
+
+Enables or disables an installation, replaces its `configuration`, or changes its `availability`; requires an organization admin. `enabled` and `configuration` are both required and replace the current values, so re-send the current configuration to keep it. Omit `availability` to keep the current value. The installation's slug and name do not change here.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param installationId
+ @return ApiUpdateLocalMcpInstallationRequest
+*/
+func (a *RegistryAPIService) UpdateLocalMcpInstallation(ctx context.Context, installationId string) ApiUpdateLocalMcpInstallationRequest {
+	return ApiUpdateLocalMcpInstallationRequest{
+		ApiService: a,
+		ctx: ctx,
+		installationId: installationId,
+	}
+}
+
+// Execute executes the request
+//  @return InstallationRead
+func (a *RegistryAPIService) UpdateLocalMcpInstallationExecute(r ApiUpdateLocalMcpInstallationRequest) (*InstallationRead, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *InstallationRead
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "RegistryAPIService.UpdateLocalMcpInstallation")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/registry/v1/local-providers/installations/{installation_id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"installation_id"+"}", url.PathEscape(parameterValueToString(r.installationId, "installationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.installationUpdate == nil {
+		return localVarReturnValue, nil, reportError("installationUpdate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.installationUpdate
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
