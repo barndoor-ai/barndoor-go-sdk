@@ -24,7 +24,7 @@ type UpdateModelAccessRequest struct {
 	Enabled NullableBool `json:"enabled,omitempty"`
 	Name NullableString `json:"name,omitempty"`
 	PolicyType NullableString `json:"policy_type,omitempty"`
-	// Tri-state (see [`deserialize_explicit_null`]). A policy bound to one entity is unbound by sending `null` — that is how the admin UI moves an `api_key`-scoped policy back to \"All API Keys\". A plain `Option<Uuid>` made that indistinguishable from omitting the field, so the update silently kept the old binding (BCP-3955).
+	// Tri-state (see [`deserialize_explicit_null`]). A policy bound to one entity is unbound by sending `null` — that is how the admin UI moves an `agent`-scoped policy back to \"All AI agents\". A plain `Option<Uuid>` made that indistinguishable from omitting the field, so the update silently kept the old binding (BCP-3955). Unbinding a `user`, `project` or `api_key` policy is refused: unbound, those scopes apply to nobody (BCP-5364).
 	ScopeId NullableString `json:"scope_id,omitempty"`
 	// Replaces the whole UUID binding when present; `[]` unbinds. Omitted leaves it unchanged. See [`CreateModelAccessRequest::scope_ids`].
 	ScopeIds []string `json:"scope_ids,omitempty"`

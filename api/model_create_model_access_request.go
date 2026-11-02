@@ -27,7 +27,7 @@ type CreateModelAccessRequest struct {
 	PolicyType string `json:"policy_type"`
 	// Single-entity form of `scope_ids`, kept for existing clients. Send one or the other; when both are sent `scope_id` must be the first element of `scope_ids`.
 	ScopeId NullableString `json:"scope_id,omitempty"`
-	// Every user / project / API key / agent the policy applies to (BCP-5001). The policy applies when any one of them matches the caller. Empty or omitted means not bound to a specific entity.
+	// Every user / project / API key / agent the policy applies to (BCP-5001). The policy applies when any one of them matches the caller. Empty or omitted means not bound to a specific entity: for `agent` that is every agent. `user`, `project` and `api_key` must name at least one; use `org` to apply a policy to everyone.
 	ScopeIds []string `json:"scope_ids,omitempty"`
 	ScopeType string `json:"scope_type"`
 	// Single-entity form of `scope_values`; same rules as `scope_id`.
