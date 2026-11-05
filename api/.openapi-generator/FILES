@@ -251,6 +251,7 @@ model_provider_connection_response_one_of_5.go
 model_publish_blocker.go
 model_put_client_settings_request.go
 model_put_mcp_baseline_policy_request.go
+model_reference_rates.go
 model_remote_runtime.go
 model_rename_model_route_request.go
 model_rename_model_route_response.go
@@ -269,6 +270,7 @@ model_routing_policy_draft.go
 model_routing_policy_update.go
 model_routing_rule.go
 model_routing_rule_draft.go
+model_routing_rule_input.go
 model_routing_rule_write_response.go
 model_routing_slot.go
 model_rule_conflict.go
