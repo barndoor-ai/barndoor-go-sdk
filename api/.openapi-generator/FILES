@@ -14,6 +14,7 @@ model_affected_policy_preview.go
 model_agent_policy_counts.go
 model_agent_runtime_capabilities.go
 model_agent_runtime_profile.go
+model_agent_scope_json.go
 model_agent_scope_request.go
 model_agent_scope_response.go
 model_agent_type.go
@@ -82,6 +83,7 @@ model_create_custom_detection_type_request.go
 model_create_detection_engine_request.go
 model_create_enforcement_policy_request.go
 model_create_group_lifetime_policy_request.go
+model_create_mcp_policy_request.go
 model_create_model_access_request.go
 model_create_model_mapping_request.go
 model_create_policy.go
@@ -167,6 +169,11 @@ model_mask_format.go
 model_mask_keep.go
 model_match.go
 model_match_1.go
+model_mcp_baseline_policy_response.go
+model_mcp_policies_response.go
+model_mcp_policy_response.go
+model_mcp_policy_rule_request.go
+model_mcp_policy_rule_response.go
 model_mcp_server_category.go
 model_mcp_server_directory_base.go
 model_mcp_server_directory_read.go
@@ -229,6 +236,8 @@ model_posture.go
 model_pricing_change_source.go
 model_pricing_rule_summary.go
 model_pricing_sync_mode.go
+model_principal_json.go
+model_principal_scope_json.go
 model_profile_guardrail_finding.go
 model_protocol.go
 model_provider.go
@@ -241,6 +250,7 @@ model_provider_connection_response_one_of_4.go
 model_provider_connection_response_one_of_5.go
 model_publish_blocker.go
 model_put_client_settings_request.go
+model_put_mcp_baseline_policy_request.go
 model_remote_runtime.go
 model_rename_model_route_request.go
 model_rename_model_route_response.go
@@ -288,6 +298,7 @@ model_update_custom_detection_type_request.go
 model_update_detection_engine_request.go
 model_update_enforcement_policy_request.go
 model_update_field_control_policy_request.go
+model_update_mcp_policy_request.go
 model_update_model_access_request.go
 model_update_model_mapping_request.go
 model_update_org_config_request.go
