@@ -63,6 +63,7 @@ model_channel_test_response.go
 model_channel_type.go
 model_channel_upsert_request.go
 model_client_settings.go
+model_client_slot_pin.go
 model_condition_of_input.go
 model_condition_of_output.go
 model_configure_destination_request.go
@@ -156,6 +157,7 @@ model_lifetime_limit_input.go
 model_list_client_settings_response.go
 model_list_profiles_response.go
 model_list_routing_rules_response.go
+model_list_slot_pins_response.go
 model_llm_gateway_aws_role_config_response.go
 model_llm_gateway_aws_trust_info_response.go
 model_local_cli_runtime.go
@@ -251,6 +253,7 @@ model_provider_connection_response_one_of_5.go
 model_publish_blocker.go
 model_put_client_settings_request.go
 model_put_mcp_baseline_policy_request.go
+model_put_slot_pin_request.go
 model_reference_rates.go
 model_remote_runtime.go
 model_rename_model_route_request.go
@@ -287,6 +290,7 @@ model_set_api_key_disabled_request.go
 model_set_api_key_expiry_request.go
 model_set_catalog_unlisted_table_action_request.go
 model_signed_artifact.go
+model_slot_pin_response.go
 model_stale_reason.go
 model_test_finding_response.go
 model_test_process_text_request.go
