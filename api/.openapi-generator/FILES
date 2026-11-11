@@ -254,6 +254,7 @@ model_publish_blocker.go
 model_put_client_settings_request.go
 model_put_mcp_baseline_policy_request.go
 model_put_slot_pin_request.go
+model_reasoning_effort_detection.go
 model_reference_rates.go
 model_remote_runtime.go
 model_rename_model_route_request.go
