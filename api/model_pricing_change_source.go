@@ -42,21 +42,18 @@ var AllowedPricingChangeSourceEnumValues = []PricingChangeSource{
 	"admin_restore",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *PricingChangeSource) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := PricingChangeSource(value)
-	for _, existing := range AllowedPricingChangeSourceEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid PricingChangeSource", value)
+	*v = PricingChangeSource(value)
+	return nil
 }
 
 // NewPricingChangeSourceFromValue returns a pointer to a valid PricingChangeSource

@@ -32,21 +32,18 @@ var AllowedReasoningEffortDetectionEnumValues = []ReasoningEffortDetection{
 	"unknown",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *ReasoningEffortDetection) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := ReasoningEffortDetection(value)
-	for _, existing := range AllowedReasoningEffortDetectionEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid ReasoningEffortDetection", value)
+	*v = ReasoningEffortDetection(value)
+	return nil
 }
 
 // NewReasoningEffortDetectionFromValue returns a pointer to a valid ReasoningEffortDetection

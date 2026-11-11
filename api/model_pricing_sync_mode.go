@@ -32,21 +32,18 @@ var AllowedPricingSyncModeEnumValues = []PricingSyncMode{
 	"auto",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *PricingSyncMode) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := PricingSyncMode(value)
-	for _, existing := range AllowedPricingSyncModeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid PricingSyncMode", value)
+	*v = PricingSyncMode(value)
+	return nil
 }
 
 // NewPricingSyncModeFromValue returns a pointer to a valid PricingSyncMode

@@ -30,21 +30,18 @@ var AllowedPublishBlockerEnumValues = []PublishBlocker{
 	"no_active_policy",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *PublishBlocker) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := PublishBlocker(value)
-	for _, existing := range AllowedPublishBlockerEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid PublishBlocker", value)
+	*v = PublishBlocker(value)
+	return nil
 }
 
 // NewPublishBlockerFromValue returns a pointer to a valid PublishBlocker

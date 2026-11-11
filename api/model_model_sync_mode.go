@@ -32,21 +32,18 @@ var AllowedModelSyncModeEnumValues = []ModelSyncMode{
 	"full",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *ModelSyncMode) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := ModelSyncMode(value)
-	for _, existing := range AllowedModelSyncModeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid ModelSyncMode", value)
+	*v = ModelSyncMode(value)
+	return nil
 }
 
 // NewModelSyncModeFromValue returns a pointer to a valid ModelSyncMode

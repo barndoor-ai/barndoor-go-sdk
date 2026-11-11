@@ -30,21 +30,18 @@ var AllowedDefaultModelAccessEnumValues = []DefaultModelAccess{
 	"deny",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *DefaultModelAccess) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := DefaultModelAccess(value)
-	for _, existing := range AllowedDefaultModelAccessEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid DefaultModelAccess", value)
+	*v = DefaultModelAccess(value)
+	return nil
 }
 
 // NewDefaultModelAccessFromValue returns a pointer to a valid DefaultModelAccess

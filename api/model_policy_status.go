@@ -34,21 +34,18 @@ var AllowedPolicyStatusEnumValues = []PolicyStatus{
 	"ARCHIVED",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *PolicyStatus) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := PolicyStatus(value)
-	for _, existing := range AllowedPolicyStatusEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid PolicyStatus", value)
+	*v = PolicyStatus(value)
+	return nil
 }
 
 // NewPolicyStatusFromValue returns a pointer to a valid PolicyStatus

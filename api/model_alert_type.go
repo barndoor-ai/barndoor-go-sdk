@@ -56,21 +56,18 @@ var AllowedAlertTypeEnumValues = []AlertType{
 	"mcp_server_tooling_changed",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *AlertType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := AlertType(value)
-	for _, existing := range AllowedAlertTypeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid AlertType", value)
+	*v = AlertType(value)
+	return nil
 }
 
 // NewAlertTypeFromValue returns a pointer to a valid AlertType

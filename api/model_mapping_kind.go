@@ -30,21 +30,18 @@ var AllowedMappingKindEnumValues = []MappingKind{
 	"route",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *MappingKind) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := MappingKind(value)
-	for _, existing := range AllowedMappingKindEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid MappingKind", value)
+	*v = MappingKind(value)
+	return nil
 }
 
 // NewMappingKindFromValue returns a pointer to a valid MappingKind

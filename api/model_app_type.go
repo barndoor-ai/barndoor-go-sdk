@@ -34,21 +34,18 @@ var AllowedAppTypeEnumValues = []AppType{
 	"non_interactive",
 }
 
+// UnmarshalJSON keeps any value the API sends, including one added after this
+// SDK was generated. Adding an enum value is a minor API change, so a newer
+// value must not fail the whole response. Use IsValid to tell whether this SDK
+// knows the value.
 func (v *AppType) UnmarshalJSON(src []byte) error {
 	var value string
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
-	enumTypeValue := AppType(value)
-	for _, existing := range AllowedAppTypeEnumValues {
-		if existing == enumTypeValue {
-			*v = enumTypeValue
-			return nil
-		}
-	}
-
-	return fmt.Errorf("%+v is not a valid AppType", value)
+	*v = AppType(value)
+	return nil
 }
 
 // NewAppTypeFromValue returns a pointer to a valid AppType
