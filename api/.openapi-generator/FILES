@@ -7,6 +7,7 @@ api_registry.go
 api_system_management.go
 client.go
 configuration.go
+model_add_organization_domain_request.go
 model_add_route_group_members_request.go
 model_admin_model_pricing.go
 model_affected_policies_response.go
@@ -206,6 +207,8 @@ model_operator_any_output.go
 model_operator_none_input.go
 model_operator_none_output.go
 model_org_config_response.go
+model_organization_domain_list_response.go
+model_organization_domain_response.go
 model_organization_roles_groups_response.go
 model_paginated_response_allow_list_entry_response.go
 model_paginated_response_allow_list_entry_response_items_inner.go
