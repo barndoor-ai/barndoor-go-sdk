@@ -36,6 +36,7 @@ type FieldControlPolicyResponse struct {
 	McpServerName NullableString `json:"mcp_server_name,omitempty"`
 	Name string `json:"name"`
 	OrgId string `json:"org_id"`
+	// The server's rules, in order. Where rule ids are enabled for the organization, each carries its server-made `rule_id`; elsewhere, none does.
 	Rules interface{} `json:"rules"`
 	UpdatedAt string `json:"updated_at"`
 	UpdatedBy string `json:"updated_by"`
