@@ -27,6 +27,7 @@ model_api_key_disabled_response.go
 model_api_key_kind.go
 model_api_key_lifetime_policies.go
 model_api_key_lifetime_policy.go
+model_api_key_lifetime_role_override.go
 model_api_key_lifetime_user_override.go
 model_app_type.go
 model_application.go
@@ -93,6 +94,7 @@ model_create_pricing_request.go
 model_create_profile_request.go
 model_create_provider_request.go
 model_create_rate_limit_request.go
+model_create_role_lifetime_policy_request.go
 model_create_route_group_request.go
 model_create_user_lifetime_policy_request.go
 model_credential_mode.go
