@@ -763,6 +763,9 @@ GetPolicyImpactsSummary Get Policy Impacts Summary
 
 Badge counts: ``{policy_id: {breaking, review, info}}``, archived excluded.
 
+Counts impact ROWS, not tools: a batch row counts once (see ``detail.added_batch.count``
+for the number of tools it stands for).
+
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetPolicyImpactsSummaryRequest
 */
@@ -861,6 +864,9 @@ func (r ApiGetPolicyImpactsSummaryByKindRequest) Execute() (*map[string]map[stri
 GetPolicyImpactsSummaryByKind Get Policy Impacts Summary By Kind
 
 Rollup line counts: ``{policy_id: {change_kind: live_count}}``, archived excluded.
+
+Counts impact ROWS, not tools: a batch row counts once (see ``detail.added_batch.count``
+for the number of tools it stands for).
 
 Sibling of ``/policy-impacts/summary`` grouped by ``change_kind`` instead of
 severity — kept as a separate route rather than a widened ``/summary``
@@ -1237,6 +1243,12 @@ Serves the ACC org view and the server/snapshot revisions page (hence the
 ``mcp_server_id`` / ``snapshot_id`` filters on what is otherwise an
 org-wide list). Archived policies are excluded by
 :class:`PolicyImpactService`'s join on ``policy.status``.
+
+An informational ``added`` row whose ``tool_name`` is the placeholder
+``"<added tools>"`` is a batch row: the policy has more added tools than the per-tool
+cap, and ``detail.added_batch`` carries the exact ``count``, up to 200 sorted ``names``
+and ``names_truncated``. Rows with ``detail.origin`` ``initial_capture`` come from a
+catalog's first snapshot (the tools are default-off; nothing is granted automatically).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListAllPolicyImpactsRequest

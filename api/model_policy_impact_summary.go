@@ -26,6 +26,7 @@ type PolicyImpactSummary struct {
 	PolicyId string `json:"policy_id"`
 	McpServerId string `json:"mcp_server_id"`
 	ChangeKind string `json:"change_kind"`
+	// The affected tool. For a batch row (``change_kind`` ``added``, ``severity`` ``info``) this is the placeholder ``\"<added tools>\"``: the policy's informational set of added tools exceeded the per-tool cap, so one row stands for all of them; see ``detail.added_batch``.
 	ToolName string `json:"tool_name"`
 	Severity string `json:"severity"`
 	Status string `json:"status"`
@@ -33,6 +34,7 @@ type PolicyImpactSummary struct {
 	ToVersion int32 `json:"to_version"`
 	SnapshotId string `json:"snapshot_id"`
 	PolicyStatusAtEval string `json:"policy_status_at_eval"`
+	// Provenance and context for the impact. ``origin`` is how the row was derived: ``diff`` (change summary), ``manifest_diff``, ``reconciliation`` / ``reconciliation_truncated``, or ``initial_capture`` (minted from a catalog's first snapshot: the tools existed from the start, ``from_version`` is null, and they are default-off until a policy allows them). Batch rows (``tool_name`` ``\"<added tools>\"``) also carry ``added_batch``: ``{\"count\": <exact number of tools>, \"names\": <sorted tool names, at most 200>, \"names_truncated\": <bool>}``. Batch ``count`` is exact; ``names`` may be shorter than ``count`` when ``names_truncated`` is true.
 	Detail map[string]interface{} `json:"detail,omitempty"`
 	AcknowledgedAt NullableTime `json:"acknowledged_at,omitempty"`
 	AcknowledgedBy NullableString `json:"acknowledged_by,omitempty"`

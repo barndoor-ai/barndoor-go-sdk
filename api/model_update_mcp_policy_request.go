@@ -22,7 +22,7 @@ type UpdateMcpPolicyRequest struct {
 	// Replaces the server list. Omitted = unchanged.
 	McpServerIds []string `json:"mcp_server_ids,omitempty"`
 	Name NullableString `json:"name,omitempty"`
-	// Replaces the rule list. Rules with an `id` are kept, the rest created, and stored rules left out are deleted. Omitted = unchanged.
+	// Replaces the rule list. Rules with an `id` are kept; a rule without one keeps the id of an identical stored rule, else is created; stored rules left out are deleted. Omitted = unchanged.
 	Rules []McpPolicyRuleRequest `json:"rules,omitempty"`
 }
 

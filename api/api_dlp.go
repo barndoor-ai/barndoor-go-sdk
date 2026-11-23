@@ -4327,7 +4327,7 @@ func (r ApiPutMcpBaselinePolicyRequest) Execute() (*McpPolicyResponse, *http.Res
 /*
 PutMcpBaselinePolicy Replace the Baseline policy's rules, creating it on first save
 
-Replaces the Baseline policy's whole rule set (keep an existing rule by passing its `id` back); there is no partial update. The Baseline policy has no server list of its own -- it covers whatever servers no other policy claims.
+Replaces the Baseline policy's whole rule set (keep an existing rule by passing its `id` back, or by sending it unchanged: a rule without an `id` keeps the id of an identical stored rule); there is no partial update. The Baseline policy has no server list of its own -- it covers whatever servers no other policy claims.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiPutMcpBaselinePolicyRequest
@@ -5650,7 +5650,7 @@ func (r ApiUpdateMcpPolicyRequest) Execute() (*McpPolicyResponse, *http.Response
 /*
 UpdateMcpPolicy Update an MCP policy's name, servers or rules
 
-Partial update: omitted fields are left unchanged, and a `rules` list replaces the whole set (keep an existing rule by passing its `id` back). The Baseline policy can't be edited here -- use `/mcp-baseline-policy`.
+Partial update: omitted fields are left unchanged, and a `rules` list replaces the whole set (keep an existing rule by passing its `id` back, or by sending it unchanged: a rule without an `id` keeps the id of an identical stored rule). The Baseline policy can't be edited here -- use `/mcp-baseline-policy`.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param id Identifier, a UUID
