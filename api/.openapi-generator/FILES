@@ -118,6 +118,10 @@ model_detection_types_response.go
 model_directory_credential_modes.go
 model_dlp_aws_trust_info_response.go
 model_dlp_error_response.go
+model_dlp_mcp_policy_revision.go
+model_dlp_mcp_policy_revision_comparison.go
+model_dlp_mcp_policy_revision_detail.go
+model_dlp_mcp_policy_revision_list.go
 model_dlp_policy_status.go
 model_effective_pricing.go
 model_embedded_runtime.go
