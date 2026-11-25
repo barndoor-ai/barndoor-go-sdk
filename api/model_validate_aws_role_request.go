@@ -19,9 +19,8 @@ import (
 // checks if the ValidateAwsRoleRequest type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ValidateAwsRoleRequest{}
 
-// ValidateAwsRoleRequest struct for ValidateAwsRoleRequest
+// ValidateAwsRoleRequest Probe a role with the calling org's server-issued external ID.  There is no `external_id` field: Barndoor always uses the org's own value (from `aws-role-config`). A body that still sends `external_id` is refused with 400 rather than silently ignored, so a stale client cannot believe its value was the one tested.
 type ValidateAwsRoleRequest struct {
-	ExternalId string `json:"external_id"`
 	IamRoleArn string `json:"iam_role_arn"`
 	Region string `json:"region"`
 }
@@ -32,9 +31,8 @@ type _ValidateAwsRoleRequest ValidateAwsRoleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewValidateAwsRoleRequest(externalId string, iamRoleArn string, region string) *ValidateAwsRoleRequest {
+func NewValidateAwsRoleRequest(iamRoleArn string, region string) *ValidateAwsRoleRequest {
 	this := ValidateAwsRoleRequest{}
-	this.ExternalId = externalId
 	this.IamRoleArn = iamRoleArn
 	this.Region = region
 	return &this
@@ -46,30 +44,6 @@ func NewValidateAwsRoleRequest(externalId string, iamRoleArn string, region stri
 func NewValidateAwsRoleRequestWithDefaults() *ValidateAwsRoleRequest {
 	this := ValidateAwsRoleRequest{}
 	return &this
-}
-
-// GetExternalId returns the ExternalId field value
-func (o *ValidateAwsRoleRequest) GetExternalId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.ExternalId
-}
-
-// GetExternalIdOk returns a tuple with the ExternalId field value
-// and a boolean to check if the value has been set.
-func (o *ValidateAwsRoleRequest) GetExternalIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.ExternalId, true
-}
-
-// SetExternalId sets field value
-func (o *ValidateAwsRoleRequest) SetExternalId(v string) {
-	o.ExternalId = v
 }
 
 // GetIamRoleArn returns the IamRoleArn field value
@@ -130,7 +104,6 @@ func (o ValidateAwsRoleRequest) MarshalJSON() ([]byte, error) {
 
 func (o ValidateAwsRoleRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["external_id"] = o.ExternalId
 	toSerialize["iam_role_arn"] = o.IamRoleArn
 	toSerialize["region"] = o.Region
 	return toSerialize, nil
@@ -141,7 +114,6 @@ func (o *ValidateAwsRoleRequest) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"external_id",
 		"iam_role_arn",
 		"region",
 	}

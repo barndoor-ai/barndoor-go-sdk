@@ -6714,6 +6714,8 @@ func (r ApiValidateAwsRoleRequest) Execute() (*AwsRoleValidationResponse, *http.
 /*
 ValidateAwsRole Probe an AWS role Barndoor is meant to assume
 
+Assumes the role with this organization's Barndoor-issued external id (see `aws-role-config`). The request cannot supply an external id: a body containing `external_id` is rejected with 400.
+
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiValidateAwsRoleRequest
 */

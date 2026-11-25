@@ -21,7 +21,7 @@ var _ MappedNullable = &DlpAwsTrustInfoResponse{}
 
 // DlpAwsTrustInfoResponse The pair a customer needs to write an `aws_role` trust policy.
 type DlpAwsTrustInfoResponse struct {
-	// The per-connection external id, to require in the trust condition.
+	// The external id this connection assumes its role with, to require in the trust condition. Barndoor-issued for connections saved since 2.44.0; a connection saved earlier keeps the value stored with it for as long as it assumes the same role.
 	ExternalId string `json:"external_id"`
 	// Barndoor's principal ARN, to trust in the customer's role.
 	PrincipalArn string `json:"principal_arn"`

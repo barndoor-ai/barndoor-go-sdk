@@ -23,6 +23,8 @@ var _ MappedNullable = &AwsRoleConfigResponse{}
 type AwsRoleConfigResponse struct {
 	// True when Barndoor has a principal ARN to put in a customer trust policy.
 	Configured bool `json:"configured"`
+	// This organization's `sts:ExternalId`, to require in the trust policy's condition. Issued by Barndoor on first read and stable after that; it cannot be chosen or changed through the API.
+	ExternalId string `json:"external_id"`
 	// The ARN customers name as the trusted principal; null when unconfigured.
 	PrincipalArn NullableString `json:"principal_arn,omitempty"`
 }
@@ -33,9 +35,10 @@ type _AwsRoleConfigResponse AwsRoleConfigResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewAwsRoleConfigResponse(configured bool) *AwsRoleConfigResponse {
+func NewAwsRoleConfigResponse(configured bool, externalId string) *AwsRoleConfigResponse {
 	this := AwsRoleConfigResponse{}
 	this.Configured = configured
+	this.ExternalId = externalId
 	return &this
 }
 
@@ -69,6 +72,30 @@ func (o *AwsRoleConfigResponse) GetConfiguredOk() (*bool, bool) {
 // SetConfigured sets field value
 func (o *AwsRoleConfigResponse) SetConfigured(v bool) {
 	o.Configured = v
+}
+
+// GetExternalId returns the ExternalId field value
+func (o *AwsRoleConfigResponse) GetExternalId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.ExternalId
+}
+
+// GetExternalIdOk returns a tuple with the ExternalId field value
+// and a boolean to check if the value has been set.
+func (o *AwsRoleConfigResponse) GetExternalIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ExternalId, true
+}
+
+// SetExternalId sets field value
+func (o *AwsRoleConfigResponse) SetExternalId(v string) {
+	o.ExternalId = v
 }
 
 // GetPrincipalArn returns the PrincipalArn field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -124,6 +151,7 @@ func (o AwsRoleConfigResponse) MarshalJSON() ([]byte, error) {
 func (o AwsRoleConfigResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["configured"] = o.Configured
+	toSerialize["external_id"] = o.ExternalId
 	if o.PrincipalArn.IsSet() {
 		toSerialize["principal_arn"] = o.PrincipalArn.Get()
 	}
@@ -136,6 +164,7 @@ func (o *AwsRoleConfigResponse) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"configured",
+		"external_id",
 	}
 
 	allProperties := make(map[string]interface{})
